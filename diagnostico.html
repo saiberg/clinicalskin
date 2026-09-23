@@ -4,35 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Diagnóstico de piel — Clinical Skin</title>
-<link rel="icon" href="img/logo-clinicalSkin.jpeg" type="image/jpeg">
+<link rel="icon" href="img/logoNotext-clinicalSkin.png" type="image/png">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<header class="site-header">
-  <div class="container nav">
-    <a href="index.html" class="logo">
-      <span class="logo-mark"><img src="img/logo-clinicalSkin.jpeg" alt=""></span>
-      <span>Clinical Skin<small>Dermocosmética</small></span>
-    </a>
-    <nav class="nav-links">
-      <a href="index.html">Inicio</a>
-      <a href="diagnostico.html" class="active">Diagnóstico</a>
-      <a href="productos.html">Productos</a>
-      <a href="filosofia.html">Filosofía</a>
-      <a href="contacto.html">Contacto</a>
-    </nav>
-    <div class="nav-actions">
-      <a href="carrito.html" class="nav-cart" aria-label="Ver carrito">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
-      </a>
-      <a href="diagnostico.html" class="btn btn-primary btn-sm">Hacer mi diagnóstico</a>
-      <button class="nav-toggle" aria-label="Abrir menú">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-      </button>
-    </div>
-  </div>
-</header>
+<header class="site-header" data-site-header></header>
+<script src="js/header.js"></script>
 
 <section class="page-header">
   <div class="container">
@@ -128,7 +106,7 @@
           <div class="quiz-options">
             <button type="button" class="quiz-option selected">
               <div class="qo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3h6M10 3v4l-3.5 5A4 4 0 0 0 10 19h4a4 4 0 0 0 3.5-7L14 7V3"/></svg></div>
-              <div><h4>Rutina básica</h4><p>Limpiador + hidratante, sin treatments activos.</p></div>
+              <div><h4>Rutina básica</h4><p>Limpiador + hidratante, sin activos.</p></div>
             </button>
             <button type="button" class="quiz-option">
               <div class="qo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 7h14M7 12h10M9 17h6"/></svg></div>
@@ -253,15 +231,10 @@
   </div>
 </section>
 
-<footer class="site-footer">
-  <div class="container">
-    <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,0.12); padding-top:24px;">
-      <span>© 2026 Clinical Skin — Dermocosmética. Todos los derechos reservados.</span>
-      <span>Diseño conceptual — próximamente tienda funcional</span>
-    </div>
-  </div>
-</footer>
+<footer class="site-footer" data-site-footer="simple"></footer>
+<script src="js/footer.js"></script>
 
+<script src="js/logica.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

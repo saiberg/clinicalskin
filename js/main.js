@@ -176,7 +176,10 @@ document.addEventListener('DOMContentLoaded', () => {
     'Crema Bruma de Avena': 'img/productos/crema-avena.svg',
     'Protector Solar Ligero SPF50': 'img/productos/protector.svg',
     'Tónico Exfoliante BHA 2%': 'img/productos/tonico.svg',
-    'Aceite Desmaquillante Suave': 'img/productos/aceite.svg'
+    'Aceite Desmaquillante Suave': 'img/productos/aceite.svg',
+    'Leche Limpiadora Suave': 'img/productos/limpiador-cremoso.svg',
+    'Gel Hidratante Oil-Free': 'img/productos/gel-hidratante.svg',
+    'Sérum Hidra Plump': 'img/productos/serum-hidra.svg'
   };
 
   const dressMedia = (el, name) => {
