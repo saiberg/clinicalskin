@@ -30,9 +30,10 @@ Archivo: [`woocommerce/catalogo-clinical-skin.csv`](woocommerce/catalogo-clinica
 3. El CSV ya trae por producto: precio CLP, descripción corta (`desc`), descripción larga
    (`ficha` + modo de uso + ingredientes), categoría por paso, atributos y meta personalizada
    (`_cs_paso`, `_cs_agresividad`, `_cs_frecuencia`, `_cs_modo_uso`, `_cs_ingredientes`).
-4. **Imágenes:** el CSV no incluye columna `Images` porque los SVG del mockup no son
-   válidos para la biblioteca de medios. Subir fotos reales (JPG/WebP ~1200 px) y
-   completar la columna `Images` con la URL pública, o asignarlas a mano.
+4. **Imágenes:** el CSV ya incluye la columna `Images` con la ruta relativa de las
+   fotos reales (11 JPG en `img/productos/`, descargadas de Pexels — Pexels License,
+   uso comercial sin atribución). Al importar: subir los JPG a la biblioteca de medios
+   y reemplazar cada valor por su URL pública, o asignarlas a mano tras importar.
 5. Verificar tras importar: 11 productos publicados, precios sin decimales, IVA según configuración.
 
 ---
@@ -93,7 +94,8 @@ fáciles de modificar tal como pediste.
 - [ ] Dominio `.cl` + hosting con SSL + WordPress/WooCommerce actualizados
 - [ ] Moneda **CLP**, precios sin decimales, IVA 19 % definido (con/sin impuesto en front)
 - [ ] Importar CSV → 11 productos OK con atributos globales
-- [ ] Fotos reales reemplazan los SVG de `img/productos/`
+- [x] Fotos reales reemplazan los SVG de `img/productos/` (11 JPG de Pexels, licencia libre)
+- [ ] Subir los JPG a la biblioteca de medios de WP y dejar `Images` con URL pública
 - [ ] Correos transaccionales de Woo en español (nuevo pedido, despachado, etc.)
 
 **Diagnóstico**

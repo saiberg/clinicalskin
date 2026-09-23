@@ -156,7 +156,7 @@ const CS_DIAG = (() => {
     {
       id: 'gel-balance', nombre: 'Gel Limpiador Balance', paso: 'limpieza',
       tipos: ['mixta', 'grasa'], preocupaciones: ['acne'], agresividad: 'media',
-      frecuencia: 'Mañana y noche', precio: 19900, img: 'img/productos/limpiador.svg',
+      frecuencia: 'Mañana y noche', precio: 19900, img: 'img/productos/gel-balance.jpg',
       desc: 'Limpia sin resecar, regula el exceso de sebo.',
       porque: 'Limpia el exceso de sebo de tu {tipoLargo} sin alterar la barrera: la base para que el resto de la rutina funcione.',
       ficha: 'Limpieza diaria en gel para pieles mixtas y grasas: retira impurezas, exceso de sebo y residuos del día sin resecar. Deja la piel fresca y equilibrada, sin sensación de tirantez.',
@@ -166,7 +166,7 @@ const CS_DIAG = (() => {
     {
       id: 'leche-cremosa', nombre: 'Leche Limpiadora Suave', paso: 'limpieza',
       tipos: ['seca', 'sensible'], preocupaciones: ['deshidratacion'], agresividad: 'baja',
-      frecuencia: 'Mañana y noche', precio: 23500, img: 'img/productos/limpiador-cremoso.svg',
+      frecuencia: 'Mañana y noche', precio: 23500, img: 'img/productos/leche-cremosa.jpg',
       desc: 'Limpieza cremosa sin jabones, ideal para piel seca o sensible.',
       porque: 'Retira impurezas sin jabones agresivos: limpia tu {tipoLargo} dejando la barrera intacta.',
       ficha: 'Limpiador cremoso sin jabones ni sulfatos, formulado para pieles secas y sensibles. Disuelve la suciedad y el maquillaje dejando la barrera cutánea intacta y una sensación aterciopelada.',
@@ -176,7 +176,7 @@ const CS_DIAG = (() => {
     {
       id: 'aceite-desmaquillante', nombre: 'Aceite Desmaquillante Suave', paso: 'limpieza',
       tipos: ['todo'], preocupaciones: ['deshidratacion', 'manchas'], agresividad: 'baja',
-      frecuencia: 'Solo de noche', precio: 24300, img: 'img/productos/aceite.svg',
+      frecuencia: 'Solo de noche', precio: 24300, img: 'img/productos/aceite-desmaquillante.jpg',
       desc: 'Disuelve impurezas y protector solar sin agredir.',
       porque: 'Doble limpieza de noche: retira protector solar y residuos que por el día tu piel no soltó.',
       ficha: 'Aceite ligero que se emulsiona con agua para retirar protector solar, maquillaje resistente e impurezas del día sin frotar. Ideal como primera fase de la doble limpieza.',
@@ -186,7 +186,7 @@ const CS_DIAG = (() => {
     {
       id: 'serum-equilibrio', nombre: 'Sérum Equilibrio Botánico', paso: 'tratamiento',
       tipos: ['mixta', 'grasa'], preocupaciones: ['acne'], agresividad: 'media',
-      frecuencia: 'Mañana y noche', precio: 34900, img: 'img/productos/serum.svg',
+      frecuencia: 'Mañana y noche', precio: 34900, img: 'img/productos/serum-equilibrio.jpg',
       desc: 'Niacinamida y zinc para controlar brillo y poros.',
       porque: 'La niacinamida regula el sebo y afina los poros: ataca tu {preoc1Largo} sin resecar.',
       ficha: 'Fórmula concentrada con 10% niacinamida, zinc PCA y extracto de centella asiática, diseñada para regular la producción de sebo, minimizar poros y calmar imperfecciones sin resecar la piel.',
@@ -196,7 +196,7 @@ const CS_DIAG = (() => {
     {
       id: 'serum-hidra', nombre: 'Sérum Hidra Plump', paso: 'tratamiento',
       tipos: ['todo'], preocupaciones: ['deshidratacion'], agresividad: 'baja',
-      frecuencia: 'Mañana y noche', precio: 36400, img: 'img/productos/serum-hidra.svg',
+      frecuencia: 'Mañana y noche', precio: 36400, img: 'img/productos/serum-hidra.jpg',
       desc: 'Ácido hialurónico de triple peso molecular para rellenar hidratación.',
       porque: 'Ácido hialurónico que atrapa agua en la piel: la respuesta directa a tu {preoc1Largo}.',
       ficha: 'Ácido hialurónico de triple peso molecular que capta agua en las distintas capas de la piel: rellena líneas de deshidratación, reafirma y devuelve la luminosidad perdida.',
@@ -206,7 +206,7 @@ const CS_DIAG = (() => {
     {
       id: 'ampolla-vitc', nombre: 'Ampolla Luz Vitamina C', paso: 'tratamiento',
       tipos: ['todo'], preocupaciones: ['manchas', 'edad'], agresividad: 'media',
-      frecuencia: 'Solo mañana', precio: 31200, img: 'img/productos/ampolla-vitc.svg',
+      frecuencia: 'Solo mañana', precio: 31200, img: 'img/productos/ampolla-vitc.jpg',
       desc: 'Ilumina y unifica el tono con vitamina C estable.',
       porque: 'Vitamina C estable para unificar el tono y potenciar la protección de tu piel durante el día.',
       ficha: 'Vitamina C estabilizada al 15% que unifica el tono, atenúa marcas y potencia la protección del protector solar. Aporta luminosidad desde las primeras semanas de uso.',
@@ -216,7 +216,7 @@ const CS_DIAG = (() => {
     {
       id: 'crema-avena', nombre: 'Crema Bruma de Avena', paso: 'hidratacion',
       tipos: ['seca', 'sensible'], preocupaciones: ['deshidratacion'], agresividad: 'baja',
-      frecuencia: 'Mañana y noche', precio: 28500, img: 'img/productos/crema-avena.svg',
+      frecuencia: 'Mañana y noche', precio: 28500, img: 'img/productos/crema-avena.jpg',
       desc: 'Hidratación profunda con avena coloidal y ceramidas.',
       porque: 'Avena coloidal y ceramidas reparan la barrera: hidratación profunda para tu {tipoLargo}.',
       ficha: 'Crema de textura ligera con avena coloidal y ceramidas que reparan la barrera cutánea. Hidratación profunda sin oclusión para pieles secas que se sienten tirantizadas.',
@@ -226,7 +226,7 @@ const CS_DIAG = (() => {
     {
       id: 'gel-hidratante', nombre: 'Gel Hidratante Oil-Free', paso: 'hidratacion',
       tipos: ['mixta', 'grasa'], preocupaciones: ['acne', 'deshidratacion'], agresividad: 'baja',
-      frecuencia: 'Mañana y noche', precio: 26900, img: 'img/productos/gel-hidratante.svg',
+      frecuencia: 'Mañana y noche', precio: 26900, img: 'img/productos/gel-hidratante.jpg',
       desc: 'Hidratación en gel sin aceites, no obstruye poros.',
       porque: 'Da comodidad a tu {tipoLargo} sin aceites ni grasa: hidrata sin apagar la zona T.',
       ficha: 'Hidratación en gel sin aceites ni siliconas comedogénicas: aporta comodidad a pieles mixtas y grasas sin apagar la zona T ni obstruir los poros.',
@@ -236,7 +236,7 @@ const CS_DIAG = (() => {
     {
       id: 'balsamo-centella', nombre: 'Bálsamo Centella Calma', paso: 'hidratacion',
       tipos: ['sensible', 'seca'], preocupaciones: ['deshidratacion'], agresividad: 'baja',
-      frecuencia: 'Solo de noche', precio: 26700, img: 'img/productos/balsamo.svg',
+      frecuencia: 'Solo de noche', precio: 26700, img: 'img/productos/balsamo-centella.jpg',
       desc: 'Repara la barrera cutánea y reduce el enrojecimiento.',
       porque: 'Centella asiática repara durante la noche y calma: ideal si tu piel tiende a reaccionar.',
       ficha: 'Bálsamo reparador de noche con centella asiática y madecassoside: reduce enrojecimientos, calma la piel reactiva y refuerza la barrera mientras duermes.',
@@ -246,7 +246,7 @@ const CS_DIAG = (() => {
     {
       id: 'protector-spf50', nombre: 'Protector Solar Ligero SPF50', paso: 'proteccion',
       tipos: ['todo'], preocupaciones: ['manchas', 'edad'], agresividad: 'baja',
-      frecuencia: 'Cada mañana', precio: 29500, img: 'img/productos/protector.svg',
+      frecuencia: 'Cada mañana', precio: 29500, img: 'img/productos/protector-spf50.jpg',
       desc: 'Textura invisible, no obstruye poros.',
       porque: 'Protección diaria: el mejor antienvejecimiento y el aliado de cualquier rutina.',
       ficha: 'Protección solar de amplio espectro UVA/UVB con textura invisible y acabado mate: no obstruye poros ni deja residuo blanco. El paso más importante de tu rutina.',
@@ -256,7 +256,7 @@ const CS_DIAG = (() => {
     {
       id: 'tonico-bha', nombre: 'Tónico Exfoliante BHA 2%', paso: 'exfoliacion',
       tipos: ['mixta', 'grasa'], preocupaciones: ['acne'], agresividad: 'alta',
-      frecuencia: 'De noche', precio: 27800, img: 'img/productos/tonico.svg',
+      frecuencia: 'De noche', precio: 27800, img: 'img/productos/tonico-bha.jpg',
       desc: 'Desobstruye poros y previene nuevos brotes.',
       porque: 'BHA que desobstruye poros mientras duermes: trabaja tu {preoc1Largo} sin dejar residuo.',
       ficha: 'Exfoliante químico con 2% ácido salicílico que penetra en el poro, disuelve la obstrucción y previene nuevos brotes mientras duermes. Sin grano y sin fricción.',

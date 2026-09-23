@@ -191,17 +191,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* Ilustraciones de producto: se asignan según el nombre */
   const PRODUCT_IMG = {
-    'Gel Limpiador Balance': 'img/productos/limpiador.svg',
-    'Sérum Equilibrio Botánico': 'img/productos/serum.svg',
-    'Ampolla Luz Vitamina C': 'img/productos/ampolla-vitc.svg',
-    'Bálsamo Centella Calma': 'img/productos/balsamo.svg',
-    'Crema Bruma de Avena': 'img/productos/crema-avena.svg',
-    'Protector Solar Ligero SPF50': 'img/productos/protector.svg',
-    'Tónico Exfoliante BHA 2%': 'img/productos/tonico.svg',
-    'Aceite Desmaquillante Suave': 'img/productos/aceite.svg',
-    'Leche Limpiadora Suave': 'img/productos/limpiador-cremoso.svg',
-    'Gel Hidratante Oil-Free': 'img/productos/gel-hidratante.svg',
-    'Sérum Hidra Plump': 'img/productos/serum-hidra.svg'
+    'Gel Limpiador Balance': 'img/productos/gel-balance.jpg',
+    'Sérum Equilibrio Botánico': 'img/productos/serum-equilibrio.jpg',
+    'Ampolla Luz Vitamina C': 'img/productos/ampolla-vitc.jpg',
+    'Bálsamo Centella Calma': 'img/productos/balsamo-centella.jpg',
+    'Crema Bruma de Avena': 'img/productos/crema-avena.jpg',
+    'Protector Solar Ligero SPF50': 'img/productos/protector-spf50.jpg',
+    'Tónico Exfoliante BHA 2%': 'img/productos/tonico-bha.jpg',
+    'Aceite Desmaquillante Suave': 'img/productos/aceite-desmaquillante.jpg',
+    'Leche Limpiadora Suave': 'img/productos/leche-cremosa.jpg',
+    'Gel Hidratante Oil-Free': 'img/productos/gel-hidratante.jpg',
+    'Sérum Hidra Plump': 'img/productos/serum-hidra.jpg'
   };
 
   const dressMedia = (el, name) => {

@@ -53,7 +53,7 @@ Cada producto del catálogo se carga con:
   "agresividad": "baja",          // baja | media | alta  (qué tan fuerte es para la piel)
   "frecuencia": "diario",
   "precio": 34900,
-  "img": "img/productos/serum.svg",
+  "img": "img/productos/serum-equilibrio.jpg",
   "porque": "La niacinamida regula el sebo sin resecar: exactamente lo que pide tu piel {tipo} con {preoc1}."
 }
 ```
