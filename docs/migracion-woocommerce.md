@@ -96,6 +96,7 @@ fáciles de modificar tal como pediste.
 - [ ] Importar CSV → 11 productos OK con atributos globales
 - [x] Fotos reales reemplazan los SVG de `img/productos/` (11 JPG de Pexels, licencia libre)
 - [ ] Subir los JPG a la biblioteca de medios de WP y dejar `Images` con URL pública
+- [ ] Instalar **FiboSearch** (gratis) y retirar el buscador maquetado de `js/header.js` (bloque "Buscador maquetado")
 - [ ] Correos transaccionales de Woo en español (nuevo pedido, despachado, etc.)
 
 **Diagnóstico**

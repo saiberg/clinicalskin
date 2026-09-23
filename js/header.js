@@ -43,6 +43,20 @@
       ${enlaces}
     </nav>
     <div class="nav-actions">
+      <div class="search-wrap">
+        <button type="button" class="nav-cart search-toggle" aria-label="Buscar productos" aria-expanded="false" aria-controls="search-panel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </button>
+        <div class="search-panel" id="search-panel" hidden>
+          <div class="search-field">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input type="search" class="search-input" placeholder="Buscar producto, tipo de piel…" autocomplete="off" aria-label="Buscar productos">
+          </div>
+          <div class="search-hint">Escribe un nombre o tipo de piel (ej.: grasa, sensible…).</div>
+          <ul class="search-list"></ul>
+          <a class="search-all" href="productos.html">Ver todos los productos →</a>
+        </div>
+      </div>
       <a href="carrito.html" class="nav-cart" aria-label="Ver carrito">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
       </a>
@@ -55,4 +69,70 @@
 
   const destino = document.querySelector('[data-site-header]');
   if (destino) destino.innerHTML = html;
+
+  /* ---------- Buscador maquetado (al migrar a Woo: reemplazar por FiboSearch) ----------
+     Sugiere productos del CATALOGO (window.CS_DIAG) con foto, categoría y precio.
+     Busca por nombre, paso, tipo de piel, preocupación e ingredientes (sin acentos). */
+  const wrap = destino && destino.querySelector('.search-wrap');
+  const btnS = destino && destino.querySelector('.search-toggle');
+  const panel = destino && destino.querySelector('.search-panel');
+  const input = destino && destino.querySelector('.search-input');
+  const hint = destino && destino.querySelector('.search-hint');
+  const lista = destino && destino.querySelector('.search-list');
+
+  if (wrap && btnS && panel && input && lista) {
+    const PASOS = {
+      limpieza: 'Limpieza', tratamiento: 'Tratamiento', exfoliacion: 'Exfoliación',
+      hidratacion: 'Hidratación', proteccion: 'Protección'
+    };
+    const norm = (s) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const pesos = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+    const cerrar = () => {
+      panel.hidden = true;
+      btnS.setAttribute('aria-expanded', 'false');
+    };
+
+    const pintar = () => {
+      const q = norm(input.value.trim());
+      lista.innerHTML = '';
+      if (hint) hint.hidden = q.length > 0;
+      if (q.length < 1) return;
+      const cat = (window.CS_DIAG && window.CS_DIAG.CATALOGO) || [];
+      const hitos = cat.filter((p) =>
+        [p.nombre, p.paso, (p.tipos || []).join(' '), (p.preocupaciones || []).join(' '), (p.activos || []).join(' ')]
+          .some((c) => norm(String(c)).includes(q))
+      ).slice(0, 7);
+      if (!hitos.length) {
+        const li = document.createElement('li');
+        li.className = 'search-empty';
+        li.textContent = 'Sin productos para “' + input.value.trim() + '”';
+        lista.appendChild(li);
+        return;
+      }
+      lista.innerHTML = hitos.map((p) =>
+        `<li><a href="producto.html?id=${encodeURIComponent(p.id)}"><img src="${p.img}" alt="" loading="lazy"><span><span class="search-item-name">${p.nombre}</span><span class="search-item-cat">${PASOS[p.paso] || ''}</span></span><strong class="search-item-price">$${pesos(p.precio)}</strong></a></li>`
+      ).join('');
+    };
+
+    btnS.addEventListener('click', () => {
+      const abriendo = panel.hidden;
+      panel.hidden = !abriendo;
+      btnS.setAttribute('aria-expanded', String(abriendo));
+      if (abriendo) { input.focus(); pintar(); }
+    });
+    input.addEventListener('input', pintar);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const primero = lista.querySelector('a');
+        if (primero) { e.preventDefault(); location.href = primero.href; }
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel.hidden) { cerrar(); btnS.focus(); }
+    });
+    document.addEventListener('click', (e) => {
+      if (!panel.hidden && !wrap.contains(e.target)) cerrar();
+    });
+  }
 })();

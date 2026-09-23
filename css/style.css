@@ -1187,3 +1187,43 @@ ul { list-style: none; }
 .hero-card h2 { font-size: 1.05rem; }
 .quiz-wrap h2 { font-size: 1.35rem; }
 .quiz-hint { display: block; margin-top: 12px; font-size: 0.85rem; font-weight: 600; color: var(--color-accent); }
+
+/* ---------- Buscador maquetado (header) ---------- */
+.search-wrap { position: relative; }
+.search-toggle[aria-expanded="true"] { background: var(--color-primary); color: var(--color-white); border-color: var(--color-primary); }
+.search-panel {
+  position: absolute; top: calc(100% + 14px); right: 0; z-index: 60;
+  width: min(430px, calc(100vw - 28px));
+  background: var(--color-white); border: 1px solid var(--color-border);
+  border-radius: 20px; box-shadow: var(--shadow-card); padding: 14px;
+}
+.search-panel[hidden] { display: none; }
+.search-field {
+  display: flex; align-items: center; gap: 10px; padding: 0 16px;
+  background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-pill);
+}
+.search-field:focus-within { border-color: var(--color-accent); }
+.search-field svg { width: 17px; height: 17px; flex-shrink: 0; color: var(--color-text-light); }
+.search-input { flex: 1; border: none; background: none; padding: 13px 0; font: inherit; font-size: 0.95rem; color: var(--color-text); outline: none; min-width: 0; }
+.search-hint { padding: 14px 6px 6px; font-size: 0.86rem; color: var(--color-text-light); }
+.search-hint[hidden] { display: none; }
+.search-list { list-style: none; margin: 0; padding: 0; max-height: 330px; overflow-y: auto; }
+.search-list:empty { display: none; }
+.search-list a {
+  display: grid; grid-template-columns: 46px 1fr auto; align-items: center; gap: 12px;
+  padding: 8px 6px; border-radius: 14px; text-decoration: none; color: var(--color-text);
+}
+.search-list a:hover, .search-list a:focus-visible { background: var(--color-bg-alt); outline: none; }
+.search-list img { width: 46px; height: 46px; object-fit: cover; border-radius: 12px; display: block; }
+.search-item-name { display: block; font-size: 0.92rem; font-weight: 600; line-height: 1.25; }
+.search-item-cat { display: block; font-size: 0.74rem; color: var(--color-text-light); margin-top: 2px; }
+.search-item-price { font-size: 0.9rem; font-weight: 700; color: var(--color-primary-dark); white-space: nowrap; }
+.search-empty { padding: 16px 6px; font-size: 0.9rem; color: var(--color-text-light); }
+.search-all {
+  display: block; margin-top: 10px; padding-top: 12px; border-top: 1px solid var(--color-border);
+  text-align: center; font-size: 0.86rem; font-weight: 600; color: var(--color-accent); text-decoration: none;
+}
+.search-all:hover { text-decoration: underline; }
+@media (max-width: 720px) {
+  .search-panel { position: fixed; top: 121px; left: 12px; right: 12px; width: auto; }
+}
