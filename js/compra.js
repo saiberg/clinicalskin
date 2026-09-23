@@ -152,6 +152,12 @@
     });
   });
 
+  const resultsCount = document.querySelector('.results-count');
+  if (resultsCount) {
+    const n = document.querySelectorAll('.products-grid .product-card').length;
+    resultsCount.textContent = 'Mostrando ' + n + ' productos';
+  }
+
   /* ---------- producto.html: render por ?id ---------- */
   const info = document.querySelector('.product-info');
   if (info) {
