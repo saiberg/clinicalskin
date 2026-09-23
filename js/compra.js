@@ -10,6 +10,7 @@
 
   const KEY = 'cs_cart';
   const KEY_ENVIO = 'cs_envio';
+  const KEY_ENVIO_TXT = 'cs_envio_txt';
   const fmt = (n) => '$' + Math.round(n).toLocaleString('es-CL');
   const cat = () => (window.CS_DIAG ? CS_DIAG.CATALOGO : []);
   const porId = (id) => cat().find((p) => p.id === id);
@@ -144,7 +145,10 @@
   /* Persistir envío elegido (lo usa la confirmación) */
   document.querySelectorAll('input[name="envio"]').forEach((input) => {
     input.addEventListener('change', () => {
-      try { localStorage.setItem(KEY_ENVIO, input.dataset.cost || '0'); } catch (e) { /* noop */ }
+      try {
+        localStorage.setItem(KEY_ENVIO, input.dataset.cost || '0');
+        if (input.dataset.label) localStorage.setItem(KEY_ENVIO_TXT, input.dataset.label);
+      } catch (e) { /* noop */ }
     });
   });
 
@@ -220,5 +224,12 @@
   if (confTotal) {
     const rc = resumen();
     if (rc.count > 0) confTotal.textContent = fmt(rc.total);
+  }
+  const confDespacho = document.querySelector('[data-confirm="despacho"]');
+  if (confDespacho) {
+    try {
+      const txt = localStorage.getItem(KEY_ENVIO_TXT);
+      if (txt) confDespacho.textContent = txt;
+    } catch (e) { /* noop */ }
   }
 })();
