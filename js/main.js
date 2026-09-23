@@ -46,15 +46,33 @@ document.addEventListener('DOMContentLoaded', () => {
     updateStepper();
   };
 
+  const pasoValido = () => {
+    const activo = document.querySelector('.quiz-step.active');
+    if (!activo || activo.querySelector('.quiz-option.selected')) return true;
+    if (!activo.querySelector('.quiz-hint')) {
+      const hint = document.createElement('p');
+      hint.className = 'quiz-hint';
+      hint.textContent = 'Selecciona una opción para continuar';
+      activo.appendChild(hint);
+    }
+    return false;
+  };
+
   document.querySelectorAll('.next-step').forEach((button) => {
-    button.addEventListener('click', () => goToStep(currentStep + 1));
+    button.addEventListener('click', () => { if (pasoValido()) goToStep(currentStep + 1); });
   });
 
   document.querySelectorAll('.prev-step').forEach((button) => {
     button.addEventListener('click', () => goToStep(currentStep - 1));
   });
 
-  document.querySelector('.finish-step')?.addEventListener('click', () => goToStep(steps.length));
+  document.querySelector('.finish-step')?.addEventListener('click', () => { if (pasoValido()) goToStep(steps.length); });
+
+  document.querySelectorAll('.quiz-step').forEach((step) => {
+    step.addEventListener('click', (event) => {
+      if (event.target.closest('.quiz-option')) step.querySelector('.quiz-hint')?.remove();
+    });
+  });
 
   updateStepper();
 });

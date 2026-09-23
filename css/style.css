@@ -1185,3 +1185,4 @@ ul { list-style: none; }
 /* ---------- Jerarquia semantica de encabezados (accesibilidad AA) ---------- */
 .hero-card h2 { font-size: 1.05rem; }
 .quiz-wrap h2 { font-size: 1.35rem; }
+.quiz-hint { display: block; margin-top: 12px; font-size: 0.85rem; font-weight: 600; color: var(--color-accent); }
