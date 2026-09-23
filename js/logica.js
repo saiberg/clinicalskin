@@ -158,77 +158,110 @@ const CS_DIAG = (() => {
       tipos: ['mixta', 'grasa'], preocupaciones: ['acne'], agresividad: 'media',
       frecuencia: 'Mañana y noche', precio: 19900, img: 'img/productos/limpiador.svg',
       desc: 'Limpia sin resecar, regula el exceso de sebo.',
-      porque: 'Limpia el exceso de sebo de tu {tipoLargo} sin alterar la barrera: la base para que el resto de la rutina funcione.'
+      porque: 'Limpia el exceso de sebo de tu {tipoLargo} sin alterar la barrera: la base para que el resto de la rutina funcione.',
+      ficha: 'Limpieza diaria en gel para pieles mixtas y grasas: retira impurezas, exceso de sebo y residuos del día sin resecar. Deja la piel fresca y equilibrada, sin sensación de tirantez.',
+      modoUso: 'Masajea una pequeña cantidad sobre piel húmeda, mañana y noche, durante 30 segundos. Enjuaga con agua tibia y seca con toques suaves.',
+      ingredientes: 'Zinc PCA (regula el sebo), ácido salicílico suave, pantenol (calma) y glicerina vegetal (hidrata).'
     },
     {
       id: 'leche-cremosa', nombre: 'Leche Limpiadora Suave', paso: 'limpieza',
       tipos: ['seca', 'sensible'], preocupaciones: ['deshidratacion'], agresividad: 'baja',
       frecuencia: 'Mañana y noche', precio: 23500, img: 'img/productos/limpiador-cremoso.svg',
       desc: 'Limpieza cremosa sin jabones, ideal para piel seca o sensible.',
-      porque: 'Retira impurezas sin jabones agresivos: limpia tu {tipoLargo} dejando la barrera intacta.'
+      porque: 'Retira impurezas sin jabones agresivos: limpia tu {tipoLargo} dejando la barrera intacta.',
+      ficha: 'Limpiador cremoso sin jabones ni sulfatos, formulado para pieles secas y sensibles. Disuelve la suciedad y el maquillaje dejando la barrera cutánea intacta y una sensación aterciopelada.',
+      modoUso: 'Aplica sobre piel seca o húmeda con las yemas de los dedos, en movimientos circulares. Retira con algodón o enjuaga con agua tibia, mañana y noche.',
+      ingredientes: 'Avena coloidal, glicerina, aceite de almendras dulces y bisabolol (efecto calmante).'
     },
     {
       id: 'aceite-desmaquillante', nombre: 'Aceite Desmaquillante Suave', paso: 'limpieza',
       tipos: ['todo'], preocupaciones: ['deshidratacion', 'manchas'], agresividad: 'baja',
       frecuencia: 'Solo de noche', precio: 24300, img: 'img/productos/aceite.svg',
       desc: 'Disuelve impurezas y protector solar sin agredir.',
-      porque: 'Doble limpieza de noche: retira protector solar y residuos que por el día tu piel no soltó.'
+      porque: 'Doble limpieza de noche: retira protector solar y residuos que por el día tu piel no soltó.',
+      ficha: 'Aceite ligero que se emulsiona con agua para retirar protector solar, maquillaje resistente e impurezas del día sin frotar. Ideal como primera fase de la doble limpieza.',
+      modoUso: 'Solo de noche: aplica sobre piel seca, masajea un minuto, moja las manos y emulsiona hasta retirar con agua. Continúa con tu limpiador habitual.',
+      ingredientes: 'Aceite de jojoba, aceite de ricino, vitamina E y extracto de manzanilla.'
     },
     {
       id: 'serum-equilibrio', nombre: 'Sérum Equilibrio Botánico', paso: 'tratamiento',
       tipos: ['mixta', 'grasa'], preocupaciones: ['acne'], agresividad: 'media',
       frecuencia: 'Mañana y noche', precio: 34900, img: 'img/productos/serum.svg',
       desc: 'Niacinamida y zinc para controlar brillo y poros.',
-      porque: 'La niacinamida regula el sebo y afina los poros: ataca tu {preoc1Largo} sin resecar.'
+      porque: 'La niacinamida regula el sebo y afina los poros: ataca tu {preoc1Largo} sin resecar.',
+      ficha: 'Fórmula concentrada con 10% niacinamida, zinc PCA y extracto de centella asiática, diseñada para regular la producción de sebo, minimizar poros y calmar imperfecciones sin resecar la piel.',
+      modoUso: 'Aplica 3-4 gotas sobre rostro limpio, mañana y noche, antes de tu hidratante. Evita el contorno de ojos.',
+      ingredientes: 'Niacinamida 10%, zinc PCA, extracto de centella asiática y ácido hialurónico.'
     },
     {
       id: 'serum-hidra', nombre: 'Sérum Hidra Plump', paso: 'tratamiento',
       tipos: ['todo'], preocupaciones: ['deshidratacion'], agresividad: 'baja',
       frecuencia: 'Mañana y noche', precio: 36400, img: 'img/productos/serum-hidra.svg',
       desc: 'Ácido hialurónico de triple peso molecular para rellenar hidratación.',
-      porque: 'Ácido hialurónico que atrapa agua en la piel: la respuesta directa a tu {preoc1Largo}.'
+      porque: 'Ácido hialurónico que atrapa agua en la piel: la respuesta directa a tu {preoc1Largo}.',
+      ficha: 'Ácido hialurónico de triple peso molecular que capta agua en las distintas capas de la piel: rellena líneas de deshidratación, reafirma y devuelve la luminosidad perdida.',
+      modoUso: 'Aplica 2-3 gotas sobre piel ligeramente húmeda, mañana y noche, antes de tu crema. Tócala hasta que se absorba por completo.',
+      ingredientes: 'Ácido hialurónico (alto, medio y bajo peso molecular), panthenol y beta-glucanos.'
     },
     {
       id: 'ampolla-vitc', nombre: 'Ampolla Luz Vitamina C', paso: 'tratamiento',
       tipos: ['todo'], preocupaciones: ['manchas', 'edad'], agresividad: 'media',
       frecuencia: 'Solo mañana', precio: 31200, img: 'img/productos/ampolla-vitc.svg',
       desc: 'Ilumina y unifica el tono con vitamina C estable.',
-      porque: 'Vitamina C estable para unificar el tono y potenciar la protección de tu piel durante el día.'
+      porque: 'Vitamina C estable para unificar el tono y potenciar la protección de tu piel durante el día.',
+      ficha: 'Vitamina C estabilizada al 15% que unifica el tono, atenúa marcas y potencia la protección del protector solar. Aporta luminosidad desde las primeras semanas de uso.',
+      modoUso: 'Solo en la mañana: 4-5 gotas sobre rostro limpio, antes del hidratante y del protector solar. Los primeros días, úsala cada dos días para acostumbrar la piel.',
+      ingredientes: 'Vitamina C estabilizada 15%, ácido ferúlico, vitamina E y agua de hamamelis.'
     },
     {
       id: 'crema-avena', nombre: 'Crema Bruma de Avena', paso: 'hidratacion',
       tipos: ['seca', 'sensible'], preocupaciones: ['deshidratacion'], agresividad: 'baja',
       frecuencia: 'Mañana y noche', precio: 28500, img: 'img/productos/crema-avena.svg',
       desc: 'Hidratación profunda con avena coloidal y ceramidas.',
-      porque: 'Avena coloidal y ceramidas reparan la barrera: hidratación profunda para tu {tipoLargo}.'
+      porque: 'Avena coloidal y ceramidas reparan la barrera: hidratación profunda para tu {tipoLargo}.',
+      ficha: 'Crema de textura ligera con avena coloidal y ceramidas que reparan la barrera cutánea. Hidratación profunda sin oclusión para pieles secas que se sienten tirantizadas.',
+      modoUso: 'Aplica una avellana sobre rostro y cuello limpios, mañana y noche, después del sérum. En zonas muy secas, agrega una segunda capa por la noche.',
+      ingredientes: 'Avena coloidal 10%, ceramidas NP, glicerina y manteca de karité.'
     },
     {
       id: 'gel-hidratante', nombre: 'Gel Hidratante Oil-Free', paso: 'hidratacion',
       tipos: ['mixta', 'grasa'], preocupaciones: ['acne', 'deshidratacion'], agresividad: 'baja',
       frecuencia: 'Mañana y noche', precio: 26900, img: 'img/productos/gel-hidratante.svg',
       desc: 'Hidratación en gel sin aceites, no obstruye poros.',
-      porque: 'Da comodidad a tu {tipoLargo} sin aceites ni grasa: hidrata sin apagar la zona T.'
+      porque: 'Da comodidad a tu {tipoLargo} sin aceites ni grasa: hidrata sin apagar la zona T.',
+      ficha: 'Hidratación en gel sin aceites ni siliconas comedogénicas: aporta comodidad a pieles mixtas y grasas sin apagar la zona T ni obstruir los poros.',
+      modoUso: 'Aplica una nuez sobre rostro limpio, mañana y noche, después del sérum y antes del protector solar.',
+      ingredientes: 'Ácido hialurónico, aloe vera, beta-glucanos y agua de té verde.'
     },
     {
       id: 'balsamo-centella', nombre: 'Bálsamo Centella Calma', paso: 'hidratacion',
       tipos: ['sensible', 'seca'], preocupaciones: ['deshidratacion'], agresividad: 'baja',
       frecuencia: 'Solo de noche', precio: 26700, img: 'img/productos/balsamo.svg',
       desc: 'Repara la barrera cutánea y reduce el enrojecimiento.',
-      porque: 'Centella asiática repara durante la noche y calma: ideal si tu piel tiende a reaccionar.'
+      porque: 'Centella asiática repara durante la noche y calma: ideal si tu piel tiende a reaccionar.',
+      ficha: 'Bálsamo reparador de noche con centella asiática y madecassoside: reduce enrojecimientos, calma la piel reactiva y refuerza la barrera mientras duermes.',
+      modoUso: 'Úsalo solo de noche, como último paso, sobre rostro y cuello. En zonas irritadas aplica una capa más gruesa (método de sellado).',
+      ingredientes: 'Centella asiática 5%, madecassoside, ceramidas y bisabolol.'
     },
     {
       id: 'protector-spf50', nombre: 'Protector Solar Ligero SPF50', paso: 'proteccion',
       tipos: ['todo'], preocupaciones: ['manchas', 'edad'], agresividad: 'baja',
       frecuencia: 'Cada mañana', precio: 29500, img: 'img/productos/protector.svg',
       desc: 'Textura invisible, no obstruye poros.',
-      porque: 'Protección diaria: el mejor antienvejecimiento y el aliado de cualquier rutina.'
+      porque: 'Protección diaria: el mejor antienvejecimiento y el aliado de cualquier rutina.',
+      ficha: 'Protección solar de amplio espectro UVA/UVB con textura invisible y acabado mate: no obstruye poros ni deja residuo blanco. El paso más importante de tu rutina.',
+      modoUso: 'Último paso de la mañana, con generosidad (2 dedos para rostro y cuello). Reaplica cada 3 horas si te expones al sol.',
+      ingredientes: 'Filtros de última generación de amplio espectro, vitamina E y agua termal.'
     },
     {
       id: 'tonico-bha', nombre: 'Tónico Exfoliante BHA 2%', paso: 'exfoliacion',
       tipos: ['mixta', 'grasa'], preocupaciones: ['acne'], agresividad: 'alta',
       frecuencia: 'De noche', precio: 27800, img: 'img/productos/tonico.svg',
       desc: 'Desobstruye poros y previene nuevos brotes.',
-      porque: 'BHA que desobstruye poros mientras duermes: trabaja tu {preoc1Largo} sin dejar residuo.'
+      porque: 'BHA que desobstruye poros mientras duermes: trabaja tu {preoc1Largo} sin dejar residuo.',
+      ficha: 'Exfoliante químico con 2% ácido salicílico que penetra en el poro, disuelve la obstrucción y previene nuevos brotes mientras duermes. Sin grano y sin fricción.',
+      modoUso: 'Noche: aplica con un algodón sobre rostro limpio, evitando el contorno de ojos y las zonas irritadas. Empieza una vez por semana y sube la frecuencia según tolerancia.',
+      ingredientes: 'Ácido salicílico (BHA) 2%, niacinamida, zinc PCA y agua de hamamelis.'
     }
   ];
 
@@ -449,7 +482,7 @@ const CS_DIAG = (() => {
         <div class="product-tags"><span class="badge badge-accent">${CONFIG.etiquetas.paso[entrada.prod.paso] || ''}</span><span class="badge">${entrada.freq}</span></div>
         <h4>${entrada.prod.nombre}</h4>
         <p class="desc">${entrada.porque}</p>
-        <div class="product-footer"><span class="price">${formatear(entrada.prod.precio)}</span><a href="producto.html" class="btn btn-ghost btn-sm">Ver</a></div>
+        <div class="product-footer"><span class="price">${formatear(entrada.prod.precio)}</span><a href="producto.html?id=${entrada.prod.id}" class="btn btn-ghost btn-sm">Ver</a></div>
       </div>
     </div>`;
 
@@ -573,17 +606,25 @@ const CS_DIAG = (() => {
     const ctaTotal = document.querySelector('.routine-cta .rc-total');
     if (ctaTotal) ctaTotal.textContent = formatear(rutina.total);
 
-    /* Match en la página de producto */
+  };
+
+  /* % de compatibilidad en producto.html (también lo llama js/compra.js tras cambiar ?id) */
+  const renderMatch = (prod) => {
+    const data = cargar();
+    if (!data || !prod) return;
+    const P = data.perfil;
+    const pct = matchProducto(P, prod);
     const ring = document.querySelector('.match-ring');
     if (ring) {
-      const nombre = document.querySelector('.product-info h1')?.textContent.trim();
-      const prod = CATALOGO.find((p) => p.nombre === nombre);
-      if (prod) {
-        const pct = matchProducto(P, prod);
-        ring.style.background = `conic-gradient(var(--color-primary) 0 ${pct}%, var(--color-border) ${pct}% 100%)`;
-        const span = ring.querySelector('span');
-        if (span) span.textContent = pct + '%';
-      }
+      ring.style.background = `conic-gradient(var(--color-primary) 0 ${pct}%, var(--color-border) ${pct}% 100%)`;
+      const span = ring.querySelector('span');
+      if (span) span.textContent = pct + '%';
+    }
+    const sub = document.querySelector('[data-match-sub]');
+    if (sub) {
+      const E = CONFIG.etiquetas;
+      const preoc = E.preoc[P.preoc1];
+      sub.textContent = `Según tu diagnóstico: ${E.tiposLargo[P.tipo]} con tendencia a ${preoc ? preoc.corto : ''}.`;
     }
   };
 
@@ -599,15 +640,25 @@ const CS_DIAG = (() => {
       });
     }
 
-    /* resultado.html / producto.html: si hay perfil guardado, renderizar */
-    if (document.querySelector('.result-hero') || document.querySelector('.match-ring')) {
+    /* resultado.html: renderizar la rutina personalizada */
+    if (document.querySelector('.result-hero')) {
       const data = cargar();
       if (data) {
         try { renderResultado(data); }
         catch (e) { console.warn('Clinical Skin: no se pudo renderizar el resultado', e); }
       }
     }
+    /* producto.html: % de compatibilidad (compra.js lo vuelve a llamar tras cambiar ?id) */
+    if (document.querySelector('.match-ring')) {
+      try {
+        const prod = CATALOGO.find((p) => p.nombre === document.querySelector('.product-info h1')?.textContent.trim());
+        if (prod) renderMatch(prod);
+      } catch (e) { console.warn('Clinical Skin: no se pudo calcular el match', e); }
+    }
   } catch (e) { console.warn('Clinical Skin: error de lógica', e); }
 
-  return { CONFIG, CATALOGO, VALORES, calcularPerfil, armarRutina, matchProducto, guardar, cargar, limpiar };
+  return { CONFIG, CATALOGO, VALORES, calcularPerfil, armarRutina, matchProducto, renderMatch, guardar, cargar, limpiar };
 })();
+
+/* Exponer en window para que js/compra.js pueda usar el catálogo */
+window.CS_DIAG = CS_DIAG;

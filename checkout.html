@@ -191,8 +191,8 @@
           <span class="os-price">$27.800</span>
         </div>
 
-        <div class="summary-row"><span>Subtotal</span><strong>$82.600</strong></div>
-        <div class="summary-row discount"><span>Pack rutina completa (−10%)</span><strong>-$8.260</strong></div>
+        <div class="summary-row"><span>Subtotal</span><strong data-checkout="subtotal">$82.600</strong></div>
+        <div class="summary-row discount" data-checkout-row="descuento"><span>Pack rutina completa (−10%)</span><strong data-checkout="descuento">-$8.260</strong></div>
         <div class="summary-row"><span>Envío</span><strong data-checkout="envio">$3.990</strong></div>
         <div class="summary-row total"><span>Total</span><strong><span data-checkout="total">$78.330</span></strong></div>
 
@@ -216,6 +216,8 @@
 <footer class="site-footer" data-site-footer="simple"></footer>
 <script src="js/footer.js"></script>
 
+<script src="js/logica.js"></script>
+<script src="js/compra.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

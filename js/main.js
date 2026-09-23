@@ -104,7 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const line = item.querySelector('.line-price');
         if (line) line.textContent = fmt(price * qty);
       });
-      const discount = subtotal * 0.1;
+      const itemsCount = cartPanel.querySelectorAll('.cart-item').length;
+      const discount = itemsCount >= 2 ? subtotal * 0.1 : 0;
+      const discRow = document.querySelector('.order-box .summary-row.discount');
+      if (discRow) discRow.style.display = discount > 0 ? '' : 'none';
       if (subEl) subEl.textContent = fmt(subtotal);
       if (discEl) discEl.textContent = '-' + fmt(discount);
       if (totalEl) totalEl.textContent = fmt(subtotal - discount + SHIP_FLAT);
@@ -134,8 +137,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let shipping = 3990;
     const shipEl = document.querySelector('[data-checkout="envio"]');
     const totalEls = document.querySelectorAll('[data-checkout="total"]');
-    const subtotal = 82600;
-    const discount = 8260;
+    const resumen = (window.CS_COMPRA && CS_COMPRA.resumen().count > 0) ? CS_COMPRA.resumen() : null;
+    const subtotal = resumen ? resumen.subtotal : 82600;
+    const discount = resumen ? resumen.descuento : 8260;
 
     const update = () => {
       const total = subtotal - discount + shipping;
