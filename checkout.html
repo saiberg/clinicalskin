@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pago seguro — Clinical Skin</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="logo">
+      <span class="logo-mark"><img src="img/logo-clinicalSkin.jpeg" alt=""></span>
+      <span>Clinical Skin<small>Dermocosmética</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">Inicio</a>
+      <a href="diagnostico.html">Diagnóstico</a>
+      <a href="productos.html">Productos</a>
+      <a href="filosofia.html">Filosofía</a>
+      <a href="contacto.html">Contacto</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="carrito.html" class="nav-cart" aria-label="Ver carrito">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+      </a>
+      <a href="diagnostico.html" class="btn btn-primary btn-sm">Hacer mi diagnóstico</a>
+      <button class="nav-toggle" aria-label="Abrir menú">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<section class="page-header">
+  <div class="container">
+    <span class="eyebrow">Pago seguro</span>
+    <h1>Finaliza tu compra</h1>
+    <p>Confirma tus datos, elige cómo quieres recibir tu rutina y paga de forma segura.</p>
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="container">
+
+    <div class="checkout-steps">
+      <span class="cs done"><span class="cs-num">✓</span> Carrito</span>
+      <span class="cs active"><span class="cs-num">2</span> Datos y envío</span>
+      <span class="cs"><span class="cs-num">3</span> Pago</span>
+      <span class="cs"><span class="cs-num">4</span> Confirmación</span>
+    </div>
+
+    <div class="checkout-layout">
+      <div>
+
+        <!-- CONTACTO -->
+        <div class="form-card">
+          <h3>Contacto</h3>
+          <p class="fc-sub">Te enviaremos la confirmación y el seguimiento del pedido por correo.</p>
+          <div class="field-grid">
+            <div class="field full">
+              <label for="email">Correo electrónico</label>
+              <input id="email" type="email" placeholder="tu@correo.com">
+            </div>
+            <div class="field">
+              <label for="nombre">Nombre</label>
+              <input id="nombre" type="text" placeholder="Tu nombre">
+            </div>
+            <div class="field">
+              <label for="apellido">Apellido</label>
+              <input id="apellido" type="text" placeholder="Tu apellido">
+            </div>
+            <div class="field full">
+              <label for="fono">Teléfono (WhatsApp)</label>
+              <input id="fono" type="tel" placeholder="+56 9 1234 5678">
+            </div>
+          </div>
+        </div>
+
+        <!-- ENVÍO -->
+        <div class="form-card">
+          <h3>Dirección de envío</h3>
+          <p class="fc-sub">Despachamos a todo Chile con Starken y BlueExpress.</p>
+          <div class="field-grid">
+            <div class="field">
+              <label for="region">Región</label>
+              <select id="region">
+                <option>Región Metropolitana</option>
+                <option>Valparaíso</option>
+                <option>Biobío</option>
+                <option>La Araucanía</option>
+                <option>Los Lagos</option>
+                <option>Otra región</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="comuna">Comuna</label>
+              <select id="comuna">
+                <option>Santiago</option>
+                <option>Providencia</option>
+                <option>Ñuñoa</option>
+                <option>Las Condes</option>
+                <option>Vitacura</option>
+                <option>Maipú</option>
+                <option>Otra comuna</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="calle">Dirección</label>
+              <input id="calle" type="text" placeholder="Av. Providencia">
+            </div>
+            <div class="field">
+              <label for="numero">Número</label>
+              <input id="numero" type="text" placeholder="1234">
+            </div>
+            <div class="field">
+              <label for="depto">Depto / oficina (opcional)</label>
+              <input id="depto" type="text" placeholder="502">
+            </div>
+            <div class="field full">
+              <label for="referencia">Referencia (opcional)</label>
+              <input id="referencia" type="text" placeholder="Torre B, junto al parque">
+            </div>
+          </div>
+
+          <h4 class="ship-subhead">Método de despacho</h4>
+          <label class="radio-card selected">
+            <input type="radio" name="envio" value="starken" data-cost="3990" checked>
+            <span class="rc-copy"><strong>Starken a domicilio</strong><span>2 a 3 días hábiles</span></span>
+            <span class="rc-price">$3.990</span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="envio" value="blueexpress" data-cost="4990">
+            <span class="rc-copy"><strong>BlueExpress express</strong><span>1 a 2 días hábiles</span></span>
+            <span class="rc-price">$4.990</span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="envio" value="retiro" data-cost="0">
+            <span class="rc-copy"><strong>Retiro en punto de atención</strong><span>Santiago · listo en 24 horas</span></span>
+            <span class="rc-price">Gratis</span>
+          </label>
+        </div>
+
+        <!-- PAGO -->
+        <div class="form-card">
+          <h3>Pago</h3>
+          <p class="fc-sub">Transacciones cifradas. Clinical Skin nunca almacena los datos de tu tarjeta.</p>
+
+          <div class="pay-methods">
+            <label class="radio-card selected">
+              <input type="radio" name="pago" value="webpay" checked>
+              <span class="pay-logo">WEBPAY</span>
+              <span class="rc-copy"><strong>Tarjeta de crédito o débito</strong><span>Visa, Mastercard y American Express vía Transbank</span></span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="pago" value="khipu">
+              <span class="pay-logo">KHIPU</span>
+              <span class="rc-copy"><strong>Transferencia bancaria</strong><span>Desde cualquier banco · se acredita al instante</span></span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="pago" value="mercado">
+              <span class="pay-logo">MP</span>
+              <span class="rc-copy"><strong>Mercado Pago</strong><span>Hasta 3 cuotas sin interés</span></span>
+            </label>
+          </div>
+
+          <div class="card-fields visible">
+            <div class="field-grid">
+              <div class="field full">
+                <label for="tarjeta">Número de tarjeta</label>
+                <input id="tarjeta" type="text" placeholder="0000 0000 0000 0000" inputmode="numeric">
+              </div>
+              <div class="field">
+                <label for="venc">Vencimiento MM/AA</label>
+                <input id="venc" type="text" placeholder="08/29">
+              </div>
+              <div class="field">
+                <label for="cvv">CVV</label>
+                <input id="cvv" type="text" placeholder="123" inputmode="numeric">
+              </div>
+              <div class="field full">
+                <label for="titular">Nombre en la tarjeta</label>
+                <input id="titular" type="text" placeholder="COMO APARECE EN LA TARJETA">
+              </div>
+            </div>
+            <p class="secure-note">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Serás redirigido a Webpay (Transbank) para completar el pago de forma segura.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <aside class="order-box">
+        <h3>Tu pedido</h3>
+
+        <div class="os-item">
+          <div class="os-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v4l-3.5 5A4 4 0 0 0 10 19h4a4 4 0 0 0 3.5-7L14 7V3"/></svg></div>
+          <div class="os-copy"><strong>Gel Limpiador Balance</strong><span>Cant. 1</span></div>
+          <span class="os-price">$19.900</span>
+        </div>
+        <div class="os-item">
+          <div class="os-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v4l-3.5 5A4 4 0 0 0 10 19h4a4 4 0 0 0 3.5-7L14 7V3"/></svg></div>
+          <div class="os-copy"><strong>Sérum Equilibrio Botánico</strong><span>Cant. 1</span></div>
+          <span class="os-price">$34.900</span>
+        </div>
+        <div class="os-item">
+          <div class="os-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v4l-3.5 5A4 4 0 0 0 10 19h4a4 4 0 0 0 3.5-7L14 7V3"/></svg></div>
+          <div class="os-copy"><strong>Tónico Exfoliante BHA 2%</strong><span>Cant. 1</span></div>
+          <span class="os-price">$27.800</span>
+        </div>
+
+        <div class="summary-row"><span>Subtotal</span><strong>$82.600</strong></div>
+        <div class="summary-row discount"><span>Pack rutina completa (−10%)</span><strong>-$8.260</strong></div>
+        <div class="summary-row"><span>Envío</span><strong data-checkout="envio">$3.990</strong></div>
+        <div class="summary-row total"><span>Total</span><strong><span data-checkout="total">$78.330</span></strong></div>
+
+        <a href="confirmacion.html" class="btn btn-accent btn-block" style="margin-top:18px;">
+          Pagar <span data-checkout="total">$78.330</span>
+        </a>
+
+        <p class="mini-note">Al confirmar aceptas los Términos y condiciones y la Política de privacidad de Clinical Skin.</p>
+
+        <div class="trust-row">
+          <span>Pago cifrado SSL</span>
+          <span>Webpay · Khipu · Mercado Pago</span>
+          <span>Devoluciones 30 días</span>
+        </div>
+      </aside>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,0.12); padding-top:24px;">
+      <span>© 2026 Clinical Skin — Dermocosmética. Todos los derechos reservados.</span>
+      <span>Diseño conceptual — tienda en preparación</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

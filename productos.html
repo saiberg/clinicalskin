@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Productos — Clinical Skin</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="logo">
+      <span class="logo-mark"><img src="img/logo-clinicalSkin.jpeg" alt=""></span>
+      <span>Clinical Skin<small>Dermocosmética</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">Inicio</a>
+      <a href="diagnostico.html">Diagnóstico</a>
+      <a href="productos.html" class="active">Productos</a>
+      <a href="filosofia.html">Filosofía</a>
+      <a href="contacto.html">Contacto</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="carrito.html" class="nav-cart" aria-label="Ver carrito">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+      </a>
+      <a href="diagnostico.html" class="btn btn-primary btn-sm">Hacer mi diagnóstico</a>
+      <button class="nav-toggle" aria-label="Abrir menú">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<section class="page-header">
+  <div class="container">
+    <span class="eyebrow">Catálogo</span>
+    <h1>Productos para cada tipo de piel</h1>
+    <p>Filtra por tipo de piel o preocupación, o mejor aún, deja que el diagnóstico elija por ti.</p>
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Inicio</a> / Productos</div>
+
+    <div class="catalog-layout">
+      <aside class="filters-panel">
+        <div class="filter-group">
+          <h4>Tipo de piel</h4>
+          <label class="filter-option"><input type="checkbox" checked> Mixta</label>
+          <label class="filter-option"><input type="checkbox"> Seca</label>
+          <label class="filter-option"><input type="checkbox"> Grasa</label>
+          <label class="filter-option"><input type="checkbox"> Sensible</label>
+          <label class="filter-option"><input type="checkbox"> Normal</label>
+        </div>
+        <div class="filter-group">
+          <h4>Preocupación</h4>
+          <label class="filter-option"><input type="checkbox" checked> Acné</label>
+          <label class="filter-option"><input type="checkbox"> Hidratación</label>
+          <label class="filter-option"><input type="checkbox"> Manchas</label>
+          <label class="filter-option"><input type="checkbox"> Signos de la edad</label>
+          <label class="filter-option"><input type="checkbox"> Sensibilidad</label>
+        </div>
+        <div class="filter-group">
+          <h4>Categoría</h4>
+          <label class="filter-option"><input type="checkbox"> Limpieza</label>
+          <label class="filter-option"><input type="checkbox"> Tratamiento</label>
+          <label class="filter-option"><input type="checkbox"> Hidratación</label>
+          <label class="filter-option"><input type="checkbox"> Protección solar</label>
+        </div>
+        <div class="filter-group">
+          <h4>Precio</h4>
+          <div class="range-track"></div>
+          <div class="range-labels"><span>$15.000</span><span>$60.000</span></div>
+        </div>
+      </aside>
+
+      <div>
+        <div class="catalog-toolbar">
+          <span class="results-count">Mostrando 8 de 24 productos</span>
+          <select class="sort-select">
+            <option>Recomendados para mi piel</option>
+            <option>Precio: menor a mayor</option>
+            <option>Precio: mayor a menor</option>
+            <option>Más nuevos</option>
+          </select>
+        </div>
+
+        <div class="products-grid">
+          <div class="product-card">
+            <div class="product-media"><span class="badge badge-primary">98% match</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v4l-3.5 5A4 4 0 0 0 10 19h4a4 4 0 0 0 3.5-7L14 7V3"/></svg></div>
+            <div class="product-body">
+              <div class="product-tags"><span class="badge badge-accent">Piel mixta</span><span class="badge">Acné</span></div>
+              <h4>Sérum Equilibrio Botánico</h4>
+              <p class="desc">Niacinamida y zinc para controlar brillo y poros.</p>
+              <div class="product-footer"><span class="price">$34.900</span><a href="producto.html" class="btn btn-ghost btn-sm">Ver</a></div>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v4l-3.5 5A4 4 0 0 0 10 19h4a4 4 0 0 0 3.5-7L14 7V3"/></svg></div>
+            <div class="product-body">
+              <div class="product-tags"><span class="badge badge-accent">Piel seca</span><span class="badge">Hidratación</span></div>
+              <h4>Crema Bruma de Avena</h4>
+              <p class="desc">Hidratación profunda con avena coloidal y ceramidas.</p>
+              <div class="product-footer"><span class="price">$28.500</span><a href="producto.html" class="btn btn-ghost btn-sm">Ver</a></div>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v4l-3.5 5A4 4 0 0 0 10 19h4a4 4 0 0 0 3.5-7L14 7V3"/></svg></div>
+            <div class="product-body">
+              <div class="product-tags"><span class="badge badge-accent">Manchas</span><span class="badge">Todo tipo</span></div>
+              <h4>Ampolla Luz Vitamina C</h4>
+              <p class="desc">Ilumina y unifica el tono con vitamina C estable.</p>
+              <div class="product-footer"><span class="price">$31.200</span><a href="producto.html" class="btn btn-ghost btn-sm">Ver</a></div>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v4l-3.5 5A4 4 0 0 0 10 19h4a4 4 0 0 0 3.5-7L14 7V3"/></svg></div>
+            <div class="product-body">
+              <div class="product-tags"><span class="badge badge-accent">Sensible</span><span class="badge">Calmante</span></div>
+              <h4>Bálsamo Centella Calma</h4>
+              <p class="desc">Repara la barrera cutánea y reduce el enrojecimiento.</p>
+              <div class="product-footer"><span class="price">$26.700</span><a href="producto.html" class="btn btn-ghost btn-sm">Ver</a></div>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v4l-3.5 5A4 4 0 0 0 10 19h4a4 4 0 0 0 3.5-7L14 7V3"/></svg></div>
+            <div class="product-body">
+              <div class="product-tags"><span class="badge badge-accent">Grasa</span><span class="badge">Limpieza</span></div>
+              <h4>Gel Limpiador Balance</h4>
+              <p class="desc">Limpia sin resecar, regula el exceso de sebo.</p>
+              <div class="product-footer"><span class="price">$19.900</span><a href="producto.html" class="btn btn-ghost btn-sm">Ver</a></div>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v4l-3.5 5A4 4 0 0 0 10 19h4a4 4 0 0 0 3.5-7L14 7V3"/></svg></div>
+            <div class="product-body">
+              <div class="product-tags"><span class="badge badge-accent">Todo tipo</span><span class="badge">Protección</span></div>
+              <h4>Protector Solar Ligero SPF50</h4>
+              <p class="desc">Textura invisible, no obstruye poros.</p>
+              <div class="product-footer"><span class="price">$29.500</span><a href="producto.html" class="btn btn-ghost btn-sm">Ver</a></div>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v4l-3.5 5A4 4 0 0 0 10 19h4a4 4 0 0 0 3.5-7L14 7V3"/></svg></div>
+            <div class="product-body">
+              <div class="product-tags"><span class="badge badge-accent">Acné</span><span class="badge">Exfoliación</span></div>
+              <h4>Tónico Exfoliante BHA 2%</h4>
+              <p class="desc">Desobstruye poros y previene nuevos brotes.</p>
+              <div class="product-footer"><span class="price">$27.800</span><a href="producto.html" class="btn btn-ghost btn-sm">Ver</a></div>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v4l-3.5 5A4 4 0 0 0 10 19h4a4 4 0 0 0 3.5-7L14 7V3"/></svg></div>
+            <div class="product-body">
+              <div class="product-tags"><span class="badge badge-accent">Todo tipo</span><span class="badge">Doble limpieza</span></div>
+              <h4>Aceite Desmaquillante Suave</h4>
+              <p class="desc">Disuelve impurezas y protector solar sin agredir.</p>
+              <div class="product-footer"><span class="price">$24.300</span><a href="producto.html" class="btn btn-ghost btn-sm">Ver</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,0.12); padding-top:24px;">
+      <span>© 2026 Clinical Skin — Dermocosmética. Todos los derechos reservados.</span>
+      <span>Diseño conceptual — próximamente tienda funcional</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
