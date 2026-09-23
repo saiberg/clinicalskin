@@ -29,8 +29,10 @@
       titulo: 'Ayuda',
       links: [
         { href: 'contacto.html', etiqueta: 'Contacto' },
-        { href: '#',             etiqueta: 'Envíos' },
-        { href: '#',             etiqueta: 'Preguntas frecuentes' }
+        { href: 'terminos.html#envios', etiqueta: 'Envíos' },
+        { href: '#',             etiqueta: 'Preguntas frecuentes' },
+        { href: 'terminos.html', etiqueta: 'Términos y condiciones' },
+        { href: 'politica-privacidad.html', etiqueta: 'Política de privacidad' }
       ]
     }
   ];
