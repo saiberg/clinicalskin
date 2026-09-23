@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" role="img" aria-label="Gel Limpiador Balance">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FDF4EF"/>
+      <stop offset="1" stop-color="#F6E2DA"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="url(#bg)"/>
+  <circle cx="200" cy="240" r="150" fill="#FBE7EB" opacity="0.55"/>
+  <ellipse cx="200" cy="432" rx="95" ry="13" fill="#7C4E3F" opacity="0.10"/>
+  <!-- pompa -->
+  <rect x="198" y="108" width="56" height="16" rx="8" fill="#7C4E3F"/>
+  <rect x="246" y="122" width="11" height="16" rx="4" fill="#7C4E3F"/>
+  <rect x="192" y="120" width="26" height="36" rx="6" fill="#9E6450"/>
+  <!-- cuerpo -->
+  <rect x="130" y="152" width="140" height="258" rx="26" fill="#FFFFFF" stroke="#E3BFAF" stroke-width="2"/>
+  <rect x="148" y="170" width="12" height="90" rx="6" fill="#F6E8E1"/>
+  <!-- etiqueta -->
+  <rect x="152" y="238" width="96" height="122" rx="14" fill="#FBE7EB"/>
+  <text x="200" y="286" font-family="Georgia, serif" font-size="17" letter-spacing="2.5" fill="#7C4E3F" text-anchor="middle">CLEANSER</text>
+  <circle cx="200" cy="322" r="13" fill="none" stroke="#C46E82" stroke-width="3"/>
+  <text x="200" y="345" font-family="Georgia, serif" font-size="11" letter-spacing="1" fill="#9E6450" text-anchor="middle">GEL</text>
+</svg>

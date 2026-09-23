@@ -166,4 +166,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     update();
   }
+
+  /* Ilustraciones de producto: se asignan según el nombre */
+  const PRODUCT_IMG = {
+    'Gel Limpiador Balance': 'img/productos/limpiador.svg',
+    'Sérum Equilibrio Botánico': 'img/productos/serum.svg',
+    'Ampolla Luz Vitamina C': 'img/productos/ampolla-vitc.svg',
+    'Bálsamo Centella Calma': 'img/productos/balsamo.svg',
+    'Crema Bruma de Avena': 'img/productos/crema-avena.svg',
+    'Protector Solar Ligero SPF50': 'img/productos/protector.svg',
+    'Tónico Exfoliante BHA 2%': 'img/productos/tonico.svg',
+    'Aceite Desmaquillante Suave': 'img/productos/aceite.svg'
+  };
+
+  const dressMedia = (el, name) => {
+    const src = PRODUCT_IMG[name];
+    if (!src || !el || el.querySelector('img')) return;
+    el.insertAdjacentHTML('afterbegin', `<img src="${src}" alt="${name}">`);
+    el.querySelector('svg')?.style.setProperty('display', 'none');
+  };
+
+  document.querySelectorAll('.product-media').forEach((el) => {
+    const name = el.parentElement?.querySelector('h4')?.textContent.trim();
+    if (name) dressMedia(el, name);
+  });
+  document.querySelectorAll('.cart-thumb').forEach((el) => {
+    const name = el.closest('.cart-item')?.querySelector('h4')?.textContent.trim();
+    if (name) dressMedia(el, name);
+  });
+  document.querySelectorAll('.os-thumb').forEach((el) => {
+    const name = el.closest('.os-item')?.querySelector('strong')?.textContent.trim();
+    if (name) dressMedia(el, name);
+  });
+  document.querySelectorAll('.product-gallery-main, .product-gallery-thumbs div').forEach((el) => {
+    const name = document.querySelector('.product-info h1')?.textContent.trim();
+    if (name) dressMedia(el, name);
+  });
+  document.querySelectorAll('.fake-bottle').forEach((el) => {
+    const name = el.closest('.hero-card')?.querySelector('h4')?.textContent.trim();
+    if (name) dressMedia(el, name);
+  });
 })();

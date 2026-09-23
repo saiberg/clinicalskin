@@ -1155,3 +1155,29 @@ ul { list-style: none; }
   .routine-cta, .email-capture, .confirm-wrap, .form-card, .order-box { padding: 26px 22px; }
   .summary-grid.three { grid-template-columns: 1fr; }
 }
+
+/* ---------- Imágenes de producto ---------- */
+.product-media img,
+.cart-thumb img,
+.os-thumb img,
+.product-gallery-main img,
+.product-gallery-thumbs div img,
+.fake-bottle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.product-media,
+.cart-thumb,
+.os-thumb,
+.product-gallery-main,
+.product-gallery-thumbs div,
+.fake-bottle { overflow: hidden; }
+.product-media > img ~ svg,
+.cart-thumb > img ~ svg,
+.os-thumb > img ~ svg,
+.product-gallery-main > img ~ svg,
+.product-gallery-thumbs div > img ~ svg,
+.fake-bottle > img ~ svg { display: none; }
+.product-media:has(img) .badge { z-index: 2; }
