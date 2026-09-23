@@ -64,7 +64,7 @@
 
   /* ---------- Enlaces "Ver" de tarjetas → producto?id= ---------- */
   document.querySelectorAll('.product-card').forEach((card) => {
-    const nombre = card.querySelector('h4')?.textContent.trim();
+    const nombre = card.querySelector('h3')?.textContent.trim();
     const enlace = card.querySelector('.product-footer a');
     const prod = nombre && porNombre(nombre);
     if (enlace && prod) enlace.href = 'producto.html?id=' + prod.id;
@@ -87,7 +87,7 @@
                 <span class="badge badge-primary">De tu rutina</span>
                 <span class="badge badge-accent">${etiquetaPaso(p)} · ${p.frecuencia}</span>
               </div>
-              <h4><a href="producto.html?id=${p.id}">${p.nombre}</a></h4>
+              <h2><a href="producto.html?id=${p.id}">${p.nombre}</a></h2>
               <span class="meta">${etiquetaPaso(p)} · ${tiposTexto(p)}</span>
               <div class="qty-selector">
                 <button type="button">−</button><span>${item.qty}</span><button type="button">+</button>
@@ -212,7 +212,7 @@
   /* ---------- resultado: "Añadir rutina completa" ---------- */
   document.querySelector('[data-add-routine]')?.addEventListener('click', (ev) => {
     ev.preventDefault();
-    const nombres = Array.from(document.querySelectorAll('.routine-block .products-grid h4'))
+    const nombres = Array.from(document.querySelectorAll('.routine-block .products-grid h3'))
       .map((h) => h.textContent.trim());
     const ids = [...new Set(nombres.map((n) => porNombre(n)?.id).filter(Boolean))];
     if (ids.length) guardar(ids.map((id) => ({ id, qty: 1 })));

@@ -480,7 +480,7 @@ const CS_DIAG = (() => {
       <div class="product-media"><span class="badge badge-primary">Paso ${n}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v4l-3.5 5A4 4 0 0 0 10 19h4a4 4 0 0 0 3.5-7L14 7V3"/></svg></div>
       <div class="product-body">
         <div class="product-tags"><span class="badge badge-accent">${CONFIG.etiquetas.paso[entrada.prod.paso] || ''}</span><span class="badge">${entrada.freq}</span></div>
-        <h4>${entrada.prod.nombre}</h4>
+        <h3>${entrada.prod.nombre}</h3>
         <p class="desc">${entrada.porque}</p>
         <div class="product-footer"><span class="price">${formatear(entrada.prod.precio)}</span><a href="producto.html?id=${entrada.prod.id}" class="btn btn-ghost btn-sm">Ver</a></div>
       </div>

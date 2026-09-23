@@ -41,9 +41,9 @@
 
   /* Redes sociales: cambia el href cuando existan las cuentas */
   const REDES = [
-    { href: '#', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></svg>' },
-    { href: '#', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 8h2V5h-2a4 4 0 0 0-4 4v2H9v3h2v6h3v-6h2l1-3h-3V9a1 1 0 0 1 1-1z"/></svg>' },
-    { href: '#', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 8a4 4 0 0 1-4-4v11a3 3 0 1 1-2-2.8"/></svg>' }
+    { nombre: 'Instagram', href: '#', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></svg>' },
+    { nombre: 'Facebook', href: '#', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 8h2V5h-2a4 4 0 0 0-4 4v2H9v3h2v6h3v-6h2l1-3h-3V9a1 1 0 0 1 1-1z"/></svg>' },
+    { nombre: 'TikTok', href: '#', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 8a4 4 0 0 1-4-4v11a3 3 0 1 1-2-2.8"/></svg>' }
   ];
 
   /* ---------- No editar bajo esta línea ---------- */
@@ -53,11 +53,11 @@
       <span>${NOTA}</span>
     </div>`;
 
-  const redesHTML = REDES.map((r) => `<a href="${r.href}">${r.svg}</a>`).join('\n          ');
+  const redesHTML = REDES.map((r) => `<a href="${r.href}" aria-label="${r.nombre}">${r.svg}</a>`).join('\n          ');
 
   const columnasHTML = COLUMNAS.map((c) => `
       <div>
-        <h4>${c.titulo}</h4>
+        <h3>${c.titulo}</h3>
         <ul>
           ${c.links.map((l) => `<li><a href="${l.href}">${l.etiqueta}</a></li>`).join('\n          ')}
         </ul>
@@ -75,8 +75,8 @@
         </div>
       </div>${columnasHTML}
       <div>
-        <h4>${NEWSLETTER.titulo}</h4>
-        <p style="font-size:0.85rem;color:rgba(255,255,255,0.65);margin-bottom:14px;">${NEWSLETTER.texto}</p>
+        <h3>${NEWSLETTER.titulo}</h3>
+        <p style="font-size:0.85rem;color:rgba(255,255,255,0.78);margin-bottom:14px;">${NEWSLETTER.texto}</p>
         <div class="newsletter-form">
           <input type="email" placeholder="tu@correo.com">
           <button>Enviar</button>

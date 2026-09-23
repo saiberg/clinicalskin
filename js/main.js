@@ -194,11 +194,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   document.querySelectorAll('.product-media').forEach((el) => {
-    const name = el.parentElement?.querySelector('h4')?.textContent.trim();
+    const name = el.parentElement?.querySelector('h3')?.textContent.trim();
     if (name) dressMedia(el, name);
   });
   document.querySelectorAll('.cart-thumb').forEach((el) => {
-    const name = el.closest('.cart-item')?.querySelector('h4')?.textContent.trim();
+    const name = el.closest('.cart-item')?.querySelector('h2')?.textContent.trim();
     if (name) dressMedia(el, name);
   });
   document.querySelectorAll('.os-thumb').forEach((el) => {
@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (name) dressMedia(el, name);
   });
   document.querySelectorAll('.fake-bottle').forEach((el) => {
-    const name = el.closest('.hero-card')?.querySelector('h4')?.textContent.trim();
+    const name = el.closest('.hero-card')?.querySelector('h2')?.textContent.trim();
     if (name) dressMedia(el, name);
   });
 })();
