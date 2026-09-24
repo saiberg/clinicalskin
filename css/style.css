@@ -308,6 +308,7 @@ ul { list-style: none; }
 .floating-tag .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-accent); }
 .tag-top { top: 6%; right: -4%; }
 .tag-bottom { bottom: 8%; left: -8%; }
+.floating-tags { display: contents; } /* contenedor neutro en escritorio; en móvil se vuelve fila de chips bajo la tarjeta */
 
 /* ---------- Badges / pills ---------- */
 .badge {
@@ -942,11 +943,19 @@ ul { list-style: none; }
   .footer-grid { grid-template-columns: repeat(2, 1fr); }
   .catalog-layout { grid-template-columns: 1fr; }
   .filters-panel { position: static; }
-}
-@media (max-width: 720px) {
-  .nav-links { position: fixed; top: 113px; left: 0; right: 0; background: var(--color-bg); flex-direction: column; padding: 24px; border-bottom: 1px solid var(--color-border); display: none; gap: 20px; }
+  /* Nav colapsado también en tablet: el menú completo a 740px desbordaba
+     260px y partía el header en 2 filas. min-height 119 → header de 120px,
+     la altura exacta a la que apunta el menú desplegable (top: 120px). */
+  .nav { min-height: 119px; }
+  .nav-links { position: fixed; top: 120px; left: 0; right: 0; background: var(--color-bg); flex-direction: column; padding: 24px; border-bottom: 1px solid var(--color-border); display: none; gap: 20px; }
   .nav-links.open { display: flex; }
   .nav-toggle { display: block; }
+  /* Etiquetas del hero: sin este tope, -8% recortaba "Rutina personalizada"
+     hasta 54px fuera de pantalla en tablet */
+  .tag-top { right: max(-4%, -20px); }
+  .tag-bottom { left: max(-8%, -20px); }
+}
+@media (max-width: 720px) {
   .quiz-options { grid-template-columns: 1fr; }
   .concerns-grid, .products-grid, .values-grid { grid-template-columns: 1fr 1fr; }
   .cta-banner { flex-direction: column; text-align: center; }
@@ -1230,12 +1239,24 @@ ul { list-style: none; }
 
 /* ---------- Ajustes móvil (QA con capturas reales del celular, sep-2026) ---------- */
 @media (max-width: 720px) {
-  /* Header: solo monograma (el wordmark a 360px desbordaba) y sin CTA
-     (queda en el menú hamburguesa y en el hero). Altura del header intacta
-     (logo-mark sigue en 77px) para no descuadrar nav-links/search-panel. */
-  .logo > span:not(.logo-mark) { display: none; }
+  /* Wordmark "Clinical Skin" de vuelta en el header móvil: marca de 48px +
+     texto 1.05rem en una línea (nowrap). Tagline oculta: "Dermocosmética"
+     con su tracking mide 229px y no cabe a 360px. Gracias a min-height:119
+     (regla ≤1024) el header queda en 120px, igual que en tablet, donde
+     apuntan el menú desplegable (top:120) y el panel de búsqueda (top:121). */
+  .logo { font-size: 1.05rem; gap: 8px; }
+  .logo > span:not(.logo-mark) { white-space: nowrap; }
+  .logo small { display: none; }
+  .logo .logo-mark { width: 48px; height: 48px; }
   .nav-actions .btn-sm { display: none; }
   .nav-actions { gap: 10px; }
+  .nav-toggle { padding: 0; }
+  /* Etiquetas del hero como chips centrados BAJO la tarjeta: en fila dentro
+     del cuadrado se superponían al contenido (tapaban "Sensibilidad baja"
+     arriba y "98% de compatibilidad…" abajo a 400px) */
+  .hero-visual { flex-direction: column; aspect-ratio: auto; gap: 16px; }
+  .floating-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+  .floating-tag { position: static; }
   /* Pasos y testimonios a una columna (en 2 columnas el texto quedaba partido
      cada 3 palabras y el tercer paso quedaba huérfano) */
   .steps, .testimonials { grid-template-columns: 1fr; }
