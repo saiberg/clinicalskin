@@ -7,6 +7,8 @@
 <style>
   body { font: 14px system-ui, sans-serif; background: #e9eef3; margin: 0; padding: 14px; color: #1a2b3c; }
   h1 { font-size: 16px; margin: 0 0 4px; }
+  h2 { font-size: 14px; margin: 20px 0 8px; color: #2d4a63; font-weight: 600; }
+  h2:first-of-type { margin-top: 10px; }
   p.nota { font-size: 12.5px; color: #45607a; margin: 0 0 14px; max-width: 760px; line-height: 1.5; }
   code { background: #dde5ec; padding: 1px 5px; border-radius: 4px; }
   .fila { display: flex; gap: 18px; flex-wrap: wrap; align-items: flex-start; }
@@ -22,67 +24,99 @@
 <body>
 <h1>QA responsive — Clinical Skin</h1>
 <p class="nota">
-  Cada iframe carga <code>../index.html</code> con una consulta única por apertura (rompe la caché
-  del HTML, que a veces servía la versión anterior justo después de editarla). Las media queries
-  del sitio responden al ancho del iframe: 360/400 = móvil (&#8804;720), 740 = tablet (&#8804;1024),
-  1100 = escritorio. Debajo de cada ancho aparece <b>✓</b> o <b>✗</b>: revisa desbordamiento
-  horizontal, altura del header (120px), wordmark visible y que las etiquetas del hero no tapen
-  la tarjeta. Si algo se ve desactualizado, marca <b>Disable cache</b> en DevTools &#8594; Network
-  y recarga.
+  Tres páginas (inicio, diagnóstico, resultado) × 4 anchos: 360/400 = móvil (&#8804;720),
+  740 = tablet (&#8804;1024), 1100 = escritorio. Cada iframe carga su HTML con una consulta
+  única por apertura y <b>recarga el CSS sin caché</b>, así que un cambio en
+  <code>css/style.css</code> se ve aquí sin reiniciar nada (el JS sí puede quedar viejo:
+  en ese caso Ctrl+F5). Debajo de cada ancho aparece <b>✓</b> o <b>✗</b> con el primer
+  fallo detectado:
+  <br>• <b>inicio</b>: desbordamiento horizontal, header de 120px, wordmark visible y
+  etiquetas del hero sin tapar la tarjeta.
+  <br>• <b>diagnóstico</b>: los 5 pasos + pantalla final abiertos a la vez; ningún
+  elemento (en especial la barra <code>.quiz-actions</code> con "Ver mi resultado") puede
+  salirse de la pantalla.
+  <br>• <b>resultado</b>: ningún elemento fuera de pantalla.
+  <br>• <b>las 3 páginas</b>: ningún hijo de <code>.result-hero</code>,
+  <code>.diagnostic-summary</code> (resultado), <code>.quiz-summary</code> (diagnóstico) ni
+  <code>.product-card</code> saliéndose de su tarjeta — botón "Ver" cortado por el
+  <code>overflow: hidden</code>, tarjetas del bloque final fuera de .quiz-summary, etc.
 </p>
-<div class="fila">
-  <div class="col">
-    <div class="etiqueta"><b>360 px (Android)</b><span class="estado">…</span></div>
-    <iframe width="360" height="780"></iframe>
-  </div>
-  <div class="col">
-    <div class="etiqueta"><b>400 px (DevTools)</b><span class="estado">…</span></div>
-    <iframe width="400" height="780"></iframe>
-  </div>
-  <div class="col">
-    <div class="etiqueta"><b>740 px (tablet)</b><span class="estado">…</span></div>
-    <iframe width="740" height="780"></iframe>
-  </div>
-  <div class="col">
-    <div class="etiqueta"><b>1100 px (escritorio)</b><span class="estado">…</span></div>
-    <iframe width="1100" height="780"></iframe>
-  </div>
-</div>
+<div id="paginas"></div>
 <script>
   /* Carga siempre fresca: query única por apertura (mismo truco que resolvió
      el HTML en caché durante el QA de sep-2026). */
   const v = Date.now();
-  const iframes = Array.from(document.querySelectorAll('iframe'));
 
-  const alCargar = iframes.map((f) => new Promise((res) => {
-    f.addEventListener('load', () => res(f), { once: true });
-    f.src = '../index.html?v=' + v;
-  }));
+  const ANCHOS = [
+    { w: 360,  etiqueta: '360 px (Android)' },
+    { w: 400,  etiqueta: '400 px (DevTools)' },
+    { w: 740,  etiqueta: '740 px (tablet)' },
+    { w: 1100, etiqueta: '1100 px (escritorio)' }
+  ];
 
-  Promise.all(alCargar).then(async () => {
-    for (const f of iframes) {
-      const w = parseInt(f.getAttribute('width'), 10);
-      const d = f.contentDocument;
-      try { await d.fonts.ready; } catch (e) {}
-      const fallas = new Set();
+  const PAGINAS = [
+    { nombre: 'Inicio', ruta: '../index.html', tipo: 'index' },
+    { nombre: 'Diagnóstico', ruta: '../diagnostico.html', tipo: 'quiz' },
+    { nombre: 'Resultado', ruta: '../resultado.html', tipo: 'tarjetas' }
+  ];
 
-      const raiz = d.documentElement;
-      if (raiz.scrollWidth > raiz.clientWidth) {
-        fallas.add('desbordX ' + raiz.scrollWidth + '>' + raiz.clientWidth);
-      }
+  const etiqueta = (el) => {
+    const cls = (typeof el.className === 'string' ? el.className : '').trim();
+    const txt = (el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 24);
+    return el.tagName.toLowerCase() + (cls ? '.' + cls.split(/\s+/).join('.') : '') + (txt ? ' "' + txt + '"' : '');
+  };
 
-      const header = d.querySelector('.site-header');
-      const hh = header ? Math.round(header.getBoundingClientRect().height) : 0;
-      if (Math.abs(hh - 120) > 2) fallas.add('header ' + hh + 'px (esperado 120)');
+  /* El CSS del iframe se vuelve a traer sin caché y se inyecta como <style>,
+     reemplazando los <link>: si no, el navegador servía la hoja anterior y el
+     arnés daba falsos positivos/negativos recién después de editar. */
+  const cssFresco = async (f) => {
+    const d = f.contentDocument;
+    const hrefs = Array.from(d.querySelectorAll('link[rel="stylesheet"]')).map((l) => l.getAttribute('href'));
+    if (!hrefs.length) return;
+    const textos = await Promise.all(hrefs.map((h) => {
+      const url = new URL(h, f.contentWindow.location.href).href;
+      return fetch(url + (url.includes('?') ? '&' : '?') + 'nc=' + v, { cache: 'reload' })
+        .then((r) => (r.ok ? r.text() : ''))
+        .catch(() => '');
+    }));
+    if (!textos.every(Boolean)) return; /* sin red: mejor la hoja en caché que nada */
+    d.querySelectorAll('link[rel="stylesheet"]').forEach((l) => l.remove());
+    const st = d.createElement('style');
+    st.textContent = textos.join('\n');
+    d.head.appendChild(st);
+  };
 
-      const logo = d.querySelector('.logo');
-      const span = logo && logo.querySelector('span:not(.logo-mark)');
-      if (span) {
-        const visible = getComputedStyle(span).display !== 'none';
-        if (w <= 720 && !visible) fallas.add('wordmark oculto');
-        if (w > 720 && span.getBoundingClientRect().height > 95) fallas.add('wordmark partido en 2 líneas');
-      }
+  /* Diagnóstico: abre los 5 pasos y el bloque final para medir todas las
+     barras de navegación (.quiz-actions) de una sola pasada. */
+  const prepararQuiz = (d) => {
+    d.querySelectorAll('.quiz-step').forEach((s) => s.classList.add('active'));
+    const fin = d.querySelector('.quiz-final');
+    if (fin) fin.classList.add('is-visible');
+  };
 
+  const comprobar = (d, tipo, w) => {
+    const fallas = new Set();
+
+    const raiz = d.documentElement;
+    if (raiz.scrollWidth > raiz.clientWidth) {
+      fallas.add('desbordX ' + raiz.scrollWidth + '>' + raiz.clientWidth);
+    }
+
+    /* Header compartido por todas las páginas (js/header.js) */
+    const header = d.querySelector('.site-header');
+    const hh = header ? Math.round(header.getBoundingClientRect().height) : 0;
+    if (Math.abs(hh - 120) > 2) fallas.add('header ' + hh + 'px (esperado 120)');
+
+    const logo = d.querySelector('.logo');
+    const span = logo && logo.querySelector('span:not(.logo-mark)');
+    if (span) {
+      const visible = getComputedStyle(span).display !== 'none';
+      if (w <= 720 && !visible) fallas.add('wordmark oculto');
+      if (w > 720 && span.getBoundingClientRect().height > 95) fallas.add('wordmark partido en 2 líneas');
+    }
+
+    if (tipo === 'index') {
+      /* Etiquetas del hero: sin solaparse con la tarjeta ni salir de pantalla */
       const card = d.querySelector('.hero-card');
       if (card) {
         const contenidos = ['.badge-row', 'h2', 'p'].map((s) => card.querySelector(s)).filter(Boolean);
@@ -93,16 +127,134 @@
           if (r.left < -1 || r.right > w + 1) fallas.add('etiqueta fuera de pantalla');
         });
       }
-
-      const etiqueta = f.parentElement.querySelector('.estado');
-      if (fallas.size) {
-        etiqueta.textContent = '✗ ' + Array.from(fallas).join(' · ');
-        etiqueta.className = 'estado mal';
-      } else {
-        etiqueta.textContent = '✓ sin problemas';
-        etiqueta.className = 'estado ok';
-      }
     }
+
+    if (tipo === 'quiz' || tipo === 'tarjetas') {
+      /* Escaneo genérico: el primer elemento que se sale del viewport */
+      let primero = null;
+      d.querySelectorAll('*').forEach((el) => {
+        if (primero) return;
+        const r = el.getBoundingClientRect();
+        if (!r.width && !r.height) return;
+        if (r.right > w + 1 || r.left < -1) primero = etiqueta(el);
+      });
+      if (primero) fallas.add('fuera de pantalla: ' + primero);
+    }
+
+    if (tipo === 'quiz') {
+      /* La barra Atrás + label + "Ver mi resultado" fue el bug de sep-2026:
+         sumaba 302px en una caja de 233px a 360px. */
+      d.querySelectorAll('.quiz-actions').forEach((b) => {
+        const r = b.getBoundingClientRect();
+        if (!r.width) return;
+        if (r.right > w + 1 || r.left < -1) {
+          fallas.add('caja de pasos fuera: "' + b.textContent.trim().replace(/\s+/g, ' ').slice(0, 30) + '"');
+        }
+      });
+    }
+
+    /* Tarjetas contenedoras: cualquier hijo que se salga del borde de su
+       tarjeta, aunque aún quepa en pantalla (el h1 del hero pisando el
+       degradado, las tarjetas del bloque final del diagnóstico fuera de
+       .quiz-summary). Solo se reporta el primero de cada selector. */
+    ['.result-hero', '.diagnostic-summary', '.quiz-summary'].forEach((sel) => {
+      const tarjeta = d.querySelector(sel);
+      if (!tarjeta) return;
+      const tr = tarjeta.getBoundingClientRect();
+      let fuera = null;
+      tarjeta.querySelectorAll('*').forEach((el) => {
+        if (fuera) return;
+        const r = el.getBoundingClientRect();
+        if (!r.width) return;
+        if (r.right > tr.right + 1 || r.left < tr.left - 1) fuera = etiqueta(el);
+      });
+      if (fuera) fallas.add(sel + ' → se le sale ' + fuera);
+    });
+
+    /* Tarjetas de producto en cualquier página: hijos que se salen de la
+       tarjeta (el botón "Ver" se cortaba contra el overflow:hidden del
+       .product-card cuando la fila precio + botón no cabía) y hijos que se
+       salen de .product-footer (comiéndose el padding derecho, el caso del
+       catálogo con barra lateral). Solo se reporta el primero. */
+    let tarjetaRota = null;
+    d.querySelectorAll('.product-card').forEach((card) => {
+      if (tarjetaRota) return;
+      const cr = card.getBoundingClientRect();
+      if (!cr.width) return;
+      card.querySelectorAll('*').forEach((el) => {
+        if (tarjetaRota) return;
+        const r = el.getBoundingClientRect();
+        if (!r.width) return;
+        if (r.right > cr.right + 1 || r.left < cr.left - 1) {
+          tarjetaRota = (card.querySelector('h3') ? card.querySelector('h3').textContent.trim().slice(0, 18) : '?') + ' → ' + etiqueta(el);
+        }
+      });
+      const foot = card.querySelector('.product-footer');
+      if (foot && !tarjetaRota) {
+        const fr = foot.getBoundingClientRect();
+        Array.from(foot.children).forEach((k) => {
+          if (tarjetaRota) return;
+          const kr = k.getBoundingClientRect();
+          if (!kr.width) return;
+          if (kr.right > fr.right + 1 || kr.left < fr.left - 1) {
+            tarjetaRota = (card.querySelector('h3') ? card.querySelector('h3').textContent.trim().slice(0, 18) : '?') + ' → ' + etiqueta(k) + ' fuera del footer';
+          }
+        });
+      }
+    });
+    if (tarjetaRota) fallas.add('tarjeta de producto: ' + tarjetaRota);
+
+    return fallas;
+  };
+
+  const contenedor = document.getElementById('paginas');
+  const pendientes = [];
+
+  PAGINAS.forEach((pag) => {
+    const h2 = document.createElement('h2');
+    h2.textContent = pag.nombre + ' — ' + pag.ruta.replace('../', '');
+    contenedor.appendChild(h2);
+
+    const fila = document.createElement('div');
+    fila.className = 'fila';
+    contenedor.appendChild(fila);
+
+    ANCHOS.forEach((a) => {
+      const col = document.createElement('div');
+      col.className = 'col';
+      col.innerHTML = '<div class="etiqueta"><b>' + a.etiqueta + '</b><span class="estado">…</span></div>';
+
+      const f = document.createElement('iframe');
+      f.width = a.w;
+      f.height = 780;
+      col.appendChild(f);
+      fila.appendChild(col);
+
+      const alCargar = new Promise((res) => {
+        f.addEventListener('load', () => res(f), { once: true });
+        f.src = pag.ruta + '?v=' + v + a.w;
+      });
+
+      pendientes.push(
+        alCargar.then(async (frame) => {
+          const d = frame.contentDocument;
+          await cssFresco(frame);
+          try { await d.fonts.ready; } catch (e) {}
+          if (pag.tipo === 'quiz') prepararQuiz(d);
+          await new Promise((r) => setTimeout(r, 150));
+
+          const fallas = comprobar(d, pag.tipo, a.w);
+          const estado = col.querySelector('.estado');
+          if (fallas.size) {
+            estado.textContent = '✗ ' + Array.from(fallas).join(' · ');
+            estado.className = 'estado mal';
+          } else {
+            estado.textContent = '✓ sin problemas';
+            estado.className = 'estado ok';
+          }
+        })
+      );
+    });
   });
 </script>
 </body>

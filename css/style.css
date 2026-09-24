@@ -432,6 +432,9 @@ ul { list-style: none; }
   overflow: hidden;
   border: 1px solid var(--color-border);
   transition: box-shadow .25s ease, transform .25s ease;
+  /* contenedor para @container: la tarjeta declara su ancho real y el footer
+     se apila cuando la fila precio + "Ver" ya no cabe (ver @container abajo) */
+  container-type: inline-size;
 }
 .product-card:hover { box-shadow: var(--shadow-card); transform: translateY(-5px); }
 .product-media {
@@ -890,7 +893,12 @@ ul { list-style: none; }
   display: flex; align-items: center; justify-content: center;
   font-size: 0.78rem; font-weight: 700; color: var(--color-primary-dark);
 }
-.qty-row { display: flex; gap: 14px; margin: 28px 0; }
+/* flex-wrap: "Agregar al carrito" (nowrap) + selector de cantidad sumaban
+   328px de min-content y estiran la pista del grid .product-detail a 328px
+   cuando solo hay 297px a 360px: toda la columna (galería + info) se iba 7px
+   fuera de pantalla. Con wrap el botón baja a su propia línea y ocupa el
+   ancho; en escritorio la fila sigue cabiendo en una sola línea. */
+.qty-row { display: flex; flex-wrap: wrap; gap: 14px; margin: 28px 0; }
 .qty-selector {
   width: fit-content;
   display: flex; align-items: center; border: 1px solid var(--color-border); border-radius: var(--radius-pill); overflow: hidden;
@@ -962,6 +970,54 @@ ul { list-style: none; }
   .result-hero { padding: 32px; }
   .quiz-wrap { padding: 30px; }
   .philosophy { padding: 40px 26px; }
+  /* Diagnóstico: la barra de pasos (Atrás 98 + label 63 + "Ver mi resultado"
+     176 + huecos = 302px) no cabía en los 233px de caja a 360px y el botón
+     final salía hasta x=420. En móvil el label queda arriba centrado y los
+     botones pasan a ancho completo (siguen en fila desde 721px). */
+  .quiz-actions { flex-wrap: wrap; }
+  .quiz-progress-label { order: -1; width: 100%; text-align: center; }
+  .quiz-actions .btn { flex: 1 1 100%; justify-content: center; }
+  /* Resultado: en 360px el hero a 2 columnas empujaba .profile-card a x=604
+     y .diagnostic-summary (1.3fr/1fr con metrics de 3) a x=570, ambos fuera
+     de pantalla. A una columna: la tarjeta mide 229px útiles y metrics-grid
+     de 3 en fila exigía 313px. El h1 baja a 1.9rem mínimo porque
+     "imperfecciones" (min-content) medía 274px y se salía del degradado. */
+  .result-hero, .diagnostic-summary { grid-template-columns: 1fr; }
+  .result-hero h1 { font-size: clamp(1.9rem, 5.5vw, 2.4rem); }
+  .metrics-grid { grid-template-columns: 1fr; }
+  /* Bloque final del diagnóstico: .summary-grid seguía con repeat(2, 1fr) y
+     en 360px las columnas quedaban desiguales (93px y 135px por el
+     min-content de "Preocupación principal"), desbordando .quiz-summary: las
+     tarjetas de la derecha salían 43px del borde de la tarjeta y el botón
+     "Ir a mi recomendación", que sí respeta la caja, quedaba corrido al lado.
+     (.summary-grid.three ya bajaba a 1fr; el de 2 columnas se había
+     quedado sin cubrir.) */
+  .summary-grid { grid-template-columns: 1fr; }
+  /* El botón "Ir a mi recomendación" (white-space: nowrap) mide 235px y la
+     caja del bloque final tiene 167px a 360px: con justify-end el excedente
+     se desborda a la IZQUIERDA y el botón quedaba corrido respecto de las
+     tarjetas. Con esto puede partir el texto y ocupar el ancho completo. */
+  .quiz-final .btn { white-space: normal; }
+}
+
+/* Tarjetas de producto (inicio, catálogo, relacionados y rutina del
+   resultado): la fila precio + "Ver" pide 132px y por debajo de ~185px de
+   tarjeta no cabe — 96px de cuerpo a 360px (114px a 400px) y 123px en el
+   catálogo con barra lateral entre 1025 y 1184px de ventana —, así que el
+   botón se cortaba contra el overflow:hidden del .product-card. Se apila:
+   precio arriba y botón a ancho completo (mismo patrón que .quiz-actions). */
+@media (max-width: 460px) {
+  .product-footer { flex-wrap: wrap; gap: 8px; }
+  .product-footer .btn { flex: 1 1 100%; justify-content: center; }
+}
+/* Lo mismo, pero midiendo el ancho real de la tarjeta (.product-card es el
+   contenedor): así se cubre el catálogo con barra lateral, cuyas tarjetas se
+   ponen estrechas con ventanas de 1025-1184px sin depender del ancho de
+   ventana. La media query anterior queda de respaldo para navegadores sin
+   @container. */
+@container (max-width: 185px) {
+  .product-footer { flex-wrap: wrap; gap: 8px; }
+  .product-footer .btn { flex: 1 1 100%; justify-content: center; }
 }
 
 /* =========================================================
