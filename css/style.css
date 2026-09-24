@@ -1227,3 +1227,19 @@ ul { list-style: none; }
 @media (max-width: 720px) {
   .search-panel { position: fixed; top: 121px; left: 12px; right: 12px; width: auto; }
 }
+
+/* ---------- Ajustes móvil (QA con capturas reales del celular, sep-2026) ---------- */
+@media (max-width: 720px) {
+  /* Header: solo monograma (el wordmark a 360px desbordaba) y sin CTA
+     (queda en el menú hamburguesa y en el hero). Altura del header intacta
+     (logo-mark sigue en 77px) para no descuadrar nav-links/search-panel. */
+  .logo > span:not(.logo-mark) { display: none; }
+  .nav-actions .btn-sm { display: none; }
+  .nav-actions { gap: 10px; }
+  /* Pasos y testimonios a una columna (en 2 columnas el texto quedaba partido
+     cada 3 palabras y el tercer paso quedaba huérfano) */
+  .steps, .testimonials { grid-template-columns: 1fr; }
+  /* Marca y newsletter a ancho completo: el input del newsletter en media
+     columna se salía de la pantalla y dejaba "Enviar" fuera de vista */
+  .footer-grid > :first-child, .footer-grid > :last-child { grid-column: 1 / -1; }
+}

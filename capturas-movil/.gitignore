@@ -1,0 +1,6 @@
+# Capturas del celular para QA visual — no versionar
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.heic
