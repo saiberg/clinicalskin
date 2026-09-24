@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA responsive — Clinical Skin</title>
+<style>
+  body { font: 14px system-ui, sans-serif; background: #e9eef3; margin: 0; padding: 14px; color: #1a2b3c; }
+  h1 { font-size: 16px; margin: 0 0 4px; }
+  p.nota { font-size: 12.5px; color: #45607a; margin: 0 0 14px; max-width: 760px; line-height: 1.5; }
+  code { background: #dde5ec; padding: 1px 5px; border-radius: 4px; }
+  .fila { display: flex; gap: 18px; flex-wrap: wrap; align-items: flex-start; }
+  .col { display: flex; flex-direction: column; gap: 6px; }
+  .etiqueta { display: flex; align-items: baseline; gap: 8px; }
+  .etiqueta b { font-size: 13px; }
+  .estado { font-size: 12px; font-weight: 600; color: #7a8fa6; }
+  .estado.ok { color: #0a7d38; }
+  .estado.mal { color: #c0392b; }
+  iframe { border: 2px solid #223; border-radius: 6px; background: #fff; }
+</style>
+</head>
+<body>
+<h1>QA responsive — Clinical Skin</h1>
+<p class="nota">
+  Cada iframe carga <code>../index.html</code> con una consulta única por apertura (rompe la caché
+  del HTML, que a veces servía la versión anterior justo después de editarla). Las media queries
+  del sitio responden al ancho del iframe: 360/400 = móvil (&#8804;720), 740 = tablet (&#8804;1024),
+  1100 = escritorio. Debajo de cada ancho aparece <b>✓</b> o <b>✗</b>: revisa desbordamiento
+  horizontal, altura del header (120px), wordmark visible y que las etiquetas del hero no tapen
+  la tarjeta. Si algo se ve desactualizado, marca <b>Disable cache</b> en DevTools &#8594; Network
+  y recarga.
+</p>
+<div class="fila">
+  <div class="col">
+    <div class="etiqueta"><b>360 px (Android)</b><span class="estado">…</span></div>
+    <iframe width="360" height="780"></iframe>
+  </div>
+  <div class="col">
+    <div class="etiqueta"><b>400 px (DevTools)</b><span class="estado">…</span></div>
+    <iframe width="400" height="780"></iframe>
+  </div>
+  <div class="col">
+    <div class="etiqueta"><b>740 px (tablet)</b><span class="estado">…</span></div>
+    <iframe width="740" height="780"></iframe>
+  </div>
+  <div class="col">
+    <div class="etiqueta"><b>1100 px (escritorio)</b><span class="estado">…</span></div>
+    <iframe width="1100" height="780"></iframe>
+  </div>
+</div>
+<script>
+  /* Carga siempre fresca: query única por apertura (mismo truco que resolvió
+     el HTML en caché durante el QA de sep-2026). */
+  const v = Date.now();
+  const iframes = Array.from(document.querySelectorAll('iframe'));
+
+  const alCargar = iframes.map((f) => new Promise((res) => {
+    f.addEventListener('load', () => res(f), { once: true });
+    f.src = '../index.html?v=' + v;
+  }));
+
+  Promise.all(alCargar).then(async () => {
+    for (const f of iframes) {
+      const w = parseInt(f.getAttribute('width'), 10);
+      const d = f.contentDocument;
+      try { await d.fonts.ready; } catch (e) {}
+      const fallas = new Set();
+
+      const raiz = d.documentElement;
+      if (raiz.scrollWidth > raiz.clientWidth) {
+        fallas.add('desbordX ' + raiz.scrollWidth + '>' + raiz.clientWidth);
+      }
+
+      const header = d.querySelector('.site-header');
+      const hh = header ? Math.round(header.getBoundingClientRect().height) : 0;
+      if (Math.abs(hh - 120) > 2) fallas.add('header ' + hh + 'px (esperado 120)');
+
+      const logo = d.querySelector('.logo');
+      const span = logo && logo.querySelector('span:not(.logo-mark)');
+      if (span) {
+        const visible = getComputedStyle(span).display !== 'none';
+        if (w <= 720 && !visible) fallas.add('wordmark oculto');
+        if (w > 720 && span.getBoundingClientRect().height > 95) fallas.add('wordmark partido en 2 líneas');
+      }
+
+      const card = d.querySelector('.hero-card');
+      if (card) {
+        const contenidos = ['.badge-row', 'h2', 'p'].map((s) => card.querySelector(s)).filter(Boolean);
+        const inter = (a, b) => !(a.right <= b.left || a.left >= b.right || a.bottom <= b.top || a.top >= b.bottom);
+        d.querySelectorAll('.floating-tag').forEach((t) => {
+          const r = t.getBoundingClientRect();
+          if (contenidos.some((c) => inter(r, c.getBoundingClientRect()))) fallas.add('etiqueta tapa la tarjeta');
+          if (r.left < -1 || r.right > w + 1) fallas.add('etiqueta fuera de pantalla');
+        });
+      }
+
+      const etiqueta = f.parentElement.querySelector('.estado');
+      if (fallas.size) {
+        etiqueta.textContent = '✗ ' + Array.from(fallas).join(' · ');
+        etiqueta.className = 'estado mal';
+      } else {
+        etiqueta.textContent = '✓ sin problemas';
+        etiqueta.className = 'estado ok';
+      }
+    }
+  });
+</script>
+</body>
+</html>
