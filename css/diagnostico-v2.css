@@ -1,0 +1,181 @@
+/* =========================================================
+   Clinical Skin — Diagnóstico "story" (versión 2)
+   Alternativa de presentación para diagnostico-v2.html.
+   NO toca js/main.js ni js/logica.js: reutiliza las mismas
+   clases, así que las reglas del diagnóstico son idénticas.
+   Se carga DESPUÉS de css/style.css y solo pisa lo visual.
+   ========================================================= */
+
+/* ---------- Escenario: una pregunta por pantalla ---------- */
+.quiz-wrap {
+  position: relative;
+  overflow: hidden; /* el número de fondo nunca sale de la tarjeta */
+}
+
+/* Barra de progreso segmentada. Las etiquetas salen del layout
+   (font-size: 0): la información de paso vive en el eyebrow
+   "Pregunta N de 5", así el stepper se reduce a un hilo limpio. */
+.quiz-stepper { gap: 6px; margin-bottom: 34px; }
+.quiz-stepper .step {
+  height: 6px;
+  font-size: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-border);
+}
+.quiz-stepper .step::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: none;
+  border-radius: inherit;
+  background: transparent;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform .5s cubic-bezier(.4, 0, .2, 1);
+}
+.quiz-stepper .step.active::before { background: var(--color-accent); transform: scaleX(.5); }
+.quiz-stepper .step.done::before { content: ""; background: var(--color-primary); transform: scaleX(1); }
+.quiz-stepper .step.done::after,
+.quiz-stepper .step:not(:last-child)::after { display: none; }
+
+/* ---------- Pregunta: entrada + número de fondo ---------- */
+.quiz-step.active { display: flex; }
+
+.quiz-question {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.quiz-question::before {
+  content: attr(data-num);
+  position: absolute;
+  top: -14px;
+  right: 2px;
+  z-index: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(76px, 11vw, 128px);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-primary);
+  opacity: 0.07;
+  pointer-events: none;
+}
+.quiz-question > * { position: relative; z-index: 1; }
+.quiz-question h2 { font-size: clamp(1.4rem, 3.2vw, 1.7rem); }
+
+.quiz-step.active .quiz-question { animation: csPasoEntra .34s cubic-bezier(.2, .7, .3, 1) both; }
+/* backwards (no both): al terminar libera transform, si no el
+   fill en forwards pisaría el scale(.015) de .selected */
+.quiz-step.active .quiz-option { animation: csSube .38s cubic-bezier(.2, .7, .3, 1) backwards; }
+.quiz-step.active .quiz-option:nth-child(2) { animation-delay: .06s; }
+.quiz-step.active .quiz-option:nth-child(3) { animation-delay: .12s; }
+.quiz-step.active .quiz-option:nth-child(4) { animation-delay: .18s; }
+.quiz-step.active .quiz-actions { animation: csSube .38s .24s cubic-bezier(.2, .7, .3, 1) both; }
+.quiz-step.active .quiz-hint { animation: csSube .3s .3s both; }
+
+@keyframes csPasoEntra {
+  from { opacity: 0; transform: translateY(14px) scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes csSube {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes csEscala {
+  from { opacity: 0; transform: scale(.9); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* CTA anclado abajo del escenario (solo aporta con min-height) */
+.quiz-question .quiz-actions { margin-top: auto; padding-top: 8px; }
+@media (min-width: 721px) {
+  .quiz-step.active { min-height: min(56vh, 440px); }
+}
+
+/* ---------- Selección: check que salta + atenuar el resto ---------- */
+.quiz-option {
+  position: relative;
+  padding: 20px 56px 20px 20px;
+  transition: border-color .18s ease, background .18s ease,
+              transform .18s ease, box-shadow .22s ease, opacity .22s ease;
+}
+.quiz-option::after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M5 13l4 4L19 7'/></svg>") center / 13px no-repeat;
+  box-shadow: 0 6px 14px -6px rgba(0, 0, 0, .4);
+  opacity: 0;
+  transform: scale(.3);
+  transition: transform .26s cubic-bezier(.34, 1.56, .64, 1), opacity .16s ease;
+}
+.quiz-option:hover { transform: translateY(-2px); }
+.quiz-option.selected {
+  border-color: var(--color-primary);
+  background: var(--color-white);
+  transform: scale(1.015);
+  box-shadow: 0 16px 30px -20px var(--color-primary);
+}
+.quiz-option.selected::after { opacity: 1; transform: scale(1); }
+.quiz-options:has(.quiz-option.selected) .quiz-option:not(.selected) { opacity: .55; }
+.quiz-options:has(.quiz-option.selected) .quiz-option:not(.selected):hover { opacity: .9; }
+
+/* ---------- Micro-feedback de botones y label ---------- */
+.quiz-question:has(.quiz-option.selected) .btn-primary {
+  box-shadow: 0 14px 26px -16px var(--color-primary);
+}
+.quiz-actions .btn { transition: transform .15s ease, box-shadow .2s ease; }
+.quiz-actions .btn:active { transform: translateY(1px) scale(.985); }
+.quiz-progress-label {
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--color-bg-alt);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+/* ---------- Resultado: revelado en cascada ---------- */
+.quiz-final.is-visible .quiz-summary { animation: csPasoEntra .4s both; }
+.quiz-final.is-visible .quiz-summary > * { animation: csSube .42s backwards; }
+.quiz-final.is-visible .quiz-summary > *:nth-child(2) { animation-delay: .07s; }
+.quiz-final.is-visible .quiz-summary > *:nth-child(3) { animation-delay: .14s; }
+.quiz-final.is-visible .quiz-summary > *:nth-child(4) { animation-delay: .21s; }
+.quiz-final.is-visible .quiz-summary > *:nth-child(5) { animation-delay: .28s; }
+.quiz-final.is-visible .summary-card { animation: csSube .45s backwards; }
+.quiz-final.is-visible .summary-card:nth-child(2) { animation-delay: .07s; }
+.quiz-final.is-visible .summary-card:nth-child(3) { animation-delay: .14s; }
+.quiz-final.is-visible .summary-card:nth-child(4) { animation-delay: .21s; }
+.quiz-final.is-visible .quiz-summary .quiz-actions .btn { animation: csEscala .45s .34s backwards; }
+
+/* ---------- Móvil ---------- */
+@media (max-width: 720px) {
+  .quiz-stepper { margin-bottom: 26px; }
+  .quiz-question h2 { font-size: 1.4rem; }
+  .quiz-question::before { font-size: 78px; top: -8px; right: 0; }
+  .quiz-option { padding: 18px 52px 18px 18px; }
+}
+
+/* ---------- Accesibilidad: sin animaciones si el usuario lo pide ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .quiz-step.active .quiz-question,
+  .quiz-step.active .quiz-option,
+  .quiz-step.active .quiz-actions,
+  .quiz-step.active .quiz-hint,
+  .quiz-final.is-visible .quiz-summary,
+  .quiz-final.is-visible .quiz-summary > *,
+  .quiz-final.is-visible .summary-card,
+  .quiz-final.is-visible .quiz-summary .quiz-actions .btn {
+    animation: none !important;
+  }
+  .quiz-stepper .step::before,
+  .quiz-option,
+  .quiz-option::after,
+  .quiz-actions .btn { transition: none !important; }
+}
