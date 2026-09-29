@@ -25,7 +25,10 @@
 <h1>QA responsive — Clinical Skin</h1>
 <p class="nota">
   Tres páginas (inicio, diagnóstico, resultado) × 4 anchos: 360/400 = móvil (&#8804;720),
-  740 = tablet (&#8804;1024), 1100 = escritorio. Cada iframe carga su HTML con una consulta
+  740 = tablet (&#8804;1024), 1100 = escritorio. Se suman <b>tienda</b> (<code>/shop/</code>) y
+  <b>ficha de producto</b> (WooCommerce, servidas en :8080): para que el arnés pueda
+  leer sus iframes hay que abrir <code>http://localhost:8080/static/docs/qa-responsive.html</code>
+  (mismo origen); servido desde XAMPP marcará <b>cross-origin</b> en esas dos filas. Cada iframe carga su HTML con una consulta
   única por apertura y <b>recarga el CSS sin caché</b>, así que un cambio en
   <code>css/style.css</code> se ve aquí sin reiniciar nada (el JS sí puede quedar viejo:
   en ese caso Ctrl+F5). Debajo de cada ancho aparece <b>✓</b> o <b>✗</b> con el primer
@@ -36,6 +39,9 @@
   elemento (en especial la barra <code>.quiz-actions</code> con "Ver mi resultado") puede
   salirse de la pantalla.
   <br>• <b>resultado</b>: ningún elemento fuera de pantalla.
+  <br>• <b>tienda</b>: panel de filtros con sus 15 términos, filas de una sola línea
+  (&#8804;34px), contador de términos oculto y productos en la cuadrícula.
+  <br>• <b>ficha</b>: h1 del producto y botón "Añadir al carrito" con alto normal.
   <br>• <b>las 3 páginas</b>: ningún hijo de <code>.result-hero</code>,
   <code>.diagnostic-summary</code> (resultado), <code>.quiz-summary</code> (diagnóstico) ni
   <code>.product-card</code> saliéndose de su tarjeta — botón "Ver" cortado por el
@@ -54,10 +60,18 @@
     { w: 1100, etiqueta: '1100 px (escritorio)' }
   ];
 
+  /* La tienda y la ficha son WooCommerce y solo existen en :8080; las rutas son
+     absolutas para que el arnés sirva igual desde XAMPP (avisará cross-origin)
+     o desde http://localhost:8080/static/docs/qa-responsive.html, que sí puede
+     leer el iframe. */
+  const WOO = 'http://localhost:8080';
+
   const PAGINAS = [
     { nombre: 'Inicio', ruta: '../index.html', tipo: 'index' },
     { nombre: 'Diagnóstico', ruta: '../diagnostico-v2.html', tipo: 'quiz' },
-    { nombre: 'Resultado', ruta: '../resultado.html', tipo: 'tarjetas' }
+    { nombre: 'Resultado', ruta: '../resultado.html', tipo: 'tarjetas' },
+    { nombre: 'Tienda', ruta: WOO + '/shop/', tipo: 'tienda' },
+    { nombre: 'Ficha de producto', ruta: WOO + '/product/gel-limpiador-balance/', tipo: 'ficha' }
   ];
 
   const etiqueta = (el) => {
@@ -129,16 +143,51 @@
       }
     }
 
-    if (tipo === 'quiz' || tipo === 'tarjetas') {
+    if (tipo !== 'index') {
       /* Escaneo genérico: el primer elemento que se sale del viewport */
       let primero = null;
       d.querySelectorAll('*').forEach((el) => {
         if (primero) return;
+        /* WP inyecta img.emoji y la lupa de WooCommerce (img.zoomImg)
+           posicionadas fuera de pantalla a propósito. */
+        if (el.classList && (el.classList.contains('emoji') || el.classList.contains('zoomImg'))) return;
         const r = el.getBoundingClientRect();
         if (!r.width && !r.height) return;
         if (r.right > w + 1 || r.left < -1) primero = etiqueta(el);
       });
       if (primero) fallas.add('fuera de pantalla: ' + primero);
+    }
+
+    if (tipo === 'tienda') {
+      /* Panel de filtros del catálogo: filas de una sola línea (el contador
+         de términos está oculto a propósito, no rompe la fila) y checklist
+         con su cuadro visible. */
+      const panel = d.querySelector('.filters-panel');
+      if (!panel) {
+        fallas.add('sin panel de filtros');
+      } else {
+        const items = Array.from(panel.querySelectorAll('li'));
+        if (!items.length) fallas.add('filtros sin términos');
+        items.forEach((li) => {
+          const r = li.getBoundingClientRect();
+          if (r.height > 34) fallas.add('fila de filtro ' + Math.round(r.height) + 'px (esperado ≤34)');
+          const c = li.querySelector('.count');
+          if (c && getComputedStyle(c).display !== 'none') fallas.add('contador "' + c.textContent.trim() + '" visible');
+        });
+      }
+      if (!d.querySelectorAll('li.product, li.type-product').length) fallas.add('sin productos en la cuadrícula');
+    }
+
+    if (tipo === 'ficha') {
+      /* Ficha Woo: título, precio y botón "Añadir al carrito" a la vista. */
+      const anadir = d.querySelector('.single_add_to_cart_button');
+      if (!anadir) {
+        fallas.add('sin botón añadir al carrito');
+      } else {
+        const r = anadir.getBoundingClientRect();
+        if (r.height < 30) fallas.add('botón añadir ' + Math.round(r.height) + 'px');
+      }
+      if (!d.querySelector('h1')) fallas.add('sin título h1');
     }
 
     if (tipo === 'quiz') {
@@ -238,13 +287,18 @@
       pendientes.push(
         alCargar.then(async (frame) => {
           const d = frame.contentDocument;
+          const estado = col.querySelector('.estado');
+          if (!d) {
+            estado.textContent = '✗ cross-origin: ábrelo en http://localhost:8080/static/docs/qa-responsive.html';
+            estado.className = 'estado mal';
+            return;
+          }
           await cssFresco(frame);
           try { await d.fonts.ready; } catch (e) {}
           if (pag.tipo === 'quiz') prepararQuiz(d);
           await new Promise((r) => setTimeout(r, 150));
 
           const fallas = comprobar(d, pag.tipo, a.w);
-          const estado = col.querySelector('.estado');
           if (fallas.size) {
             estado.textContent = '✗ ' + Array.from(fallas).join(' · ');
             estado.className = 'estado mal';
