@@ -25,10 +25,13 @@
 <h1>QA responsive — Clinical Skin</h1>
 <p class="nota">
   Tres páginas (inicio, diagnóstico, resultado) × 4 anchos: 360/400 = móvil (&#8804;720),
-  740 = tablet (&#8804;1024), 1100 = escritorio. Se suman <b>tienda</b> (<code>/shop/</code>) y
-  <b>ficha de producto</b> (WooCommerce, servidas en :8080): para que el arnés pueda
+  740 = tablet (&#8804;1024), 1100 = escritorio. Se suman <b>tienda</b> (<code>/shop/</code>),
+  <b>ficha de producto</b>, <b>carrito</b> (<code>/cart/</code>) y <b>pago</b>
+  (<code>/checkout/</code>) — las 4 de WooCommerce, servidas en :8080: para que el arnés pueda
   leer sus iframes hay que abrir <code>http://localhost:8080/static/docs/qa-responsive.html</code>
-  (mismo origen); servido desde XAMPP marcará <b>cross-origin</b> en esas dos filas. Cada iframe carga su HTML con una consulta
+  (mismo origen); servido desde XAMPP marcará <b>cross-origin</b> en esas 4 filas. Antes de montar
+  los iframes se añade un producto a la bolsa (con el carrito vacío el pago redirige al carrito).
+  Cada iframe carga su HTML con una consulta
   única por apertura y <b>recarga el CSS sin caché</b>, así que un cambio en
   <code>css/style.css</code> se ve aquí sin reiniciar nada (el JS sí puede quedar viejo:
   en ese caso Ctrl+F5). Debajo de cada ancho aparece <b>✓</b> o <b>✗</b> con el primer
@@ -42,6 +45,10 @@
   <br>• <b>tienda</b>: panel de filtros con sus 15 términos, filas de una sola línea
   (&#8804;34px), contador de términos oculto y productos en la cuadrícula.
   <br>• <b>ficha</b>: h1 del producto y botón "Añadir al carrito" con alto normal.
+  <br>• <b>carrito</b>: <code>.cart-layout</code> de 1 columna hasta 1024 y 2 en escritorio,
+  caja de resumen dentro de la pantalla con sus filas (o el aviso de carrito vacío visible).
+  <br>• <b>pago</b>: 4 pasos, 4 tarjetas de formulario, <code>.checkout-layout</code> en 1/2
+  columnas, caja "Tu pedido" con productos dentro de pantalla y botón "Pagar $…" con alto normal.
   <br>• <b>las 3 páginas</b>: ningún hijo de <code>.result-hero</code>,
   <code>.diagnostic-summary</code> (resultado), <code>.quiz-summary</code> (diagnóstico) ni
   <code>.product-card</code> saliéndose de su tarjeta — botón "Ver" cortado por el
@@ -71,7 +78,9 @@
     { nombre: 'Diagnóstico', ruta: '../diagnostico-v2.html', tipo: 'quiz' },
     { nombre: 'Resultado', ruta: '../resultado.html', tipo: 'tarjetas' },
     { nombre: 'Tienda', ruta: WOO + '/shop/', tipo: 'tienda' },
-    { nombre: 'Ficha de producto', ruta: WOO + '/product/gel-limpiador-balance/', tipo: 'ficha' }
+    { nombre: 'Ficha de producto', ruta: WOO + '/product/gel-limpiador-balance/', tipo: 'ficha' },
+    { nombre: 'Carrito', ruta: WOO + '/cart/', tipo: 'carrito' },
+    { nombre: 'Pago', ruta: WOO + '/checkout/', tipo: 'checkout' }
   ];
 
   const etiqueta = (el) => {
@@ -153,6 +162,9 @@
         if (el.classList && (el.classList.contains('emoji') || el.classList.contains('zoomImg'))) return;
         const r = el.getBoundingClientRect();
         if (!r.width && !r.height) return;
+        /* Auxiliar escondido a propósito (update_cart con left:-9999px):
+           queda muy a la izquierda del viewport, no es un desbordamiento. */
+        if (r.right < -100) return;
         if (r.right > w + 1 || r.left < -1) primero = etiqueta(el);
       });
       if (primero) fallas.add('fuera de pantalla: ' + primero);
@@ -253,13 +265,73 @@
     });
     if (tarjetaRota) fallas.add('tarjeta de producto: ' + tarjetaRota);
 
+    if (tipo === 'carrito') {
+      /* Una columna hasta 1024 y dos en escritorio, con la caja de resumen
+         siempre dentro de la pantalla (o el aviso de carrito vacío visible). */
+      const vacio = d.querySelector('.cart-empty');
+      const caja = d.querySelector('.order-box');
+      if (!caja && !vacio) fallas.add('sin resumen ni aviso de carrito vacío');
+      if (vacio && getComputedStyle(vacio).display === 'none') fallas.add('aviso de vacío oculto');
+      if (caja) {
+        const r = caja.getBoundingClientRect();
+        if (r.right > w + 1) fallas.add('caja de resumen fuera de pantalla');
+        const filas = caja.querySelectorAll('.summary-row, .os-item').length;
+        if (!vacio && !filas) fallas.add('caja de resumen sin filas');
+      }
+      const lay = d.querySelector('.cart-layout');
+      if (!lay) fallas.add('sin .cart-layout');
+      else {
+        const cols = getComputedStyle(lay).gridTemplateColumns.split(' ').filter(Boolean).length;
+        const esperado = w <= 1024 ? 1 : 2;
+        if (cols !== esperado) fallas.add('cart-layout ' + cols + ' columnas (esperado ' + esperado + ')');
+      }
+    }
+
+    if (tipo === 'checkout') {
+      /* Formato de checkout.html: 4 pasos, tarjetas de formulario, resumen
+         con productos y botón "Pagar $…" en el aside. */
+      if (!d.querySelector('.checkout-steps')) fallas.add('sin .checkout-steps');
+      const tarjetas = d.querySelectorAll('.form-card').length;
+      if (tarjetas < 4) fallas.add('tarjetas de formulario: ' + tarjetas + ' (esperado 4)');
+
+      const lay = d.querySelector('.checkout-layout');
+      if (!lay) fallas.add('sin .checkout-layout (¿carrito vacío?)');
+      else {
+        const cols = getComputedStyle(lay).gridTemplateColumns.split(' ').filter(Boolean).length;
+        const esperado = w <= 1024 ? 1 : 2;
+        if (cols !== esperado) fallas.add('checkout-layout ' + cols + ' columnas (esperado ' + esperado + ')');
+      }
+
+      const caja = d.querySelector('.order-box');
+      if (!caja) fallas.add('sin caja de "Tu pedido"');
+      else {
+        const r = caja.getBoundingClientRect();
+        if (r.right > w + 1) fallas.add('caja de "Tu pedido" fuera de pantalla');
+        if (!caja.querySelector('.os-item')) fallas.add('resumen sin productos');
+      }
+
+      const boton = d.querySelector('#place_order');
+      if (!boton) fallas.add('sin botón de pago');
+      else {
+        const br = boton.getBoundingClientRect();
+        if (br.height < 30) fallas.add('botón de pago ' + Math.round(br.height) + 'px');
+        if (!/^Pagar/.test(boton.textContent.trim())) fallas.add('botón "' + boton.textContent.trim().slice(0, 24) + '"');
+      }
+    }
+
     return fallas;
   };
 
   const contenedor = document.getElementById('paginas');
   const pendientes = [];
 
-  PAGINAS.forEach((pag) => {
+  /* Carrito y pago necesitan artículos en la bolsa (con el carrito vacío
+     WooCommerce redirige /checkout/ a /cart/): se añade un producto antes de
+     abrir los iframes. Servido desde :80 la llamada es cross-origin y se
+     ignora, igual que las filas de WooCommerce de esa variante. */
+  const carritoListo = fetch(WOO + '/?add-to-cart=70&nc=' + v, { credentials: 'same-origin' }).catch(() => {});
+
+  const montar = () => PAGINAS.forEach((pag) => {
     const h2 = document.createElement('h2');
     h2.textContent = pag.nombre + ' — ' + pag.ruta.replace('../', '');
     contenedor.appendChild(h2);
@@ -310,6 +382,8 @@
       );
     });
   });
+
+  carritoListo.then(montar);
 </script>
 </body>
 </html>
