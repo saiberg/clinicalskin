@@ -53,7 +53,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const hint = document.createElement('p');
       hint.className = 'quiz-hint';
       hint.textContent = 'Selecciona una opción para continuar';
-      activo.appendChild(hint);
+      /* El paso activo es flex (css/diagnostico-v2.css): añadirlo ahí mismo lo
+         dejaba en una columna estrecha y estirada al margen de la tarjeta.
+         Va dentro de la pregunta, sobre los botones, junto a "Siguiente". */
+      const pregunta = activo.querySelector('.quiz-question') || activo;
+      const acciones = pregunta.querySelector('.quiz-actions');
+      if (acciones) {
+        pregunta.insertBefore(hint, acciones);
+      } else {
+        pregunta.appendChild(hint);
+      }
     }
     return false;
   };
