@@ -27,7 +27,25 @@
   };
 
   /* ---------- No editar bajo esta línea ---------- */
-  const actual = location.pathname.split('/').pop() || 'index.html';
+  /* En el sitio estático cada página es un archivo (…/productos.html). Al servir
+     con WooCommerce las rutas son limpias (/shop/, /product/…, /cart/), así que
+     el primer segmento se traduce al archivo del menú; el resto de páginas
+     (filosofia.html, contacto.html…) sigue resolviendo por el último segmento. */
+  const MAPA_RUTAS = {
+    shop: 'productos.html',
+    product: 'productos.html',
+    cart: 'carrito.html',
+    checkout: 'pago.html',
+    'my-account': 'mi-cuenta.html'
+  };
+  const partes = location.pathname.split('/').filter(Boolean);
+  const ultimo = partes[partes.length - 1] || '';
+  /* La raíz («/» o «/clinicalskin/») es el inicio; el resto se resuelve por el
+     último segmento (filosofia.html) salvo que sea una ruta limpia de Woo. */
+  let actual = MAPA_RUTAS[partes[0]];
+  if (!actual) {
+    actual = ultimo.indexOf('.') > -1 ? ultimo : (partes.length <= 1 ? 'index.html' : ultimo);
+  }
   const activo = ACTIVO_HEREDADO[actual] || actual;
 
   const enlaces = ENLACES.map((e) =>
