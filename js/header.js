@@ -13,17 +13,16 @@
   const LOGO = 'img/logoNotext-clinicalSkin.png';
   const ENLACES = [
     { href: 'index.html',       etiqueta: 'Inicio' },
-    { href: 'diagnostico-v2.html', etiqueta: 'Diagnóstico' },
+    { href: 'diagnostico.html', etiqueta: 'Diagnóstico' },
     { href: 'productos.html',   etiqueta: 'Productos' },
     { href: 'filosofia.html',   etiqueta: 'Filosofía' },
     { href: 'contacto.html',    etiqueta: 'Contacto' }
   ];
-  const CTA = { href: 'diagnostico-v2.html', etiqueta: 'Hacer mi diagnóstico' };
+  const CTA = { href: 'diagnostico.html', etiqueta: 'Hacer mi diagnóstico' };
   /* Páginas que heredan el resaltado de otra (subpáginas) */
   const ACTIVO_HEREDADO = {
     'producto.html': 'productos.html',
-    'resultado.html': 'diagnostico-v2.html',
-    'diagnostico.html': 'diagnostico-v2.html'
+    'resultado.html': 'diagnostico.html'
   };
 
   /* ---------- No editar bajo esta línea ---------- */

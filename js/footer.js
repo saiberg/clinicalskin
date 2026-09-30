@@ -20,7 +20,7 @@
     {
       titulo: 'Explorar',
       links: [
-        { href: 'diagnostico-v2.html', etiqueta: 'Diagnóstico' },
+        { href: 'diagnostico.html', etiqueta: 'Diagnóstico' },
         { href: 'productos.html',   etiqueta: 'Productos' },
         { href: 'filosofia.html',   etiqueta: 'Filosofía' }
       ]

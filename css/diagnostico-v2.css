@@ -1,6 +1,6 @@
 /* =========================================================
-   Clinical Skin — Diagnóstico "story" (versión 2)
-   Alternativa de presentación para diagnostico-v2.html.
+   Clinical Skin — Diagnóstico "story"
+   Hoja de diagnostico.html (antes diagnostico-v2.html).
    NO toca js/main.js ni js/logica.js: reutiliza las mismas
    clases, así que las reglas del diagnóstico son idénticas.
    Se carga DESPUÉS de css/style.css y solo pisa lo visual.
