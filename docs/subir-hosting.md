@@ -67,8 +67,20 @@ public_html/
 ## 3. Paso 1 — Exportar desde local (PowerShell)
 
 ```powershell
-# a) Base de datos → C:\docker\clinicalskin-woo\scripts\base.sql
-docker compose -f C:\docker\clinicalskin-woo\docker-compose.yml run --rm cli wp db export /tmp/cs/base.sql
+# a) Base de datos → C:\docker\clinicalskin-woo\salida\base.sql
+New-Item -ItemType Directory -Force C:\docker\clinicalskin-woo\salida | Out-Null
+
+# Se vuelca con el cliente del propio contenedor de MySQL. `wp db export` no sirve
+# aquí: usa mariadb-dump (cliente MariaDB que trae el contenedor `cli`) y el
+# servidor es MySQL 8.4, que autentica con caching_sha2_password → error 1045
+# "Plugin caching_sha2_password could not be loaded". Las comillas simples al
+# alrededor del sh -c son obligatorias en PowerShell.
+docker compose -f C:\docker\clinicalskin-woo\docker-compose.yml exec -T db sh -c 'mysqldump --single-transaction --hex-blob --routines --events --triggers -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" > /tmp/cs-base.sql'
+
+# El volcado se saca con `docker compose cp`, no con `>`: en PowerShell la
+# redirección escribiría el archivo en UTF-16 y la importación fallaría.
+docker compose -f C:\docker\clinicalskin-woo\docker-compose.yml cp db:/tmp/cs-base.sql C:\docker\clinicalskin-woo\salida\base.sql
+docker compose -f C:\docker\clinicalskin-woo\docker-compose.yml exec -T db sh -c "rm -f /tmp/cs-base.sql"
 
 # b) Archivos de WordPress (tema + plugins parcheados + uploads + configuración)
 New-Item -ItemType Directory -Force C:\docker\clinicalskin-woo\salida
@@ -202,7 +214,8 @@ repositorio.
   `C:\docker\clinicalskin-woo\theme\clinicalskin`) y volver a subir `static/`, `css/`, `js/`,
   `img/` y `wp-content/themes/clinicalskin`.
 - **Cambios de contenido** (precios, stock, textos, métodos de envío): se hacen directo en
-  `/wp-admin` del hosting; luego se exporta la BD con `wp db export` y se guarda como respaldo.
+  `/wp-admin` del hosting; luego se exporta la BD con `wp db export` y se guarda como respaldo
+  (en local usa el volcado de la sección 3: con MySQL 8.4 `wp db export` da error 1045).
 - **Cambios en plugins parcheados**: nunca actualizar Chilexpress ni Starken desde el panel
   sin antes reaplicar los parches (los archivos están en el contenedor local).
 - **Actualizaciones de WordPress/WooCommerce**: hacerlas primero en local, probar con el
