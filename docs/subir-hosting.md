@@ -88,9 +88,18 @@ docker cp clinicalskin-woo-wordpress-1:/var/www/html/wp-content  C:\docker\clini
 docker cp clinicalskin-woo-wordpress-1:/var/www/html/wp-config.php C:\docker\clinicalskin-woo\salida\wp-config.php
 docker cp clinicalskin-woo-wordpress-1:/var/www/html/.htaccess    C:\docker\clinicalskin-woo\salida\.htaccess
 
-# c) Sitio estático del diseño (mismos archivos que ya están en el repo)
-Compress-Archive -Path C:\xampp\htdocs\clinicalskin\*.html, C:\xampp\htdocs\clinicalskin\docs `
-                  -DestinationPath C:\docker\clinicalskin-woo\salida\static.zip -Force
+# c) Sitio estático del diseño → salida\static.zip, con la carpeta static/ arriba
+#    (así lo exige el árbol del hosting). Los .md internos de docs/ y el CSV del
+#    catálogo no se suben: solo el arnés qa-responsive.html.
+$st = 'C:\docker\clinicalskin-woo\salida\static'
+Remove-Item -Recurse -Force $st -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Force "$st\docs" | Out-Null
+Copy-Item C:\xampp\htdocs\clinicalskin\*.html -Destination $st
+Copy-Item C:\xampp\htdocs\clinicalskin\docs\qa-responsive.html -Destination "$st\docs"
+Compress-Archive -Path $st -DestinationPath C:\docker\clinicalskin-woo\salida\static.zip -Force
+Remove-Item -Recurse -Force $st
+
+# Assets del diseño (css/, js/, img/ quedan en la raíz, junto a wp-admin/)
 Compress-Archive -Path C:\xampp\htdocs\clinicalskin\css, C:\xampp\htdocs\clinicalskin\js, C:\xampp\htdocs\clinicalskin\img `
                   -DestinationPath C:\docker\clinicalskin-woo\salida\assets.zip -Force
 
