@@ -14,7 +14,7 @@
 
 | Pieza | Dónde está hoy (local) | Va a |
 |---|---|---|
-| WordPress 7.1.2 + WooCommerce 11.1.2 (PHP 8.3, MySQL 8.4) | volumen `db_data`/`wp_data` de Docker | hosting con PHP ≥ 8.1 y MySQL 8 |
+| WordPress 7.1.2 + WooCommerce 11.1.2 (PHP 8.3, MySQL 8.4) | volumen `db_data`/`wp_data` de Docker | hosting con PHP ≥ 8.1 y MySQL 8 (el núcleo `wp-admin`/`wp-includes` viaja en `wordpress.zip`) |
 | Tema puente `clinicalskin` (`functions.php`, `header/footer`, `envios.php`, `pagos.php`, overrides de Woo, `css/woo.css`) | `C:\docker\clinicalskin-woo\theme\clinicalskin` | `wp-content/themes/clinicalskin` |
 | Plugins: `transbank-webpay-plus-rest` 1.14.0, `chilexpress-oficial` 1.4.5, `calculo-de-despacho-via-starken-para-woocommerce` 2026.07.01 | `wp-content/plugins/` del contenedor | `wp-content/plugins/` **copia directa** |
 | Biblioteca de medios (11 fotos de producto, 2,3 MB) | `wp-content/uploads` | `wp-content/uploads` |
@@ -24,8 +24,9 @@
 | `wp-config.php` y `.htaccess` (permalinks `/%postname%/`) | contenedor | raíz |
 
 **No se sube:** XAMPP, Docker/`docker-compose.yml`, `C:\docker\clinicalskin-woo\scripts\`,
-`CREDENCIALES.md` (guárdalo aparte), `.git`, ni `docs/*.md` (el arnés `qa-responsive.html`
-sí puede subirse, es opcional).
+`CREDENCIALES.md` (guárdalo aparte), el `.git` (también el del sitio estático), los
+`docs/*.md` internos ni el CSV del catálogo (el arnés `qa-responsive.html` sí viaja,
+es opcional).
 
 > **Aviso importante:** Chilexpress y Starken están **parcheados a mano** dentro del
 > contenedor (comuna/regiones, select2 del checkout, guard del script). Esos cambios no
@@ -73,7 +74,7 @@ New-Item -ItemType Directory -Force C:\docker\clinicalskin-woo\salida | Out-Null
 # Se vuelca con el cliente del propio contenedor de MySQL. `wp db export` no sirve
 # aquí: usa mariadb-dump (cliente MariaDB que trae el contenedor `cli`) y el
 # servidor es MySQL 8.4, que autentica con caching_sha2_password → error 1045
-# "Plugin caching_sha2_password could not be loaded". Las comillas simples al
+# "Plugin caching_sha2_password could not be loaded". Las comillas simples
 # alrededor del sh -c son obligatorias en PowerShell.
 docker compose -f C:\docker\clinicalskin-woo\docker-compose.yml exec -T db sh -c 'mysqldump --single-transaction --hex-blob --routines --events --triggers -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" > /tmp/cs-base.sql'
 
@@ -82,34 +83,30 @@ docker compose -f C:\docker\clinicalskin-woo\docker-compose.yml exec -T db sh -c
 docker compose -f C:\docker\clinicalskin-woo\docker-compose.yml cp db:/tmp/cs-base.sql C:\docker\clinicalskin-woo\salida\base.sql
 docker compose -f C:\docker\clinicalskin-woo\docker-compose.yml exec -T db sh -c "rm -f /tmp/cs-base.sql"
 
-# b) Archivos de WordPress (tema + plugins parcheados + uploads + configuración)
-New-Item -ItemType Directory -Force C:\docker\clinicalskin-woo\salida
-docker cp clinicalskin-woo-wordpress-1:/var/www/html/wp-content  C:\docker\clinicalskin-woo\salida\wp-content
-docker cp clinicalskin-woo-wordpress-1:/var/www/html/wp-config.php C:\docker\clinicalskin-woo\salida\wp-config.php
-docker cp clinicalskin-woo-wordpress-1:/var/www/html/.htaccess    C:\docker\clinicalskin-woo\salida\.htaccess
+# b) Sitio completo → salida\wordpress.zip. El sitio estático ya está montado dentro
+#    del contenedor (/var/www/html/static, /var/www/html/css, …), así que el
+#    contenedor tiene el núcleo, wp-content y el diseño en un solo lugar. Se
+#    empaqueta con tar ahí mismo porque hay nombres con caracteres que Windows no
+#    acepta; el .tar.gz se copia tal cual y se descomprime acá.
+docker exec clinicalskin-woo-wordpress-1 sh -c "cd /var/www/html && tar -czf /tmp/cs-sitio.tgz ."
+docker cp clinicalskin-woo-wordpress-1:/tmp/cs-sitio.tgz C:\docker\clinicalskin-woo\salida\cs-sitio.tgz
+docker exec clinicalskin-woo-wordpress-1 sh -c "rm -f /tmp/cs-sitio.tgz"
 
-# c) Sitio estático del diseño → salida\static.zip, con la carpeta static/ arriba
-#    (así lo exige el árbol del hosting). Los .md internos de docs/ y el CSV del
-#    catálogo no se suben: solo el arnés qa-responsive.html.
-$st = 'C:\docker\clinicalskin-woo\salida\static'
+# Lo que no se sube: .git del sitio estático, .md internos y el CSV del catálogo
+$st = 'C:\docker\clinicalskin-woo\salida\wordpress'
 Remove-Item -Recurse -Force $st -ErrorAction SilentlyContinue
-New-Item -ItemType Directory -Force "$st\docs" | Out-Null
-Copy-Item C:\xampp\htdocs\clinicalskin\*.html -Destination $st
-Copy-Item C:\xampp\htdocs\clinicalskin\docs\qa-responsive.html -Destination "$st\docs"
-Compress-Archive -Path $st -DestinationPath C:\docker\clinicalskin-woo\salida\static.zip -Force
-Remove-Item -Recurse -Force $st
+New-Item -ItemType Directory -Force $st | Out-Null
+tar -xzf C:\docker\clinicalskin-woo\salida\cs-sitio.tgz -C $st
+Remove-Item -Recurse -Force "$st\static\.git", "$st\static\woocommerce", "$st\static\docs\woocommerce" -ErrorAction SilentlyContinue
+Remove-Item -Force "$st\static\docs\*.md" -ErrorAction SilentlyContinue
 
-# Assets del diseño (css/, js/, img/ quedan en la raíz, junto a wp-admin/)
-Compress-Archive -Path C:\xampp\htdocs\clinicalskin\css, C:\xampp\htdocs\clinicalskin\js, C:\xampp\htdocs\clinicalskin\img `
-                  -DestinationPath C:\docker\clinicalskin-woo\salida\assets.zip -Force
-
-# d) Empaquetar lo de WordPress (opcional, para subirlo de una vez)
-Compress-Archive -Path C:\docker\clinicalskin-woo\salida\wp-content, C:\docker\clinicalskin-woo\salida\wp-config.php, C:\docker\clinicalskin-woo\salida\.htaccess `
-                  -DestinationPath C:\docker\clinicalskin-woo\salida\wordpress.zip -Force
+Compress-Archive -Path "$st\*" -DestinationPath C:\docker\clinicalskin-woo\salida\wordpress.zip -Force
+Remove-Item -Recurse -Force $st, C:\docker\clinicalskin-woo\salida\cs-sitio.tgz -ErrorAction SilentlyContinue
 ```
 
-Resultado en `C:\docker\clinicalskin-woo\salida\`: `base.sql`, `wordpress.zip`,
-`static.zip`, `assets.zip`.
+Resultado en `C:\docker\clinicalskin-woo\salida\`: `base.sql` (~1,4 MB) y `wordpress.zip`
+(~64 MB con `wp-admin/`, `wp-includes/`, `wp-content/`, `static/`, `css/`, `js/`, `img/`,
+`wp-config.php` y `.htaccess`). Sube solo esos dos archivos.
 
 ---
 
@@ -117,11 +114,12 @@ Resultado en `C:\docker\clinicalskin-woo\salida\`: `base.sql`, `wordpress.zip`,
 
 1. **Crear la base de datos** desde el panel (phpMyAdmin → *Nueva base de datos*,
    cotejamiento `utf8mb4_unicode_ci`) y un usuario con todos los privilegios sobre ella.
-2. **Subir** los cuatro archivos (`base.sql`, `wordpress.zip`, `static.zip`, `assets.zip`)
-   al `public_html/` por el Administrador de Archivos o por FTP.
-3. **Descomprimir** en la raíz (`Extract Here` cada zip). Verificar que el árbol quede como
-   en la sección 1: `wp-config.php` y `.htaccess` en la raíz, `static/`, `css/`, `js/`,
-   `img/` junto a `wp-admin/`.
+2. **Subir** los dos archivos (`wordpress.zip` y `base.sql`) al `public_html/` por el
+   Administrador de Archivos o por FTP.
+3. **Descomprimir** `wordpress.zip` en la raíz (`Extract Here`). No hace falta instalar
+   WordPress: el núcleo viaja dentro del zip. El árbol debe quedar como en la sección 1 —
+   `wp-admin/` e `wp-includes/` junto a `wp-content/`, `static/`, `css/`, `js/`, `img/`,
+   `wp-config.php` y `.htaccess`.
 4. **Editar `wp-config.php`**: solo las constantes de base de datos
    (`DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`); el resto se queda igual. Revisar que
    `WP_DEBUG` quede en `false` para que los errores no se muestren en pantalla.
