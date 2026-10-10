@@ -102,11 +102,19 @@ Remove-Item -Force "$st\static\docs\*.md" -ErrorAction SilentlyContinue
 
 Compress-Archive -Path "$st\*" -DestinationPath C:\docker\clinicalskin-woo\salida\wordpress.zip -Force
 Remove-Item -Recurse -Force $st, C:\docker\clinicalskin-woo\salida\cs-sitio.tgz -ErrorAction SilentlyContinue
+
+# c) (opcional, si el hosting da SSH) Lo mismo como tar.gz: en Linux sí trae los
+#    permisos correctos (644 en archivos, 755 en carpetas), que el zip de Windows
+#    no guarda y por eso el panel a veces deja archivos ilegibles.
+docker exec clinicalskin-woo-wordpress-1 sh -c "rm -rf /tmp/cs-site && cp -a /var/www/html /tmp/cs-site && find /tmp/cs-site -type d -exec chmod 755 {} + && find /tmp/cs-site -type f -exec chmod 644 {} + && tar -czf /tmp/site.tar.gz -C /tmp/cs-site . && rm -rf /tmp/cs-site"
+docker cp clinicalskin-woo-wordpress-1:/tmp/site.tar.gz C:\docker\clinicalskin-woo\salida\site.tar.gz
+docker exec clinicalskin-woo-wordpress-1 sh -c "rm -f /tmp/site.tar.gz"
 ```
 
-Resultado en `C:\docker\clinicalskin-woo\salida\`: `base.sql` (~1,4 MB) y `wordpress.zip`
+Resultado en `C:\docker\clinicalskin-woo\salida\`: `base.sql` (~1,4 MB), `wordpress.zip`
 (~64 MB con `wp-admin/`, `wp-includes/`, `wp-content/`, `static/`, `css/`, `js/`, `img/`,
-`wp-config.php` y `.htaccess`). Sube solo esos dos archivos.
+`wp-config.php` y `.htaccess`) y, si hay SSH, `site.tar.gz` (~62 MB, idéntico pero con
+permisos correctos). Sube `base.sql` y el archivo que vayas a extraer.
 
 ---
 
@@ -116,15 +124,30 @@ Resultado en `C:\docker\clinicalskin-woo\salida\`: `base.sql` (~1,4 MB) y `wordp
    cotejamiento `utf8mb4_unicode_ci`) y un usuario con todos los privilegios sobre ella.
 2. **Subir** los dos archivos (`wordpress.zip` y `base.sql`) al `public_html/` por el
    Administrador de Archivos o por FTP.
-3. **Descomprimir** `wordpress.zip` en la raíz (`Extract Here`). No hace falta instalar
-   WordPress: el núcleo viaja dentro del zip. El árbol debe quedar como en la sección 1 —
-   `wp-admin/` e `wp-includes/` junto a `wp-content/`, `static/`, `css/`, `js/`, `img/`,
-   `wp-config.php` y `.htaccess`.
-4. **Editar `wp-config.php`**: solo las constantes de base de datos
+3. **Descomprimir** en la raíz (`Extract Here`): `site.tar.gz` si hay SSH (ya trae los
+   permisos correctos) o `wordpress.zip` por el Administrador de Archivos. No hace falta
+   instalar WordPress: el núcleo viaja dentro del archivo. El árbol debe quedar como en la
+   sección 1 — `wp-admin/` e `wp-includes/` junto a `wp-content/`, `static/`, `css/`,
+   `js/`, `img/`, `wp-config.php` y `.htaccess`.
+4. **Permisos**: los archivos deben ser `644` y las carpetas `755`, propiedad del usuario
+   de la cuenta; el zip de Windows no guarda permisos Unix y el panel a veces deja archivos
+   ilegibles (al abrir el sitio salen errores `Permission denied`). Con SSH o con la
+   Terminal de cPanel, desde la carpeta del sitio:
+
+   ```bash
+   cd /home2/usuario/tudominio.cl
+   find . -type d -exec chmod 755 {} +
+   find . -type f -exec chmod 644 {} +
+   ```
+
+   Si los archivos no son del usuario de la cuenta, agregar `chown -R usuario:usuario .`.
+   Con `site.tar.gz` esto ya viene hecho. Sin SSH y con el zip, corregir los permisos desde
+   el Administrador de Archivos o extraer el `site.tar.gz` si el panel lo permite.
+5. **Editar `wp-config.php`**: solo las constantes de base de datos
    (`DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`); el resto se queda igual. Revisar que
    `WP_DEBUG` quede en `false` para que los errores no se muestren en pantalla.
-5. **Importar la BD**: phpMyAdmin → la base creada → *Importar* → `base.sql` (UTF-8).
-6. **Permalinks**: entrar a `/wp-admin` → Ajustes → Enlaces → **Guardar** (regenera
+6. **Importar la BD**: phpMyAdmin → la base creada → *Importar* → `base.sql` (UTF-8).
+7. **Permalinks**: entrar a `/wp-admin` → Ajustes → Enlaces → **Guardar** (regenera
    `.htaccess`; sin esto las páginas del diseño dan 404).
 
 ### Alternativa con SSH + WP-CLI (más rápido)
@@ -205,6 +228,7 @@ repositorio.
 
 | Síntoma | Causa y arreglo |
 |---|---|
+| `Permission denied` al abrir el sitio o `/wp-admin` | La extracción dejó archivos ilegibles (el zip de Windows no trae permisos Unix): corregir con el `find` de permisos del paso 4 (archivos `644`, carpetas `755`) |
 | Página en blanco | PHP desactualizado o error de `wp-config.php`: revisar `wp-content/debug.log` y subir la versión de PHP a 8.1+ |
 | Las páginas del diseño dan 404 | Falta la carpeta `static/` o no se guardaron los Enlaces (regenera `.htaccess`) |
 | Sin estilos o imágenes rotas | Faltan `css/`, `js/`, `img/` en la raíz (el tema usa `<base href>` y pide `css/style.css` relativo a la raíz) |
