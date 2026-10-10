@@ -229,6 +229,7 @@ repositorio.
 | Síntoma | Causa y arreglo |
 |---|---|
 | `Permission denied` al abrir el sitio o `/wp-admin` | La extracción dejó archivos ilegibles (el zip de Windows no trae permisos Unix): corregir con el `find` de permisos del paso 4 (archivos `644`, carpetas `755`) |
+| `Interface ... not found` o `Failed opening required` de un archivo de `wp-includes` | La extracción o la subida quedó incompleta (archivos faltantes o vacíos). Contar archivos y comparar: `find wp-includes/ai-client -type f \| wc -l` da 6 y `find wp-includes/php-ai-client -type f \| wc -l` da 146. Volver a extraer encima (tar y zip sobreescriben); si la subida fue por FTP, que sea en **modo binario**; revisar también la cuota de disco del panel, el sitio ocupa ~218 MB descomprimido |
 | Página en blanco | PHP desactualizado o error de `wp-config.php`: revisar `wp-content/debug.log` y subir la versión de PHP a 8.1+ |
 | Las páginas del diseño dan 404 | Falta la carpeta `static/` o no se guardaron los Enlaces (regenera `.htaccess`) |
 | Sin estilos o imágenes rotas | Faltan `css/`, `js/`, `img/` en la raíz (el tema usa `<base href>` y pide `css/style.css` relativo a la raíz) |
