@@ -329,7 +329,7 @@
      WooCommerce redirige /checkout/ a /cart/): se añade un producto antes de
      abrir los iframes. Servido desde :80 la llamada es cross-origin y se
      ignora, igual que las filas de WooCommerce de esa variante. */
-  const carritoListo = fetch(WOO + '/?add-to-cart=154&nc=' + v, { credentials: 'same-origin' }).catch(() => {});
+  const carritoListo = fetch(WOO + '/?add-to-cart=268&nc=' + v, { credentials: 'same-origin' }).catch(() => {});
 
   const montar = () => PAGINAS.forEach((pag) => {
     const h2 = document.createElement('h2');
