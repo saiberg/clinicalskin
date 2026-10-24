@@ -78,7 +78,7 @@
     { nombre: 'Diagnóstico', ruta: '../diagnostico.html', tipo: 'quiz' },
     { nombre: 'Resultado', ruta: '../resultado.html', tipo: 'tarjetas' },
     { nombre: 'Tienda', ruta: WOO + '/shop/', tipo: 'tienda' },
-    { nombre: 'Ficha de producto', ruta: WOO + '/product/gel-limpiador-balance/', tipo: 'ficha' },
+    { nombre: 'Ficha de producto', ruta: WOO + '/product/effaclar-gel-m-limpiador-purificante-400ml/', tipo: 'ficha' },
     { nombre: 'Carrito', ruta: WOO + '/cart/', tipo: 'carrito' },
     { nombre: 'Pago', ruta: WOO + '/checkout/', tipo: 'checkout' }
   ];
@@ -329,7 +329,7 @@
      WooCommerce redirige /checkout/ a /cart/): se añade un producto antes de
      abrir los iframes. Servido desde :80 la llamada es cross-origin y se
      ignora, igual que las filas de WooCommerce de esa variante. */
-  const carritoListo = fetch(WOO + '/?add-to-cart=70&nc=' + v, { credentials: 'same-origin' }).catch(() => {});
+  const carritoListo = fetch(WOO + '/?add-to-cart=154&nc=' + v, { credentials: 'same-origin' }).catch(() => {});
 
   const montar = () => PAGINAS.forEach((pag) => {
     const h2 = document.createElement('h2');
