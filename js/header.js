@@ -13,12 +13,14 @@
   const LOGO = 'img/logoNotext-clinicalSkin.png';
   const ENLACES = [
     { href: 'index.html',       etiqueta: 'Inicio' },
-    { href: 'diagnostico.html', etiqueta: 'Diagnóstico' },
     { href: 'productos.html',   etiqueta: 'Productos' },
-    { href: 'filosofia.html',   etiqueta: 'Filosofía' },
+    { href: 'index.html#marcas', etiqueta: 'Marcas' },
+    { href: 'index.html#necesidades', etiqueta: 'Necesidades de la piel' },
+    { href: 'diagnostico.html', etiqueta: 'Test virtual' },
+    { href: 'filosofia.html',   etiqueta: 'Nosotros' },
     { href: 'contacto.html',    etiqueta: 'Contacto' }
   ];
-  const CTA = { href: 'diagnostico.html', etiqueta: 'Hacer mi diagnóstico' };
+  const CTA = { href: 'diagnostico.html', etiqueta: 'Realizar test' };
   /* Páginas que heredan el resaltado de otra (subpáginas) */
   const ACTIVO_HEREDADO = {
     'producto.html': 'productos.html',
@@ -52,10 +54,11 @@
   ).join('\n      ');
 
   const html = `
+  <div class="cs-topbar"><div class="container cs-topbar-inner"><span>Dermocosmética para tu rutina</span><span>Test virtual de la piel</span><span>Despacho a todo Chile</span><span>Pago seguro con Webpay</span></div></div>
   <div class="container nav">
     <a href="index.html" class="logo">
       <span class="logo-mark"><img src="${LOGO}" alt=""></span>
-      <span>Clinical Skin<small>Dermocosmética</small></span>
+      <span>Clinical Skin<small>La delicadeza de tu piel</small></span>
     </a>
     <nav class="nav-links">
       ${enlaces}
