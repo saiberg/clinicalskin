@@ -200,17 +200,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* Ilustraciones de producto: se asignan según el nombre */
   const PRODUCT_IMG = {
-    'Gel Limpiador Balance': 'img/productos/gel-balance.jpg',
-    'Sérum Equilibrio Botánico': 'img/productos/serum-equilibrio.jpg',
-    'Ampolla Luz Vitamina C': 'img/productos/ampolla-vitc.jpg',
-    'Bálsamo Centella Calma': 'img/productos/balsamo-centella.jpg',
-    'Crema Bruma de Avena': 'img/productos/crema-avena.jpg',
-    'Protector Solar Ligero SPF50': 'img/productos/protector-spf50.jpg',
-    'Tónico Exfoliante BHA 2%': 'img/productos/tonico-bha.jpg',
-    'Aceite Desmaquillante Suave': 'img/productos/aceite-desmaquillante.jpg',
-    'Leche Limpiadora Suave': 'img/productos/leche-cremosa.jpg',
-    'Gel Hidratante Oil-Free': 'img/productos/gel-hidratante.jpg',
-    'Sérum Hidra Plump': 'img/productos/serum-hidra.jpg'
+    'EUCERIN Gel Limpiador DermoPure Ultra 150ml': 'img/productos/diag-dermopure-ultra.jpg',
+    'Eau Agua Termal Avène Calmante, Desensibilizante y Suavizante 300ml': 'img/productos/diag-agua-termal-300.jpg',
+    'Crema Facial Dermopure Acción Intensiva Noche 40ml': 'img/productos/diag-dermopure-noche.jpg',
+    'Vichy Minéral 89 Sérum Facial Hidratante 50ml': 'img/productos/diag-mineral89.jpg',
+    'Liftactiv Sérum Collagen Specialist 16': 'img/productos/diag-liftactiv.jpg',
+    'EUCERIN Serum Facial Hyaluron-Filler Elasticity 3D 30ml': 'img/productos/diag-elasticity3d.jpg',
+    'Crema de Noche Hyaluron-Filler Elasticity Facial 50ml': 'img/productos/diag-crema-noche.jpg',
+    'Repuesto Crema Facial Eucerin Hyaluron Filler Refill Dia 50ml': 'img/productos/diag-repuesto-dia.jpg',
+    'EUCERIN Protector Solar Hydro Fluid Facial Ultra Light FPS50+ 50ml': 'img/productos/diag-hydro-fluid.jpg',
+    'Effaclar Gel +M Limpiador Purificante 400ml': 'img/productos/diag-effaclar.jpg',
+    'EUCERIN Ungüento Reparador Aquaphor 55ml': 'img/productos/diag-aquaphor.jpg'
   };
 
   const dressMedia = (el, name) => {

@@ -37,7 +37,7 @@ const CS_DIAG = (() => {
     },
 
     /* Orden en que se agregan los pasos extras (si el presupuesto alcanza) */
-    prioridadesExtra: ['limpiezaExtra', 'exfoliante', 'refuerzo', 'reparacion'],
+    prioridadesExtra: ['exfoliante', 'refuerzo', 'reparacion'],
 
     /* Protección solar */
     spf: { solConPrioridad: ['moderado', 'alto'] },
@@ -138,7 +138,7 @@ const CS_DIAG = (() => {
       {
         clave: 'bha',
         cond: (P, R) => R && R.exfolia,
-        texto: 'Introduce el exfoliante BHA solo {frecuenciaBHA} las primeras dos semanas para permitir que tu piel se adapte.'
+        texto: 'Introduce el exfoliante solo {frecuenciaBHA} las primeras dos semanas para permitir que tu piel se adapte.'
       },
       {
         clave: 'default',
@@ -154,114 +154,114 @@ const CS_DIAG = (() => {
      preocupaciones: acne | deshidratacion | manchas | edad              */
   const CATALOGO = [
     {
-      id: 'gel-balance', nombre: 'Gel Limpiador Balance', paso: 'limpieza',
+      id: 'eucerin-gel-limpiador-dermopure-ultra-150ml', nombre: 'EUCERIN Gel Limpiador DermoPure Ultra 150ml', paso: 'limpieza',
       tipos: ['mixta', 'grasa'], preocupaciones: ['acne'], agresividad: 'media',
-      frecuencia: 'Mañana y noche', precio: 19900, img: 'img/productos/gel-balance.jpg',
-      desc: 'Limpia sin resecar, regula el exceso de sebo.',
+      frecuencia: 'Mañana y noche', precio: 14490, img: 'img/productos/diag-dermopure-ultra.jpg',
+      desc: 'Gel limpiador de uso diario para piel grasa y con impurezas.',
       porque: 'Limpia el exceso de sebo de tu {tipoLargo} sin alterar la barrera: la base para que el resto de la rutina funcione.',
-      ficha: 'Limpieza diaria en gel para pieles mixtas y grasas: retira impurezas, exceso de sebo y residuos del día sin resecar. Deja la piel fresca y equilibrada, sin sensación de tirantez.',
+      ficha: 'Gel limpiador de textura transparente que retira impurezas, exceso de sebo y residuos del día sin resecar. Deja la piel fresca y equilibrada, sin sensación de tirantez.',
       modoUso: 'Masajea una pequeña cantidad sobre piel húmeda, mañana y noche, durante 30 segundos. Enjuaga con agua tibia y seca con toques suaves.',
-      ingredientes: 'Zinc PCA (regula el sebo), ácido salicílico suave, pantenol (calma) y glicerina vegetal (hidrata).'
+      ingredientes: 'Ácido salicílico, AHA suaves y glicerina.'
     },
     {
-      id: 'leche-cremosa', nombre: 'Leche Limpiadora Suave', paso: 'limpieza',
+      id: 'avene-eau-agua-termal-avene-calmante-desensibilizante-y-suavizante-300', nombre: 'Eau Agua Termal Avène Calmante, Desensibilizante y Suavizante 300ml', paso: 'limpieza',
       tipos: ['seca', 'sensible'], preocupaciones: ['deshidratacion'], agresividad: 'baja',
-      frecuencia: 'Mañana y noche', precio: 23500, img: 'img/productos/leche-cremosa.jpg',
-      desc: 'Limpieza cremosa sin jabones, ideal para piel seca o sensible.',
-      porque: 'Retira impurezas sin jabones agresivos: limpia tu {tipoLargo} dejando la barrera intacta.',
-      ficha: 'Limpiador cremoso sin jabones ni sulfatos, formulado para pieles secas y sensibles. Disuelve la suciedad y el maquillaje dejando la barrera cutánea intacta y una sensación aterciopelada.',
-      modoUso: 'Aplica sobre piel seca o húmeda con las yemas de los dedos, en movimientos circulares. Retira con algodón o enjuaga con agua tibia, mañana y noche.',
-      ingredientes: 'Avena coloidal, glicerina, aceite de almendras dulces y bisabolol (efecto calmante).'
+      frecuencia: 'Mañana y noche', precio: 15990, img: 'img/productos/diag-agua-termal-300.jpg',
+      desc: 'Agua termal en bruma: limpia y calma sin jabón.',
+      porque: 'Calma y limpia tu {tipoLargo} sin jabón ni fricción: una limpieza que respeta la barrera.',
+      ficha: 'Agua termal microfinada en bruma que limpia suavemente, desensibiliza y refresca. Ideal para pieles reactivas y como paso final de una rutina de doble limpieza.',
+      modoUso: 'Rocía sobre rostro y cuello mañana y noche y retira con un algodón suave o deja secar sin enjuagar.',
+      ingredientes: 'Agua termal de Avène, rica en oligoelementos.'
     },
     {
-      id: 'aceite-desmaquillante', nombre: 'Aceite Desmaquillante Suave', paso: 'limpieza',
-      tipos: ['todo'], preocupaciones: ['deshidratacion', 'manchas'], agresividad: 'baja',
-      frecuencia: 'Solo de noche', precio: 24300, img: 'img/productos/aceite-desmaquillante.jpg',
-      desc: 'Disuelve impurezas y protector solar sin agredir.',
-      porque: 'Doble limpieza de noche: retira protector solar y residuos que por el día tu piel no soltó.',
-      ficha: 'Aceite ligero que se emulsiona con agua para retirar protector solar, maquillaje resistente e impurezas del día sin frotar. Ideal como primera fase de la doble limpieza.',
-      modoUso: 'Solo de noche: aplica sobre piel seca, masajea un minuto, moja las manos y emulsiona hasta retirar con agua. Continúa con tu limpiador habitual.',
-      ingredientes: 'Aceite de jojoba, aceite de ricino, vitamina E y extracto de manzanilla.'
-    },
-    {
-      id: 'serum-equilibrio', nombre: 'Sérum Equilibrio Botánico', paso: 'tratamiento',
+      id: 'eucerin-crema-facial-dermopure-accion-intensiva-noche-40ml', nombre: 'Crema Facial Dermopure Acción Intensiva Noche 40ml', paso: 'tratamiento',
       tipos: ['mixta', 'grasa'], preocupaciones: ['acne'], agresividad: 'media',
-      frecuencia: 'Mañana y noche', precio: 34900, img: 'img/productos/serum-equilibrio.jpg',
-      desc: 'Niacinamida y zinc para controlar brillo y poros.',
-      porque: 'La niacinamida regula el sebo y afina los poros: ataca tu {preoc1Largo} sin resecar.',
-      ficha: 'Fórmula concentrada con 10% niacinamida, zinc PCA y extracto de centella asiática, diseñada para regular la producción de sebo, minimizar poros y calmar imperfecciones sin resecar la piel.',
-      modoUso: 'Aplica 3-4 gotas sobre rostro limpio, mañana y noche, antes de tu hidratante. Evita el contorno de ojos.',
-      ingredientes: 'Niacinamida 10%, zinc PCA, extracto de centella asiática y ácido hialurónico.'
+      frecuencia: 'Solo de noche', precio: 32990, img: 'img/productos/diag-dermopure-noche.jpg',
+      desc: 'Tratamiento nocturno con hidroxiácidos para piel grasa con tendencia al acné.',
+      porque: 'Los hidroxiácidos renuevan mientras duermes y regulan el sebo: ataca tu {preoc1Largo} sin sobretratar.',
+      ficha: 'Crema de noche con complejo de hidroxiácidos al 10% (glicólico, salicílico y polihidroxi) que destapa poros, elimina células muertas y reduce granos, puntos negros y marcas post-acné mientras controla el brillo.',
+      modoUso: 'Solo de noche: aplica una vez al día sobre piel limpia y seca. De día, acompaña siempre con protector solar.',
+      ingredientes: 'Complejo de hidroxiácidos al 10%, glicerina y pantenol.'
     },
     {
-      id: 'serum-hidra', nombre: 'Sérum Hidra Plump', paso: 'tratamiento',
+      id: 'vichy-mineral-89-serum-facial-hidratante-50ml', nombre: 'Vichy Minéral 89 Sérum Facial Hidratante 50ml', paso: 'tratamiento',
       tipos: ['todo'], preocupaciones: ['deshidratacion'], agresividad: 'baja',
-      frecuencia: 'Mañana y noche', precio: 36400, img: 'img/productos/serum-hidra.jpg',
-      desc: 'Ácido hialurónico de triple peso molecular para rellenar hidratación.',
-      porque: 'Ácido hialurónico que atrapa agua en la piel: la respuesta directa a tu {preoc1Largo}.',
-      ficha: 'Ácido hialurónico de triple peso molecular que capta agua en las distintas capas de la piel: rellena líneas de deshidratación, reafirma y devuelve la luminosidad perdida.',
-      modoUso: 'Aplica 2-3 gotas sobre piel ligeramente húmeda, mañana y noche, antes de tu crema. Tócala hasta que se absorba por completo.',
-      ingredientes: 'Ácido hialurónico (alto, medio y bajo peso molecular), panthenol y beta-glucanos.'
+      frecuencia: 'Mañana y noche', precio: 29990, img: 'img/productos/diag-mineral89.jpg',
+      desc: 'Booster hidratante con 89% de agua termal y ácido hialurónico.',
+      porque: 'Ácido hialurónico que atrapa agua en tu {tipoLargo}: la respuesta directa a tu {preoc1Largo}.',
+      ficha: 'Sérum gel con 89% de agua termal volcánica y ácido hialurónico de bajo peso molecular: fortalece la barrera, aporta luminosidad y deja la piel jugosa desde las primeras aplicaciones.',
+      modoUso: 'Aplica 2-3 gotas sobre piel ligeramente húmeda, mañana y noche, antes de tu crema.',
+      ingredientes: 'Agua termal Vichy al 89% y ácido hialurónico.'
     },
     {
-      id: 'ampolla-vitc', nombre: 'Ampolla Luz Vitamina C', paso: 'tratamiento',
-      tipos: ['todo'], preocupaciones: ['manchas', 'edad'], agresividad: 'media',
-      frecuencia: 'Solo mañana', precio: 31200, img: 'img/productos/ampolla-vitc.jpg',
-      desc: 'Ilumina y unifica el tono con vitamina C estable.',
-      porque: 'Vitamina C estable para unificar el tono y potenciar la protección de tu piel durante el día.',
-      ficha: 'Vitamina C estabilizada al 15% que unifica el tono, atenúa marcas y potencia la protección del protector solar. Aporta luminosidad desde las primeras semanas de uso.',
-      modoUso: 'Solo en la mañana: 4-5 gotas sobre rostro limpio, antes del hidratante y del protector solar. Los primeros días, úsala cada dos días para acostumbrar la piel.',
-      ingredientes: 'Vitamina C estabilizada 15%, ácido ferúlico, vitamina E y agua de hamamelis.'
-    },
-    {
-      id: 'crema-avena', nombre: 'Crema Bruma de Avena', paso: 'hidratacion',
-      tipos: ['seca', 'sensible'], preocupaciones: ['deshidratacion'], agresividad: 'baja',
-      frecuencia: 'Mañana y noche', precio: 28500, img: 'img/productos/crema-avena.jpg',
-      desc: 'Hidratación profunda con avena coloidal y ceramidas.',
-      porque: 'Avena coloidal y ceramidas reparan la barrera: hidratación profunda para tu {tipoLargo}.',
-      ficha: 'Crema de textura ligera con avena coloidal y ceramidas que reparan la barrera cutánea. Hidratación profunda sin oclusión para pieles secas que se sienten tirantizadas.',
-      modoUso: 'Aplica una avellana sobre rostro y cuello limpios, mañana y noche, después del sérum. En zonas muy secas, agrega una segunda capa por la noche.',
-      ingredientes: 'Avena coloidal 10%, ceramidas NP, glicerina y manteca de karité.'
-    },
-    {
-      id: 'gel-hidratante', nombre: 'Gel Hidratante Oil-Free', paso: 'hidratacion',
-      tipos: ['mixta', 'grasa'], preocupaciones: ['acne', 'deshidratacion'], agresividad: 'baja',
-      frecuencia: 'Mañana y noche', precio: 26900, img: 'img/productos/gel-hidratante.jpg',
-      desc: 'Hidratación en gel sin aceites, no obstruye poros.',
-      porque: 'Da comodidad a tu {tipoLargo} sin aceites ni grasa: hidrata sin apagar la zona T.',
-      ficha: 'Hidratación en gel sin aceites ni siliconas comedogénicas: aporta comodidad a pieles mixtas y grasas sin apagar la zona T ni obstruir los poros.',
-      modoUso: 'Aplica una nuez sobre rostro limpio, mañana y noche, después del sérum y antes del protector solar.',
-      ingredientes: 'Ácido hialurónico, aloe vera, beta-glucanos y agua de té verde.'
-    },
-    {
-      id: 'balsamo-centella', nombre: 'Bálsamo Centella Calma', paso: 'hidratacion',
-      tipos: ['sensible', 'seca'], preocupaciones: ['deshidratacion'], agresividad: 'baja',
-      frecuencia: 'Solo de noche', precio: 26700, img: 'img/productos/balsamo-centella.jpg',
-      desc: 'Repara la barrera cutánea y reduce el enrojecimiento.',
-      porque: 'Centella asiática repara durante la noche y calma: ideal si tu piel tiende a reaccionar.',
-      ficha: 'Bálsamo reparador de noche con centella asiática y madecassoside: reduce enrojecimientos, calma la piel reactiva y refuerza la barrera mientras duermes.',
-      modoUso: 'Úsalo solo de noche, como último paso, sobre rostro y cuello. En zonas irritadas aplica una capa más gruesa (método de sellado).',
-      ingredientes: 'Centella asiática 5%, madecassoside, ceramidas y bisabolol.'
-    },
-    {
-      id: 'protector-spf50', nombre: 'Protector Solar Ligero SPF50', paso: 'proteccion',
+      id: 'vichy-liftactiv-serum-collagen-specialist-16', nombre: 'Liftactiv Sérum Collagen Specialist 16', paso: 'tratamiento',
       tipos: ['todo'], preocupaciones: ['manchas', 'edad'], agresividad: 'baja',
-      frecuencia: 'Cada mañana', precio: 29500, img: 'img/productos/protector-spf50.jpg',
-      desc: 'Textura invisible, no obstruye poros.',
-      porque: 'Protección diaria: el mejor antienvejecimiento y el aliado de cualquier rutina.',
-      ficha: 'Protección solar de amplio espectro UVA/UVB con textura invisible y acabado mate: no obstruye poros ni deja residuo blanco. El paso más importante de tu rutina.',
-      modoUso: 'Último paso de la mañana, con generosidad (2 dedos para rostro y cuello). Reaplica cada 3 horas si te expones al sol.',
-      ingredientes: 'Filtros de última generación de amplio espectro, vitamina E y agua termal.'
+      frecuencia: 'Mañana y noche', precio: 39990, img: 'img/productos/diag-liftactiv.jpg',
+      desc: 'Sérum reafirmante con péptidos para densidad y luminosidad.',
+      porque: 'Péptidos que estimulan el colágeno: trabajan tu {preoc1Largo} devolviendo densidad y luz.',
+      ficha: 'Sérum con péptidos de colágeno y rhamnosa que mejora la densidad de la piel, suaviza líneas y aporta luminosidad con uso continuo. Textura fluida de rápida absorción.',
+      modoUso: 'Aplica 3-4 gotas por la mañana sobre rostro limpio, antes de la crema y del protector solar.',
+      ingredientes: 'Péptidos de colágeno y rhamnosa.'
     },
     {
-      id: 'tonico-bha', nombre: 'Tónico Exfoliante BHA 2%', paso: 'exfoliacion',
-      tipos: ['mixta', 'grasa'], preocupaciones: ['acne'], agresividad: 'alta',
-      frecuencia: 'De noche', precio: 27800, img: 'img/productos/tonico-bha.jpg',
-      desc: 'Desobstruye poros y previene nuevos brotes.',
-      porque: 'BHA que desobstruye poros mientras duermes: trabaja tu {preoc1Largo} sin dejar residuo.',
-      ficha: 'Exfoliante químico con 2% ácido salicílico que penetra en el poro, disuelve la obstrucción y previene nuevos brotes mientras duermes. Sin grano y sin fricción.',
-      modoUso: 'Noche: aplica con un algodón sobre rostro limpio, evitando el contorno de ojos y las zonas irritadas. Empieza una vez por semana y sube la frecuencia según tolerancia.',
-      ingredientes: 'Ácido salicílico (BHA) 2%, niacinamida, zinc PCA y agua de hamamelis.'
+      id: 'eucerin-serum-facial-hyaluron-filler-elasticity-3d-30ml', nombre: 'EUCERIN Serum Facial Hyaluron-Filler Elasticity 3D 30ml', paso: 'tratamiento',
+      tipos: ['todo'], preocupaciones: ['edad', 'manchas'], agresividad: 'media',
+      frecuencia: 'Mañana y noche', precio: 39990, img: 'img/productos/diag-elasticity3d.jpg',
+      desc: 'Sérum concentrado con efecto relleno y efecto lifting.',
+      porque: 'Ácido hialurónico de triple acción que rellena desde el interior: tu aliado contra tu {preoc1Largo}.',
+      ficha: 'Sérum antiarrugas de alta concentración que combina ácido hialurónico con activos reafirmantes: rellena las arrugas visibles, mejora la elasticidad y reafirma el contorno facial con uso diario.',
+      modoUso: 'Aplica sobre rostro limpio mañana y noche, con un suave masaje ascendente, antes de la crema.',
+      ingredientes: 'Ácido hialurónico y activos reafirmantes.'
+    },
+    {
+      id: 'eucerin-crema-de-noche-hyaluron-filler-elasticity-facial-50ml', nombre: 'Crema de Noche Hyaluron-Filler Elasticity Facial 50ml', paso: 'hidratacion',
+      tipos: ['seca', 'sensible'], preocupaciones: ['deshidratacion', 'edad'], agresividad: 'baja',
+      frecuencia: 'Mañana y noche', precio: 32990, img: 'img/productos/diag-crema-noche.jpg',
+      desc: 'Nutrición intensiva con ácido hialurónico y Arctiin.',
+      porque: 'Nutrición y regeneración nocturna para tu {tipoLargo}: despiertas con la piel más elástica.',
+      ficha: 'Crema de noche anti-edad para piel madura con ácido hialurónico de alto y bajo peso molecular, Arctiin y creatina: regenera durante el sueño, mejora la elasticidad y aporta hidratación intensiva con textura rica.',
+      modoUso: 'Aplica por la noche sobre rostro y cuello limpios; por la mañana, una avellana si tu piel lo pide.',
+      ingredientes: 'Ácido hialurónico, Arctiin y creatina.'
+    },
+    {
+      id: 'eucerin-repuesto-crema-facial-eucerin-hyaluron-filler-refill-dia-50ml', nombre: 'Repuesto Crema Facial Eucerin Hyaluron Filler Refill Dia 50ml', paso: 'hidratacion',
+      tipos: ['mixta', 'grasa'], preocupaciones: ['deshidratacion', 'edad'], agresividad: 'baja',
+      frecuencia: 'Mañana y noche', precio: 22990, img: 'img/productos/diag-repuesto-dia.jpg',
+      desc: 'Hidratante de día de textura ligera, no obstruye poros.',
+      porque: 'Hidratación ligera para tu {tipoLargo}: comodidad todo el día sin apagar la zona T.',
+      ficha: 'Crema hidratante de textura ligera con ácido hialurónico que suaviza las líneas de deshidratación y deja la piel confortable sin sensación grasa. En formato recargable.',
+      modoUso: 'Aplica mañana y noche sobre rostro limpio, después del sérum y antes del protector solar.',
+      ingredientes: 'Ácido hialurónico, glicerina y pantenol.'
+    },
+    {
+      id: 'eucerin-protector-solar-hydro-fluid-facial-ultra-light-fps50-50ml', nombre: 'EUCERIN Protector Solar Hydro Fluid Facial Ultra Light FPS50+ 50ml', paso: 'proteccion',
+      tipos: ['todo'], preocupaciones: ['manchas', 'edad'], agresividad: 'baja',
+      frecuencia: 'Cada mañana', precio: 15990, img: 'img/productos/diag-hydro-fluid.jpg',
+      desc: 'Fluido facial ultraligero con FPS50+ de amplio espectro.',
+      porque: 'Protección diaria: el mejor antienvejecimiento y el aliado de cualquier rutina.',
+      ficha: 'Fluido solar de textura ultraligera con protección UVA/UVB FPS50+: no deja residuo blanco ni sensación grasa y sirve de último paso de la mañana. Resiste sudor y agua.',
+      modoUso: 'Último paso de la mañana, con generosidad (2 dedos para rostro y cuello). Reaplica cada 3 horas si te expones al sol.',
+      ingredientes: 'Filtros UVA/UVB de amplio espectro y glicerina.'
+    },
+    {
+      id: 'lrp-effaclar-gel-m-limpiador-purificante-400ml', nombre: 'Effaclar Gel +M Limpiador Purificante 400ml', paso: 'exfoliacion',
+      tipos: ['mixta', 'grasa'], preocupaciones: ['acne'], agresividad: 'media',
+      frecuencia: 'De noche', precio: 19990, img: 'img/productos/diag-effaclar.jpg',
+      desc: 'Gel exfoliante con LHA y AHA que desobstruye poros.',
+      porque: 'Exfolía mientras duermes sin fricción: desobstruye poros y previene nuevos brotes.',
+      ficha: 'Gel limpiador exfoliante con LHA y ácido glicólico que renueva la superficie, destapa los poros y afina la textura sin grano. Uso nocturno escalonado según tolerancia.',
+      modoUso: 'Noche: 2-3 veces por semana en lugar de tu limpiador habitual, dejando en contacto un minuto antes de enjuagar.',
+      ingredientes: 'LHA y ácido glicólico, glicerina.'
+    },
+    {
+      id: 'eucerin-unguento-reparador-aquaphor-55ml', nombre: 'EUCERIN Ungüento Reparador Aquaphor 55ml', paso: 'hidratacion',
+      tipos: ['seca', 'sensible'], preocupaciones: ['deshidratacion'], agresividad: 'baja',
+      frecuencia: 'Solo de noche', precio: 10990, img: 'img/productos/diag-aquaphor.jpg',
+      desc: 'Ungüento reparador de barrera para zonas muy secas o irritadas.',
+      porque: 'Repara y sella durante la noche: ideal si tu piel tiende a reaccionar o a resecarse.',
+      ficha: 'Ungüento reparador con panthenol, glicerina y bisabolol que forma una película protectora semioclusiva: acelera la regeneración de la piel seca o irritada y alivia la tirantez.',
+      modoUso: 'Solo de noche, en capa fina sobre zonas secas o como último paso de sellado en rostro y cuello.',
+      ingredientes: 'Panthenol, glicerina y bisabolol.'
     }
   ];
 
@@ -355,29 +355,40 @@ const CS_DIAG = (() => {
     const esMixture = ['mixta', 'grasa'].includes(P.tipo);
     const esSensiblePerfil = P.tipo === 'sensible' || P.sensibilidad !== 'baja';
 
-    /* --- Core (siempre entra) --- */
-    poner((esSeca || P.tipo === 'sensible') ? 'leche-cremosa' : 'gel-balance', 'ambos');
+    /* SKU reales del catálogo: producto.html?id=<sku> resuelve la ficha y el
+       puente del diagnóstico mapea nombre → id con estos mismos productos. */
+    const K = {
+      limpiezaGrasa: 'eucerin-gel-limpiador-dermopure-ultra-150ml',
+      limpiezaSuave: 'avene-eau-agua-termal-avene-calmante-desensibilizante-y-suavizante-300',
+      acne: 'eucerin-crema-facial-dermopure-accion-intensiva-noche-40ml',
+      hidratacionSerum: 'vichy-mineral-89-serum-facial-hidratante-50ml',
+      manchas: 'vichy-liftactiv-serum-collagen-specialist-16',
+      edad: 'eucerin-serum-facial-hyaluron-filler-elasticity-3d-30ml',
+      cremaSeca: 'eucerin-crema-de-noche-hyaluron-filler-elasticity-facial-50ml',
+      cremaGrasa: 'eucerin-repuesto-crema-facial-eucerin-hyaluron-filler-refill-dia-50ml',
+      protector: 'eucerin-protector-solar-hydro-fluid-facial-ultra-light-fps50-50ml',
+      exfoliante: 'lrp-effaclar-gel-m-limpiador-purificante-400ml',
+      reparacion: 'eucerin-unguento-reparador-aquaphor-55ml'
+    };
 
-    const tratMap = { acne: 'serum-equilibrio', deshidratacion: 'serum-hidra', manchas: 'ampolla-vitc', edad: 'ampolla-vitc' };
-    const slotTrat = (P.preoc1 === 'manchas' || P.preoc1 === 'edad') ? 'am' : 'ambos';
+    /* --- Core (siempre entra) --- */
+    poner(esSeca || P.tipo === 'sensible' ? K.limpiezaSuave : K.limpiezaGrasa, 'ambos');
+
+    const tratMap = { acne: K.acne, deshidratacion: K.hidratacionSerum, manchas: K.manchas, edad: K.edad };
+    const slotTrat = P.preoc1 === 'acne' ? 'pm' : 'ambos';
     poner(tratMap[P.preoc1], slotTrat);
 
-    poner((esSeca || P.tipo === 'sensible') ? 'crema-avena' : 'gel-hidratante', 'ambos');
-    poner('protector-spf50', 'am');
+    poner(esSeca || P.tipo === 'sensible' ? K.cremaSeca : K.cremaGrasa, 'ambos');
+    poner(K.protector, 'am');
 
     /* --- Extras por prioridad (respetando el presupuesto) --- */
     const EXTRAS = {
-      limpiezaExtra: () =>
-        (CONFIG.spf.solConPrioridad.includes(P.sol) || P.rutina === 'multi' || esMixture)
-          ? poner('aceite-desmaquillante', 'pm')
-          : null,
-
       exfoliante: () => {
         const activa = CONFIG.exfoliacion.activadaPor.some((c) => P.preocupaciones.includes(c));
         const okTipo = CONFIG.exfoliacion.tiposPermitidos.includes(P.tipo);
         const okSens = P.sensibilidad !== CONFIG.exfoliacion.bloqueadaSiSensibilidad;
         if (!(activa && okTipo && okSens)) return null;
-        const e = poner('tonico-bha', 'pm');
+        const e = poner(K.exfoliante, 'pm');
         if (e) {
           e.freq = CONFIG.exfoliacion.frecuenciaPorTolerancia[P.tolerancia] || e.freq;
           exfolia = true;
@@ -388,22 +399,25 @@ const CS_DIAG = (() => {
       refuerzo: () => {
         if (!P.preoc2 || P.preoc2 === P.preoc1 || P.preocupaciones.length < 2) return null;
         const mapa = {
-          acne: ['serum-equilibrio', 'ambos'],
-          deshidratacion: ['crema-avena', 'ambos'],
-          manchas: ['ampolla-vitc', 'am'],
-          edad: ['ampolla-vitc', 'am']
+          acne: [K.acne, 'pm'],
+          deshidratacion: [K.hidratacionSerum, 'ambos'],
+          manchas: [K.manchas, 'ambos'],
+          edad: [K.edad, 'ambos']
         }[P.preoc2];
         if (!mapa) return null;
-        if (elegidos.has(mapa[0])) {
-          const alt = { deshidratacion: 'serum-hidra', manchas: 'serum-equilibrio', edad: 'serum-equilibrio', acne: 'balsamo-centella' }[P.preoc2];
-          return alt ? poner(alt, 'ambos') : null;
-        }
-        return poner(mapa[0], mapa[1]);
+        if (poner(mapa[0], mapa[1])) return mapa[0];
+        const alt = {
+          deshidratacion: [K.cremaSeca, 'ambos'],
+          manchas: [K.hidratacionSerum, 'ambos'],
+          edad: [K.manchas, 'ambos'],
+          acne: [K.limpiezaGrasa, 'pm']
+        }[P.preoc2];
+        return alt ? poner(alt[0], alt[1]) : null;
       },
 
       reparacion: () =>
         (esSensiblePerfil || exfolia || esSeca)
-          ? poner('balsamo-centella', 'pm')
+          ? poner(K.reparacion, 'pm')
           : null
     };
 
