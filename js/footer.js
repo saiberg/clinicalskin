@@ -22,7 +22,8 @@
       links: [
         { href: 'diagnostico.html', etiqueta: 'Diagnóstico' },
         { href: 'productos.html',   etiqueta: 'Productos' },
-        { href: 'filosofia.html',   etiqueta: 'Filosofía' }
+        { href: 'filosofia.html',   etiqueta: 'Filosofía' },
+        { href: 'creditos-marcas.html', etiqueta: 'Fuentes de logotipos' }
       ]
     },
     {
@@ -30,6 +31,7 @@
       links: [
         { href: 'contacto.html', etiqueta: 'Contacto' },
         { href: 'terminos.html#envios', etiqueta: 'Envíos' },
+        { href: 'img/marcas/creditos.html', etiqueta: 'Fuentes de logotipos' },
         { href: '#',             etiqueta: 'Preguntas frecuentes' },
         { href: 'terminos.html', etiqueta: 'Términos y condiciones' },
         { href: 'politica-privacidad.html', etiqueta: 'Política de privacidad' }

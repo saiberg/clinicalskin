@@ -1122,6 +1122,11 @@ ul { list-style: none; }
 .cs-brands-band .cs-section-heading h2 { font-size: clamp(1.9rem, 3vw, 2.6rem); }
 .cs-brand-list { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
 .cs-brand-list span { display: grid; place-items: center; min-height: 72px; padding: 12px; border: 1px solid rgba(144,111,78,.17); border-radius: 4px; background: rgba(255,253,250,.86); color: #51453b; font-family: var(--font-heading); font-size: clamp(.95rem, 1.45vw, 1.35rem); text-align: center; }
+.cs-brand-list .cs-brand-logo { display: grid; place-items: center; min-height: 72px; padding: 13px 16px; border: 1px solid rgba(144,111,78,.14); border-radius: 4px; background: rgba(255,253,250,.9); transition: background .2s ease, transform .2s ease; }
+.cs-brand-list .cs-brand-logo:hover { background: #fff; transform: translateY(-2px); }
+.cs-brand-logo img { width: 100%; max-width: 155px; height: 37px; object-fit: contain; mix-blend-mode: multiply; }
+.cs-brand-credit { margin-top: 12px; color: #938274; font-size: .68rem; text-align: right; }
+.cs-brand-credit a { text-decoration: underline; text-underline-offset: 2px; }
 
 .cs-how { padding: clamp(60px, 7vw, 94px) 0; background: #fffdfa; }
 .cs-how-layout { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 8vw, 110px); align-items: center; }
@@ -1140,6 +1145,136 @@ ul { list-style: none; }
 .cs-trust-grid > div > span { grid-row: span 2; display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #c5a17b; border-radius: 50%; color: #9b704b; font-size: 1.2rem; }
 .cs-trust-grid strong { color: #53463b; font-size: .87rem; font-weight: 600; }
 .cs-trust-grid small { color: #8a7a6c; font-size: .76rem; }
+.cs-logo-credits { max-width: 840px; margin: 36px auto 0; padding: 28px; border: 1px solid var(--color-border); background: #fffdfa; }
+.cs-logo-credits p { padding: 12px 0; border-bottom: 1px solid #f0e8df; color: #65564a; }
+.cs-logo-credits p:last-child { border-bottom: 0; }
+.cs-logo-credits a { color: #946c49; text-decoration: underline; text-underline-offset: 2px; }
+
+/* Ajustes de composición para la referencia nueva. */
+.cs-home .container { max-width: 1440px; }
+.nav-user { display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 36px; border: 1px solid #eadfd3; border-radius: 50%; background: #fffdfa; color: #704d35; transition: background .2s ease, color .2s ease; }
+.nav-user:hover { background: #a77a53; color: #fff; }
+.nav-user svg { width: 19px; height: 19px; }
+.cs-hero-grid { grid-template-columns: minmax(0, 1.06fr) minmax(0, .9fr) minmax(175px, .34fr); gap: clamp(18px, 2.2vw, 32px); }
+.cs-hero-art { min-height: 410px; }
+.cs-hero-product-back { width: 45%; height: 285px; right: 0; }
+.cs-hero-product-front { width: 49%; height: 310px; left: 1%; }
+.cs-hero-caption { left: 24%; right: auto; bottom: -1px; }
+.cs-hero-reco { position: absolute; z-index: 3; right: -5px; top: 10px; width: min(220px, 54%); padding: 11px; border: 1px solid #efe3d7; border-radius: 5px; background: rgba(255,253,250,.97); box-shadow: 0 12px 28px rgba(77,58,41,.14); }
+.cs-hero-reco > span { display: block; margin-bottom: 7px; color: #8a6a4c; font-size: .64rem; font-weight: 600; }
+.cs-hero-reco > a:first-of-type { display: block; width: 54px; height: 54px; float: left; margin: 0 9px 6px 0; overflow: hidden; background: #f3ede5; }
+.cs-hero-reco > a:first-of-type img { width: 100%; height: 100%; object-fit: cover; }
+.cs-hero-reco div strong, .cs-hero-reco div small, .cs-hero-reco div b { display: block; line-height: 1.25; }
+.cs-hero-reco div strong { color: #43382f; font-size: .74rem; }
+.cs-hero-reco div small { margin-top: 3px; color: #84766a; font-size: .66rem; }
+.cs-hero-reco div b { margin-top: 5px; color: #47382d; font-size: .78rem; }
+.cs-hero-reco-link { display: block; clear: both; margin-top: 8px; padding: 7px 9px; border-radius: 3px; background: #9e6f49; color: white; font-size: .68rem; font-weight: 600; text-align: center; }
+.cs-hero-side { display: grid; align-content: center; gap: 0; padding: 6px 0 6px 15px; border-left: 1px solid rgba(163,122,83,.24); }
+.cs-hero-side > div { display: grid; grid-template-columns: 34px 1fr; align-items: center; min-height: 67px; padding: 8px 0; color: #5b4b3e; font-size: .77rem; line-height: 1.3; }
+.cs-hero-side > div + div { border-top: 1px solid rgba(163,122,83,.15); }
+.cs-hero-side > div > span { grid-row: span 2; display: grid; place-items: center; width: 29px; height: 29px; border: 1px solid #c4a17c; border-radius: 50%; color: #946d49; font-size: .95rem; }
+.cs-hero-side small { color: #89796a; font-size: .65rem; }
+
+.cs-concerns { padding: 33px 0 31px; }
+.cs-concerns-layout { grid-template-columns: minmax(220px,.65fr) minmax(0,2.35fr); gap: 20px; }
+.cs-section-intro { align-self: center; }
+.cs-section-intro h2 { font-size: clamp(1.45rem, 2.1vw, 2rem); }
+.cs-section-intro p { margin: 8px 0 0; font-size: .8rem; line-height: 1.45; }
+.cs-need-grid { grid-template-columns: repeat(5,minmax(0,1fr)); gap: 9px; }
+.cs-need-card { min-height: 0; padding: 0 0 10px; display: flex; justify-content: flex-start; border-radius: 5px; background: #fffdfa; }
+.cs-need-card::after { display: none; }
+.cs-need-card .cs-need-photo { position: relative; inset: auto; display: block; width: 100%; height: clamp(76px,8vw,112px); flex: 0 0 auto; margin-bottom: 8px; background: radial-gradient(ellipse at 60% 35%,rgba(255,255,255,.8),transparent 45%),linear-gradient(130deg,#ead8ca,#f8f1e9 55%,#dfc2a8); }
+.cs-need-photo-2 { background: radial-gradient(ellipse at 52% 45%,#f5e5dc 0 24%,transparent 25%),linear-gradient(135deg,#e8d2c4,#fbf1e9 50%,#d9baa2) !important; }
+.cs-need-photo-3 { background: radial-gradient(ellipse at 48% 42%,#fbede5 0 26%,transparent 27%),linear-gradient(135deg,#dfc8b7,#fbf2eb 55%,#e5c2ae) !important; }
+.cs-need-photo-4 { background: radial-gradient(ellipse at 57% 35%,#f8eae2 0 25%,transparent 26%),linear-gradient(135deg,#e9d7cb,#fff7f0 54%,#ddc2ac) !important; }
+.cs-need-photo-5 { background: radial-gradient(ellipse at 42% 36%,#eedbd0 0 24%,transparent 25%),linear-gradient(135deg,#d9c2b2,#f9f1e9 54%,#e6cdb8) !important; }
+.cs-need-card strong { display: block; max-width: none; margin: 0 10px; font-size: .92rem; }
+.cs-need-card small { display: flex; justify-content: space-between; align-items: center; gap: 4px; margin: 1px 10px 0; font-size: .66rem; }
+.cs-need-card small b { position: static; color: #936b47; font-size: .9rem; }
+
+.cs-featured { padding: 34px 0 38px; background: #fffdfa; }
+.cs-showcase-layout { display: grid; grid-template-columns: minmax(0,1.35fr) minmax(300px,.85fr); gap: 20px; align-items: stretch; }
+.cs-showcase-products { min-width: 0; }
+.cs-showcase-products .cs-section-heading { margin-bottom: 17px; }
+.cs-showcase-products .cs-section-heading h2 { font-size: clamp(1.5rem,2.3vw,2.1rem); }
+.cs-showcase-products .cs-section-heading p { font-size: .8rem; }
+.cs-product-grid { grid-template-columns: repeat(5,minmax(0,1fr)); gap: 9px; }
+.cs-product-card { padding: 6px 6px 9px; border-radius: 5px; }
+.cs-product-photo { aspect-ratio: 1 / .88; }
+.cs-product-meta { margin: 9px 2px 5px; font-size: .55rem; }
+.cs-product-card h3 { min-height: 2.9em; margin: 0 2px; font-size: .76rem; }
+.cs-product-price { margin: 5px 2px 7px; font-size: .84rem; }
+.cs-product-button { min-height: 32px; padding: 6px 7px; font-size: .65rem; }
+.cs-test-card { display: grid; grid-template-columns: 1fr; grid-template-rows: minmax(150px,1fr) auto auto; overflow: hidden; border: 1px solid #eadbca; border-radius: 5px; background: #f4e8dc; }
+.cs-test-card-photo { min-height: 160px; background: radial-gradient(ellipse at 70% 32%,rgba(255,255,255,.8),transparent 31%),radial-gradient(ellipse at 28% 62%,rgba(174,122,81,.20),transparent 42%),linear-gradient(112deg,#e7d2bf,#f7eee5 58%,#e3c6ae); }
+.cs-test-card-copy { padding: 16px 20px 13px; }
+.cs-test-card-copy .eyebrow { margin-bottom: 5px; font-size: .61rem; letter-spacing: .12em; }
+.cs-test-card-copy h2 { font-size: clamp(1.55rem,2.2vw,2.1rem); }
+.cs-test-card-copy p { margin: 7px 0 12px; font-size: .78rem; line-height: 1.5; }
+.cs-test-card-copy .btn { padding: 10px 17px; font-size: .73rem; }
+.cs-test-card-points { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; padding: 10px 14px; border-top: 1px solid rgba(166,124,83,.2); background: rgba(255,253,250,.7); }
+.cs-test-card-points li { color: #655548; font-size: .62rem; text-align: center; }
+
+.cs-brand-list .cs-brand-logo { min-height: 72px; }
+.cs-brand-logo img { max-width: 165px; height: 43px; }
+.cs-closing-band { padding: 44px 0; background: #f5ede4; border-top: 1px solid #eadfd3; }
+.cs-closing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center; }
+.cs-closing-test { padding: 28px 32px; border: 1px solid rgba(169,126,82,.22); background: linear-gradient(118deg,#ead8c7,#faf4ed 70%); }
+.cs-closing-test h2 { color: #554236; font-size: clamp(1.6rem,2.5vw,2.35rem); }
+.cs-closing-test p { max-width: 470px; margin: 9px 0 15px; font-size: .84rem; }
+.cs-closing-test .btn { padding: 11px 18px; font-size: .76rem; }
+.cs-closing-benefits { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.cs-closing-benefits > div { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; padding: 17px 13px; border: 1px solid rgba(169,126,82,.18); background: rgba(255,253,250,.75); }
+.cs-closing-benefits > div > span { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid #c5a17b; border-radius: 50%; color: #926b49; }
+.cs-closing-benefits strong { display: block; color: #54463a; font-size: .75rem; }
+.cs-closing-benefits small { display: block; margin-top: 4px; color: #88796d; font-size: .65rem; line-height: 1.4; }
+
+@media (max-width: 1280px) {
+  .cs-hero-grid { grid-template-columns: minmax(0,1.05fr) minmax(0,.95fr); }
+  .cs-hero-side { grid-column: 1 / -1; grid-template-columns: repeat(5,minmax(0,1fr)); border-left: 0; border-top: 1px solid rgba(163,122,83,.24); padding: 4px 0 0; }
+  .cs-hero-side > div { grid-template-columns: 31px 1fr; min-height: 54px; padding: 5px 8px; font-size: .7rem; }
+  .cs-hero-side > div + div { border-top: 0; border-left: 1px solid rgba(163,122,83,.15); }
+  .cs-showcase-layout { grid-template-columns: 1fr; }
+  .cs-test-card { grid-template-columns: .8fr 1.2fr; grid-template-rows: auto auto; }
+  .cs-test-card-photo { grid-column: 1; grid-row: 1 / 3; min-height: 260px; }
+  .cs-test-card-copy { grid-column: 2; grid-row: 1; align-self: center; }
+  .cs-test-card-points { grid-column: 2; grid-row: 2; }
+}
+@media (max-width: 1050px) {
+  .cs-concerns-layout { grid-template-columns: 1fr; }
+  .cs-section-intro { text-align: center; }
+  .cs-section-intro p { margin-left: auto; margin-right: auto; }
+  .cs-product-grid { grid-template-columns: repeat(5,minmax(0,1fr)); }
+}
+@media (max-width: 780px) {
+  .cs-home .container { max-width: var(--max-width); }
+  .cs-hero-grid { grid-template-columns: 1fr; }
+  .cs-hero-side { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .cs-hero-side > div + div { border-left: 0; }
+  .cs-hero-side > div:nth-child(even) { border-left: 1px solid rgba(163,122,83,.15); }
+  .cs-concerns { padding: 28px 0; }
+  .cs-need-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .cs-need-card .cs-need-photo { height: 100px; }
+  .cs-product-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .cs-test-card { grid-template-columns: 1fr; grid-template-rows: 165px auto auto; }
+  .cs-test-card-photo { grid-column: 1; grid-row: 1; min-height: 0; }
+  .cs-test-card-copy { grid-column: 1; grid-row: 2; }
+  .cs-test-card-points { grid-column: 1; grid-row: 3; }
+  .cs-closing-grid { grid-template-columns: 1fr; }
+  .cs-closing-benefits { grid-template-columns: repeat(3,1fr); }
+}
+@media (max-width: 460px) {
+  .cs-hero-reco { width: 54%; padding: 8px; }
+  .cs-hero-reco > a:first-of-type { width: 44px; height: 44px; }
+  .cs-hero-reco div strong { font-size: .67rem; }
+  .cs-hero-side { grid-template-columns: 1fr 1fr; }
+  .cs-hero-side > div { font-size: .65rem; }
+  .cs-need-grid { gap: 8px; }
+  .cs-need-card strong { margin: 0 8px; font-size: .83rem; }
+  .cs-need-card small { margin: 1px 8px 0; font-size: .6rem; }
+  .cs-test-card-points { grid-template-columns: 1fr; }
+  .cs-closing-benefits { grid-template-columns: 1fr; }
+}
 
 @media (max-width: 1120px) {
   .logo { font-size: 1.55rem; gap: 8px; }
@@ -1200,9 +1335,10 @@ ul { list-style: none; }
 }
 @media (max-width: 460px) {
   .nav { height: 92px; min-height: 92px; padding: 7px 16px; }
-  .logo { font-size: 1.25rem; }
-  .logo .logo-mark { width: 42px; height: 42px; }
-  .nav-actions { gap: 7px; }
+  .logo { font-size: 1.18rem; }
+  .logo .logo-mark { width: 40px; height: 40px; }
+  .nav-actions { gap: 4px; }
+  .nav-cart, .nav-user { width: 32px; height: 32px; flex-basis: 32px; }
   .nav-links { top: 120px; }
   .cs-topbar-inner span:not(:first-child) { display: none; }
   .cs-topbar { font-size: .66rem; }
@@ -1216,7 +1352,8 @@ ul { list-style: none; }
   .cs-need-card strong { font-size: 1.05rem; }
   .cs-need-card small { font-size: .7rem; }
   .cs-brand-list { gap: 7px; }
-  .cs-brand-list span { min-height: 58px; font-size: .9rem; }
+  .cs-brand-list .cs-brand-logo { min-height: 58px; padding: 8px; }
+  .cs-brand-logo img { height: 29px; }
 }
 
 /* =========================================================

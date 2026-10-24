@@ -78,6 +78,9 @@
           <a class="search-all" href="productos.html">Ver todos los productos →</a>
         </div>
       </div>
+      <a href="my-account/" class="nav-user" aria-label="Mi cuenta" title="Mi cuenta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.4"/><path d="M5.5 20c.5-3.3 3-5.2 6.5-5.2s6 1.9 6.5 5.2"/></svg>
+      </a>
       <a href="carrito.html" class="nav-cart" aria-label="Ver carrito">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
       </a>
