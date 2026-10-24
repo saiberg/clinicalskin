@@ -1156,10 +1156,12 @@ ul { list-style: none; }
 .nav-user:hover { background: #a77a53; color: #fff; }
 .nav-user svg { width: 19px; height: 19px; }
 .cs-hero-grid { grid-template-columns: minmax(0, 1.06fr) minmax(0, .9fr) minmax(175px, .34fr); gap: clamp(18px, 2.2vw, 32px); }
+.cs-hero { isolation: isolate; background: #f4e6d9; }
+.cs-hero-background { position: absolute; z-index: -2; inset: 0; overflow: hidden; }
+.cs-hero-background img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.cs-hero::before { z-index: -1; inset: 0; width: 100%; height: auto; border: 0; border-radius: 0; box-shadow: none; background: linear-gradient(90deg,rgba(255,250,245,.96) 0%,rgba(255,250,245,.84) 29%,rgba(255,250,245,.12) 60%,rgba(255,250,245,.32) 100%); }
 .cs-hero-art { min-height: 410px; }
-.cs-hero-product-back { width: 45%; height: 285px; right: 0; }
-.cs-hero-product-front { width: 49%; height: 310px; left: 1%; }
-.cs-hero-caption { left: 24%; right: auto; bottom: -1px; }
+.cs-hero-art { min-height: 350px; }
 .cs-hero-reco { position: absolute; z-index: 3; right: -5px; top: 10px; width: min(220px, 54%); padding: 11px; border: 1px solid #efe3d7; border-radius: 5px; background: rgba(255,253,250,.97); box-shadow: 0 12px 28px rgba(77,58,41,.14); }
 .cs-hero-reco > span { display: block; margin-bottom: 7px; color: #8a6a4c; font-size: .64rem; font-weight: 600; }
 .cs-hero-reco > a:first-of-type { display: block; width: 54px; height: 54px; float: left; margin: 0 9px 6px 0; overflow: hidden; background: #f3ede5; }
@@ -1183,14 +1185,9 @@ ul { list-style: none; }
 .cs-need-grid { grid-template-columns: repeat(5,minmax(0,1fr)); gap: 9px; }
 .cs-need-card { min-height: 0; padding: 0 0 10px; display: flex; justify-content: flex-start; border-radius: 5px; background: #fffdfa; }
 .cs-need-card::after { display: none; }
-.cs-need-card .cs-need-photo { position: relative; inset: auto; display: block; width: 100%; height: clamp(76px,8vw,112px); flex: 0 0 auto; margin-bottom: 8px; background: radial-gradient(ellipse at 60% 35%,rgba(255,255,255,.8),transparent 45%),linear-gradient(130deg,#ead8ca,#f8f1e9 55%,#dfc2a8); }
-.cs-need-photo-2 { background: radial-gradient(ellipse at 52% 45%,#f5e5dc 0 24%,transparent 25%),linear-gradient(135deg,#e8d2c4,#fbf1e9 50%,#d9baa2) !important; }
-.cs-need-photo-3 { background: radial-gradient(ellipse at 48% 42%,#fbede5 0 26%,transparent 27%),linear-gradient(135deg,#dfc8b7,#fbf2eb 55%,#e5c2ae) !important; }
-.cs-need-photo-4 { background: radial-gradient(ellipse at 57% 35%,#f8eae2 0 25%,transparent 26%),linear-gradient(135deg,#e9d7cb,#fff7f0 54%,#ddc2ac) !important; }
-.cs-need-photo-5 { background: radial-gradient(ellipse at 42% 36%,#eedbd0 0 24%,transparent 25%),linear-gradient(135deg,#d9c2b2,#f9f1e9 54%,#e6cdb8) !important; }
-.cs-need-card strong { display: block; max-width: none; margin: 0 10px; font-size: .92rem; }
-.cs-need-card small { display: flex; justify-content: space-between; align-items: center; gap: 4px; margin: 1px 10px 0; font-size: .66rem; }
-.cs-need-card small b { position: static; color: #936b47; font-size: .9rem; }
+.cs-need-card .cs-need-photo { display: none; }
+.cs-need-card > img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 4px; }
+.cs-need-card strong, .cs-need-card small { display: none; }
 
 .cs-featured { padding: 34px 0 38px; background: #fffdfa; }
 .cs-showcase-layout { display: grid; grid-template-columns: minmax(0,1.35fr) minmax(300px,.85fr); gap: 20px; align-items: stretch; }
@@ -1214,6 +1211,8 @@ ul { list-style: none; }
 .cs-test-card-copy .btn { padding: 10px 17px; font-size: .73rem; }
 .cs-test-card-points { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; padding: 10px 14px; border-top: 1px solid rgba(166,124,83,.2); background: rgba(255,253,250,.7); }
 .cs-test-card-points li { color: #655548; font-size: .62rem; text-align: center; }
+.cs-test-card-full { display: block; align-self: center; overflow: hidden; border: 1px solid #eadbca; border-radius: 5px; background: #f4e8dc; box-shadow: 0 8px 22px rgba(77,58,41,.08); }
+.cs-test-card-full img { display: block; width: 100%; height: auto; }
 
 .cs-brand-list .cs-brand-logo { min-height: 72px; }
 .cs-brand-logo img { max-width: 165px; height: 43px; }
@@ -1228,6 +1227,10 @@ ul { list-style: none; }
 .cs-closing-benefits > div > span { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid #c5a17b; border-radius: 50%; color: #926b49; }
 .cs-closing-benefits strong { display: block; color: #54463a; font-size: .75rem; }
 .cs-closing-benefits small { display: block; margin-top: 4px; color: #88796d; font-size: .65rem; line-height: 1.4; }
+.cs-advisory-band { padding: 34px 0 46px; background: #f5ede4; border-top: 1px solid #eadfd3; }
+.cs-advisory-layout { display: block; max-width: 720px; }
+.cs-advisory-visual { display: block; width: min(100%,700px); margin: 0 auto; overflow: hidden; border: 1px solid #eadbca; border-radius: 5px; background: #f5ede4; box-shadow: 0 10px 28px rgba(77,58,41,.08); }
+.cs-advisory-visual img { display: block; width: 100%; height: auto; }
 
 @media (max-width: 1280px) {
   .cs-hero-grid { grid-template-columns: minmax(0,1.05fr) minmax(0,.95fr); }
@@ -1249,12 +1252,14 @@ ul { list-style: none; }
 @media (max-width: 780px) {
   .cs-home .container { max-width: var(--max-width); }
   .cs-hero-grid { grid-template-columns: 1fr; }
+  .cs-hero-background img { object-position: 58% center; }
   .cs-hero-side { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .cs-hero-side > div + div { border-left: 0; }
   .cs-hero-side > div:nth-child(even) { border-left: 1px solid rgba(163,122,83,.15); }
   .cs-concerns { padding: 28px 0; }
   .cs-need-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .cs-need-card .cs-need-photo { height: 100px; }
+  .cs-need-card > img { aspect-ratio: 3 / 2; }
   .cs-product-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .cs-test-card { grid-template-columns: 1fr; grid-template-rows: 165px auto auto; }
   .cs-test-card-photo { grid-column: 1; grid-row: 1; min-height: 0; }
