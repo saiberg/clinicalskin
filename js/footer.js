@@ -1,100 +1,82 @@
 /* ============================================================
    Clinical Skin — Footer compartido
-   ------------------------------------------------------------
-   Uso en cada página (junto a los otros <script> al final):
-     <footer class="site-footer" data-site-footer></footer>            → completo (4 columnas)
-     <footer class="site-footer" data-site-footer="simple"></footer>   → barra de copyright
-     <script src="js/footer.js"></script>
+   Pie visual de marca y enlaces funcionales de la tienda.
    ============================================================ */
 (() => {
   'use strict';
 
-  /* ---------- EDITABLE: contenido del footer ---------- */
-  const LOGO = 'img/logo-clinicalSkin.jpeg';
-  const SLOGAN = 'La delicadeza de tu piel en un solo clic';
-  const DESCRIPCION = 'Dermocosmética con diagnóstico personalizado y despacho a todo Chile.';
+  const LOGO = 'img/logoNotext-clinicalSkin.png';
   const COPYRIGHT = '© 2026 Clinical Skin — Dermocosmética. Todos los derechos reservados.';
-  const NOTA = 'Diseño conceptual — tienda en preparación';
+  const WHATSAPP = 'https://wa.me/56987654321';
+  const EMAIL = 'hola@clinicalskin.cl';
+  const TELEFONO = '+56 9 8765 4321';
 
   const COLUMNAS = [
     {
       titulo: 'Explorar',
       links: [
-        { href: 'diagnostico.html', etiqueta: 'Diagnóstico' },
-        { href: 'productos.html',   etiqueta: 'Productos' },
-        { href: 'filosofia.html',   etiqueta: 'Filosofía' },
-        { href: 'creditos-marcas.html', etiqueta: 'Fuentes de logotipos' }
+        { href: 'diagnostico.html', etiqueta: 'Test virtual' },
+        { href: 'productos.html', etiqueta: 'Productos' },
+        { href: 'index.html#marcas', etiqueta: 'Marcas' },
+        { href: 'filosofia.html', etiqueta: 'Filosofía' }
       ]
     },
     {
-      titulo: 'Ayuda',
+      titulo: 'Información',
       links: [
-        { href: 'contacto.html', etiqueta: 'Contacto' },
         { href: 'terminos.html#envios', etiqueta: 'Envíos' },
-        { href: 'img/marcas/creditos.html', etiqueta: 'Fuentes de logotipos' },
-        { href: '#',             etiqueta: 'Preguntas frecuentes' },
+        { href: 'terminos.html#cambios', etiqueta: 'Cambios y devoluciones' },
         { href: 'terminos.html', etiqueta: 'Términos y condiciones' },
-        { href: 'politica-privacidad.html', etiqueta: 'Política de privacidad' }
+        { href: 'politica-privacidad.html', etiqueta: 'Política de privacidad' },
+        { href: 'img/marcas/creditos.html', etiqueta: 'Créditos de marcas' }
       ]
     }
   ];
 
-  const NEWSLETTER = { titulo: 'Recibe consejos de piel', texto: 'Tips y novedades, sin spam.' };
-
-  /* Redes sociales: cambia el href cuando existan las cuentas */
-  const REDES = [
-    { nombre: 'Instagram', href: '#', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></svg>' },
-    { nombre: 'Facebook', href: '#', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 8h2V5h-2a4 4 0 0 0-4 4v2H9v3h2v6h3v-6h2l1-3h-3V9a1 1 0 0 1 1-1z"/></svg>' },
-    { nombre: 'TikTok', href: '#', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 8a4 4 0 0 1-4-4v11a3 3 0 1 1-2-2.8"/></svg>' }
-  ];
-
-  /* ---------- No editar bajo esta línea ---------- */
-  const bottom = `
-    <div class="footer-bottom">
-      <span>${COPYRIGHT}</span>
-      <span>${NOTA}</span>
-    </div>`;
-
-  const redesHTML = REDES.map((r) => `<a href="${r.href}" aria-label="${r.nombre}">${r.svg}</a>`).join('\n          ');
-
-  const columnasHTML = COLUMNAS.map((c) => `
-      <div>
-        <h3>${c.titulo}</h3>
-        <ul>
-          ${c.links.map((l) => `<li><a href="${l.href}">${l.etiqueta}</a></li>`).join('\n          ')}
-        </ul>
-      </div>`).join('');
+  const columnasHTML = COLUMNAS.map((columna) => `
+    <nav class="cs-footer-column" aria-label="${columna.titulo}">
+      <h3>${columna.titulo}</h3>
+      <ul>${columna.links.map((link) => `<li><a href="${link.href}">${link.etiqueta}</a></li>`).join('')}</ul>
+    </nav>`).join('');
 
   const completo = `
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="footer-logo-card"><img src="${LOGO}" alt="Clinical Skin"></div>
-        <p class="footer-slogan script">${SLOGAN}</p>
-        <p>${DESCRIPCION}</p>
-        <div class="social-row">
-          ${redesHTML}
+    <section class="cs-footer-invite">
+      <div class="container cs-footer-invite-inner">
+        <div>
+          <span class="cs-footer-eyebrow">Un primer paso para tu piel</span>
+          <h2>Conoce mejor las necesidades de tu piel.</h2>
+          <p>Realiza el test virtual y explora una rutina sugerida según tus respuestas.</p>
         </div>
-      </div>${columnasHTML}
-      <div>
-        <h3>${NEWSLETTER.titulo}</h3>
-        <p style="font-size:0.85rem;color:rgba(255,255,255,0.78);margin-bottom:14px;">${NEWSLETTER.texto}</p>
-        <div class="newsletter-form">
-          <input type="email" placeholder="tu@correo.com">
-          <button>Enviar</button>
+        <a href="diagnostico.html" class="btn cs-footer-cta">Realizar test virtual <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+    <div class="cs-footer-main">
+      <div class="container">
+        <div class="cs-footer-grid">
+          <div class="cs-footer-brand">
+            <a class="cs-footer-wordmark" href="index.html" aria-label="Clinical Skin, inicio">
+              <img src="${LOGO}" alt="">
+              <span>Clinical Skin<small>Dermocosmética</small></span>
+            </a>
+            <p class="cs-footer-slogan">La delicadeza de tu piel en un solo clic</p>
+            <p class="cs-footer-description">Dermocosmética, test virtual y asesoría personalizada para acompañar tu rutina.</p>
+          </div>
+          ${columnasHTML}
+          <div class="cs-footer-contact">
+            <h3>¿Necesitas ayuda?</h3>
+            <a href="mailto:${EMAIL}"><span aria-hidden="true">✉</span><span>${EMAIL}</span></a>
+            <a href="tel:+56987654321"><span aria-hidden="true">⌕</span><span>${TELEFONO}</span></a>
+            <a href="${WHATSAPP}" target="_blank" rel="noopener"><span aria-hidden="true">◉</span><span>Asesoría por WhatsApp</span></a>
+          </div>
+        </div>
+        <div class="cs-footer-bottom">
+          <span>${COPYRIGHT}</span>
+          <span>Despacho a todo Chile · Pago con Webpay</span>
         </div>
       </div>
-    </div>${bottom}
-  </div>`;
+    </div>`;
 
-  const simple = `
-  <div class="container">
-    <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,0.12); padding-top:24px;">
-      <span>${COPYRIGHT}</span>
-      <span>${NOTA}</span>
-    </div>
-  </div>`;
-
-  const destino = document.querySelector('[data-site-footer]');
-  if (destino) destino.innerHTML = destino.getAttribute('data-site-footer') === 'simple' ? simple : completo;
+  document.querySelectorAll('[data-site-footer]').forEach((destino) => {
+    destino.innerHTML = completo;
+  });
 })();

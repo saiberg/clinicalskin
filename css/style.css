@@ -1381,6 +1381,43 @@ ul { list-style: none; }
   .cs-need-grid { grid-template-columns: minmax(0,1fr); gap: 12px; }
 }
 
+/* Footer compartido: franja de invitación y panel profundo de marca. */
+.site-footer { margin-top: 0; padding: 0; background: #634536; color: rgba(255,250,244,.9); }
+.cs-footer-invite { padding: 25px 0; border-top: 1px solid #eadfd3; border-bottom: 1px solid #eadfd3; background-color: #f3e7d9; background-image: linear-gradient(90deg,rgba(255,250,244,.95),rgba(255,250,244,.77)),url('../img/editorial/hero.jpg'); background-position: center; background-size: cover; }
+.cs-footer-invite-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.cs-footer-eyebrow { display: block; margin-bottom: 5px; color: #9a714e; font-size: .68rem; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; }
+.cs-footer-invite h2 { color: #4e3b2f; font-size: clamp(1.5rem,2.6vw,2.25rem); }
+.cs-footer-invite p { margin-top: 5px; color: #67574a; font-size: .85rem; }
+.cs-footer-cta { flex: 0 0 auto; padding: 12px 20px; border-radius: 4px; background: #8b5d3c; color: white; font-size: .8rem; }
+.cs-footer-cta:hover { background: #70482f; color: white; }
+.cs-footer-main { padding: 43px 0 18px; background: linear-gradient(118deg,#5d4032,#734e3b 54%,#5a3b2e); color: rgba(255,250,244,.82); }
+.cs-footer-grid { display: grid; grid-template-columns: minmax(230px,1.35fr) minmax(120px,.72fr) minmax(170px,1fr) minmax(190px,1.1fr); gap: clamp(18px,3vw,46px); padding-bottom: 31px; }
+.cs-footer-brand { max-width: 330px; }
+.cs-footer-wordmark { display: inline-flex; align-items: center; gap: 10px; color: #fff8ef; font-family: var(--font-heading); font-size: 1.5rem; line-height: 1.05; }
+.cs-footer-wordmark img { width: 46px; height: 46px; object-fit: contain; filter: brightness(0) invert(1); }
+.cs-footer-wordmark small { display: block; margin-top: 5px; color: #ead3ba; font-family: var(--font-body); font-size: .53rem; font-weight: 500; letter-spacing: .19em; text-transform: uppercase; }
+.cs-footer-slogan { margin: 15px 0 7px; color: #e9c9a8; font-family: 'Parisienne',cursive; font-size: 1.35rem; line-height: 1.2; }
+.cs-footer-description { max-width: 290px; color: rgba(255,250,244,.74); font-size: .78rem; line-height: 1.6; }
+.cs-footer-column h3, .cs-footer-contact h3 { margin: 3px 0 14px; color: #fff8ef; font-family: var(--font-body); font-size: .78rem; font-weight: 600; letter-spacing: .07em; }
+.cs-footer-column ul { margin: 0; padding: 0; list-style: none; }
+.cs-footer-column li + li { margin-top: 9px; }
+.cs-footer-column a, .cs-footer-contact a { color: rgba(255,250,244,.78); font-size: .78rem; line-height: 1.4; }
+.cs-footer-column a:hover, .cs-footer-contact a:hover { color: #f2d1ad; }
+.cs-footer-contact { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.cs-footer-contact h3 { margin-bottom: 2px; }
+.cs-footer-contact a { display: flex; align-items: center; gap: 10px; }
+.cs-footer-contact a span:first-child { display: grid; place-items: center; width: 27px; height: 27px; flex: 0 0 27px; border: 1px solid rgba(240,213,184,.53); border-radius: 50%; color: #f0d5b8; }
+.cs-footer-bottom { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 9px 20px; padding-top: 15px; border-top: 1px solid rgba(255,250,244,.18); color: rgba(255,250,244,.66); font-size: .68rem; }
+@media (max-width: 900px) { .cs-footer-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 28px; } }
+@media (max-width: 560px) {
+  .cs-footer-invite-inner { align-items: flex-start; flex-direction: column; }
+  .cs-footer-cta { align-self: stretch; justify-content: center; }
+  .cs-footer-main { padding-top: 31px; }
+  .cs-footer-grid { grid-template-columns: 1fr 1fr; gap: 25px 16px; }
+  .cs-footer-brand, .cs-footer-contact { grid-column: 1 / -1; max-width: none; }
+  .cs-footer-bottom { flex-direction: column; }
+}
+
 /* =========================================================
    Clinical Skin — Marca, carrito, checkout y confirmación
    ========================================================= */
