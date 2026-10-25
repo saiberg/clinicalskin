@@ -1361,35 +1361,26 @@ ul { list-style: none; }
   .cs-brand-logo img { height: 29px; }
 }
 
-/* Las tarjetas de necesidades contienen texto integrado en las fotos. Se les
-   da más ancho y se evita encogerlas para que ese texto siga siendo legible. */
-.cs-concerns-layout { display: block; }
-.cs-section-intro { margin-bottom: 16px; text-align: left; }
-.cs-need-grid { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 12px; }
-.cs-need-card { display: flex; flex-direction: column; min-height: 0; padding: 0 0 11px !important; overflow: hidden; border: 1px solid #eadfd3; border-radius: 5px; background: #fffdfa; box-shadow: 0 4px 14px rgba(77,58,41,.06); }
+/* Tarjetas editoriales en carrusel: fotos más amplias conservan su texto integrado. */
+.cs-concerns-layout { display: grid; grid-template-columns: minmax(205px,.62fr) minmax(0,2.38fr); gap: 18px; align-items: center; }
+.cs-section-intro { margin-bottom: 0; text-align: left; }
+.cs-need-grid { display: flex; gap: 12px; overflow-x: auto; padding: 0 0 8px; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+.cs-need-card { display: block; flex: 0 0 clamp(340px,25vw,370px); min-height: 0; padding: 0 !important; overflow: hidden; border: 1px solid #eadfd3; border-radius: 5px; background: #fffdfa; box-shadow: 0 4px 14px rgba(77,58,41,.06); scroll-snap-align: start; }
 .cs-need-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(77,58,41,.1); }
-.cs-need-card > img { display: block; width: 100%; height: 145px; object-fit: cover; object-position: center; border-radius: 4px 4px 0 0; }
-.cs-need-copy { display: flex; flex-direction: column; gap: 3px; padding: 9px 12px 0; }
-.cs-need-copy strong { color: #49382d; font-family: var(--font-heading); font-size: .98rem; font-weight: 500; line-height: 1.25; }
-.cs-need-copy small { color: #51463d; font-family: var(--font-body); font-size: .8rem; font-weight: 500; line-height: 1.35; }
+.cs-need-card > img { display: block; width: 100%; height: auto; aspect-ratio: 12 / 7; object-fit: cover; object-position: center; }
 @media (max-width: 1280px) {
-  .cs-need-grid { display: flex; gap: 12px; overflow-x: auto; padding: 0 0 9px; scroll-snap-type: x mandatory; scrollbar-width: thin; }
-  .cs-need-card { flex: 0 0 280px; scroll-snap-align: start; }
-  .cs-need-card > img { height: 150px; }
+  .cs-concerns-layout { display: block; }
+  .cs-section-intro { margin-bottom: 14px; text-align: left; }
+  .cs-need-card { flex-basis: 340px; }
 }
 @media (max-width: 780px) {
-  .cs-need-grid { display: flex; gap: 12px; overflow-x: auto; padding: 0 0 9px; scroll-snap-type: x mandatory; scrollbar-width: thin; }
-  .cs-need-card { flex: 0 0 280px; scroll-snap-align: start; }
-  .cs-need-card > img { height: 155px; }
+  .cs-concerns-layout { display: block; }
+  .cs-need-card { flex-basis: min(330px,88vw); }
 }
 @media (max-width: 460px) {
   .cs-need-grid { gap: 10px; }
-  .cs-need-card { flex-basis: min(280px,82vw); }
-  .cs-need-card > img { height: 150px; }
+  .cs-need-card { flex-basis: min(325px,88vw); }
 }
-.cs-need-copy { display: flex !important; flex-direction: column; gap: 3px; padding: 10px 12px 2px; }
-.cs-need-copy strong { display: block !important; color: #49382d; font-family: var(--font-heading); font-size: .98rem; font-weight: 500; line-height: 1.25; }
-.cs-need-copy small { display: block !important; color: #51463d; font-family: var(--font-body); font-size: .82rem; font-weight: 500; line-height: 1.35; }
 
 /* =========================================================
    Clinical Skin — Marca, carrito, checkout y confirmación
