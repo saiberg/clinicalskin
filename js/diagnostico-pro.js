@@ -51,6 +51,31 @@
     }
   ];
 
+  /* Iconografía lineal de la interfaz, sin depender de emojis del sistema. */
+  const ICONOS = {
+    balance: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M12 5c-3 1-4.8 3.1-4.8 5.5S9 15 12 16M12 8c3 .8 4.5 2.5 4.5 4.5"/></svg>',
+    drop: '<svg viewBox="0 0 24 24"><path d="M12 3c-2.2 3.2-6.5 7.4-6.5 11.5a6.5 6.5 0 0 0 13 0C18.5 10.4 14.2 6.2 12 3Z"/><path d="M9 15.5c.4 1.2 1.3 1.8 2.5 2"/></svg>',
+    sun: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>',
+    leaf: '<svg viewBox="0 0 24 24"><path d="M20.5 3.5C12 3.5 5 5.7 5 12.5a5 5 0 0 0 5 5c6.8 0 9-7 10.5-14Z"/><path d="M3.5 21c3.2-5.5 6.7-8.3 12-11"/></svg>',
+    spark: '<svg viewBox="0 0 24 24"><path d="m12 2 1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6L12 2Z"/><path d="m19 16 .8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16Z"/></svg>',
+    clock: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>',
+    bottle: '<svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v3l-2 2v11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V8l-2-2V3M8 11h8"/></svg>',
+    layers: '<svg viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg>',
+    cycle: '<svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 9A7 7 0 0 1 18 6l2 2M4 16l2 2a7 7 0 0 0 12.5-3"/></svg>',
+    minus: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>',
+    building: '<svg viewBox="0 0 24 24"><path d="M4 21V5l8-3v19M12 9h8v12M8 7h.01M8 11h.01M8 15h.01M16 13h.01M16 17h.01M2 21h20"/></svg>',
+    cloud: '<svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 9.5 4.3 4.3 0 0 0 7 18Z"/><path d="m8 22 1-2m5 2 1-2"/></svg>',
+    wind: '<svg viewBox="0 0 24 24"><path d="M3 8h12a3 3 0 1 0-3-3M2 12h17a3 3 0 1 1-3 3M4 16h8a2.5 2.5 0 1 1-2.5 2.5"/></svg>',
+    shield: '<svg viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.4 8.2-8 10-4.6-1.8-8-5-8-10V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>'
+  };
+  const ICONO_OPCION = {
+    mixta: 'balance', seca: 'drop', grasa: 'spark', sensible: 'leaf',
+    acne: 'spark', deshidratacion: 'drop', manchas: 'sun', edad: 'clock',
+    basica: 'bottle', multi: 'layers', cambiante: 'cycle', ninguna: 'minus',
+    bajo: 'building', moderado: 'cloud', alto: 'sun', reactivo_clima: 'wind',
+    brillo_poros: 'spark', hidratar_calmar: 'drop', iluminar: 'sun', prevenir: 'shield'
+  };
+
   const ZONAS = ['frente', 'mejillaI', 'mejillaD', 'nariz', 'mentón'];
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -125,7 +150,7 @@
       b.setAttribute('role', 'radio');
       b.setAttribute('aria-checked', respuestas['q' + q.n] === o.v ? 'true' : 'false');
       b.innerHTML = `<span class="dx-emoji" aria-hidden="true"></span><span><h3></h3><p></p></span><span class="dx-key" aria-hidden="true">${i + 1}</span>`;
-      $('.dx-emoji', b).textContent = o.e;
+      $('.dx-emoji', b).innerHTML = ICONOS[ICONO_OPCION[o.v]] || ICONOS.spark;
       $('h3', b).textContent = o.t;
       $('p', b).textContent = o.d;
       b.addEventListener('click', () => elegir(i));
