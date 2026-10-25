@@ -1387,6 +1387,9 @@ ul { list-style: none; }
   .cs-need-card { flex-basis: min(280px,82vw); }
   .cs-need-card > img { height: 150px; }
 }
+.cs-need-copy { display: flex !important; flex-direction: column; gap: 3px; padding: 10px 12px 2px; }
+.cs-need-copy strong { display: block !important; color: #49382d; font-family: var(--font-heading); font-size: .98rem; font-weight: 500; line-height: 1.25; }
+.cs-need-copy small { display: block !important; color: #51463d; font-family: var(--font-body); font-size: .82rem; font-weight: 500; line-height: 1.35; }
 
 /* =========================================================
    Clinical Skin — Marca, carrito, checkout y confirmación
