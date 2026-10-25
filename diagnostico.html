@@ -11,7 +11,7 @@
 <meta property="og:description" content="Responde 5 preguntas rápidas y mira cómo se construye tu perfil de piel en tiempo real.">
 <link rel="icon" href="img/logoNotext-clinicalSkin.png" type="image/png">
 <link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/diagnostico.css">
+<link rel="stylesheet" href="css/diagnostico.css?v=20261102-redesign">
 </head>
 <body class="dx-body">
 
@@ -61,15 +61,21 @@
     <section class="dx-panel" aria-live="polite">
 
       <div class="dx-intro" data-view="intro">
-        <span class="eyebrow">Escáner de piel · 2 minutos</span>
-        <h1>Conoce tu piel como lo haría una especialista</h1>
-        <p>5 preguntas rápidas. Verás cómo tu perfil se construye en tiempo real y recibirás una rutina AM/PM con los productos justos para ti.</p>
-        <ul class="dx-bullets">
-          <li><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Sin registro ni fotos</li>
-          <li><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Rutina de 4 a 6 pasos</li>
-          <li><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Tus datos quedan solo en tu dispositivo</li>
-        </ul>
-        <button type="button" class="btn btn-primary dx-start" data-dx-start>Comenzar escaneo</button>
+        <div class="dx-intro-copy">
+          <span class="eyebrow">Test virtual de la piel · 2 minutos</span>
+          <h1>Conoce tu piel.<br>Descubre qué necesita.</h1>
+          <p>Responde cinco preguntas sobre tu tipo de piel, tus preocupaciones y tu rutina. Con esa información prepararemos una sugerencia de cuidado para ti.</p>
+          <ul class="dx-bullets">
+            <li><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Sin registro ni fotos</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Orientación según tus respuestas</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Tus respuestas quedan en este dispositivo</li>
+          </ul>
+          <button type="button" class="btn btn-primary dx-start" data-dx-start>Comenzar mi test <span aria-hidden="true">→</span></button>
+        </div>
+        <div class="dx-intro-visual">
+          <img src="img/editorial/test-face.jpg" alt="Rostro con una ilustración de análisis visual de la piel" fetchpriority="high">
+          <div class="dx-intro-caption"><span>5 preguntas</span><span>Sin cámara ni fotografías</span></div>
+        </div>
       </div>
 
       <div class="dx-quiz" data-view="quiz" hidden>
