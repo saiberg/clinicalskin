@@ -1,260 +1,110 @@
-# Cómo subir la tienda completa a un hosting — Clinical Skin
+# Subir Clinical Skin al hosting
 
-> **Alcance:** todo lo que hoy corre en local, tal como se ve en `http://localhost:8080`
-> (WordPress en Docker) más el sitio estático de `http://localhost/clinicalskin/` (XAMPP):
-> WordPress + WooCommerce + tema puente + los dos plugins parcheados + las 12 páginas del
-> diseño aprobado.
->
-> **Supuestos:** dominio propio con HTTPS (de aquí en adelante `https://tudominio.cl`) y
-> hosting con panel **cPanel** o con **SSH**. "Raíz" = `public_html/`.
+Guía breve, actualizada al 26/10/2026, para publicar el sitio local de WordPress/WooCommerce en cPanel. Los archivos se preparan desde `C:\docker\clinicalskin-woo`; el diseño fuente está en `C:\xampp\htdocs\clinicalskin`.
 
----
+## Antes de empezar
 
-## 1. Qué se sube
+- Dominio configurado con HTTPS: `https://clinicalskin.cl`.
+- La raíz del dominio en este hosting es `/home2/rtqfwfte/clinicalskin.cl` (confírmala en cPanel si fue cambiada).
+- El hosting está en PHP 8.5. La copia local usa WordPress 7.1.2, WooCommerce 11.1.2 y PHP 8.3.
+- El catálogo real tiene **42 productos**. El paquete ya contiene sus fotos en `wp-content/uploads`; **no vuelvas a importar el CSV** durante la instalación.
+- Haz una copia de respaldo del contenido y de la base de datos que ya existan en esa raíz antes de reemplazarlos.
+- Abre Docker Desktop antes de exportar; deben estar activos los servicios `wordpress` y `db`.
+- Deja al menos **1 GB libre**. El sitio extraído ocupa aproximadamente 388 MB; el ZIP y el TAR de subida rondan 260 MB cada uno. Si el Administrador de Archivos rechaza el tamaño, usa SFTP/SSH o solicita al hosting que habilite una subida mayor.
 
-| Pieza | Dónde está hoy (local) | Va a |
-|---|---|---|
-| WordPress 7.1.2 + WooCommerce 11.1.2 (PHP 8.3, MySQL 8.4) | volumen `db_data`/`wp_data` de Docker | hosting con PHP ≥ 8.1 y MySQL 8 (el núcleo `wp-admin`/`wp-includes` viaja en `wordpress.zip`) |
-| Tema puente `clinicalskin` (`functions.php`, `header/footer`, `envios.php`, `pagos.php`, overrides de Woo, `css/woo.css`) | `C:\docker\clinicalskin-woo\theme\clinicalskin` | `wp-content/themes/clinicalskin` |
-| Plugins: `transbank-webpay-plus-rest` 1.14.0, `chilexpress-oficial` 1.4.5, `calculo-de-despacho-via-starken-para-woocommerce` 2026.07.01 | `wp-content/plugins/` del contenedor | `wp-content/plugins/` **copia directa** |
-| Biblioteca de medios (11 fotos de producto, 2,3 MB) | `wp-content/uploads` | `wp-content/uploads` |
-| Base de datos (5 MB: catálogo, atributos, zona Chile, 4 métodos de envío, Webpay, páginas) | volumen `db_data` | BD del hosting |
-| Páginas del diseño (`index`, `diagnostico`, `productos`, …) | `C:\xampp\htdocs\clinicalskin\*.html` (montado como `/static`) | `<raíz>/static/` |
-| Assets del diseño (`css/`, `js/`, `img/`) | `C:\xampp\htdocs\clinicalskin\{css,js,img}` (montados en la raíz) | `<raíz>/css`, `<raíz>/js`, `<raíz>/img` |
-| `wp-config.php` y `.htaccess` (permalinks `/%postname%/`) | contenedor | raíz |
+## 1. Preparar los archivos actualizados
 
-**No se sube:** XAMPP, Docker/`docker-compose.yml`, `C:\docker\clinicalskin-woo\scripts\`,
-`CREDENCIALES.md` (guárdalo aparte), el `.git` (también el del sitio estático), los
-`docs/*.md` internos ni el CSV del catálogo (el arnés `qa-responsive.html` sí viaja,
-es opcional).
-
-> **Aviso importante:** Chilexpress y Starken están **parcheados a mano** dentro del
-> contenedor (comuna/regiones, select2 del checkout, guard del script). Esos cambios no
-> existen en wordpress.org: si instalas los plugins "frescos" en el hosting se pierden los
-> arreglos y vuelve el bug de las comunas. **Copia siempre los archivos locales.**
-
-### Árbol final en el hosting
-
-```
-public_html/
-├── wp-config.php
-├── .htaccess                  ← regenerado en Ajustes → Enlaces
-├── static/                    ← *.html del diseño (los lee el tema)
-│   ├── index.html  productos.html  diagnostico.html  …
-│   └── docs/qa-responsive.html     (opcional)
-├── css/  js/  img/            ← assets del diseño (el tema usa <base href>)
-├── wp-admin/  wp-includes/
-└── wp-content/
-    ├── themes/clinicalskin/
-    ├── plugins/{woocommerce, transbank-webpay-plus-rest, chilexpress-oficial, …}
-    └── uploads/               ← 11 fotos
-```
-
----
-
-## 2. Requisitos del hosting
-
-- **PHP 8.1 o superior** (probado con 8.3), `curl` y `openssl` habilitados: Starken y
-  Chilexpress cotizan contra APIs externas y sin `curl` el checkout no muestra envíos.
-- **MySQL 8** (o MariaDB ≥ 10.6) con base de datos y usuario propios.
-- **HTTPS obligatorio**: lo exigen los webhooks/retornos de Transbank y las APIs de envío.
-- Espacio ≥ 500 MB (hoy la tienda pesa ~8 MB; el resto es margen para subidas).
-- **Cron**: idealmente cron real (`wp-cron.php` programado cada 5 min) para correos y stock.
-- **Correo transaccional**: configurar SMTP (el `sendmail` de PHP suele caer en spam o no salir).
-- Guardar 500 MB de respaldo diario (BD + `wp-content`).
-
----
-
-## 3. Paso 1 — Exportar desde local (PowerShell)
+Abre PowerShell y ejecuta:
 
 ```powershell
-# a) Base de datos → C:\docker\clinicalskin-woo\salida\base.sql
-New-Item -ItemType Directory -Force C:\docker\clinicalskin-woo\salida | Out-Null
-
-# Se vuelca con el cliente del propio contenedor de MySQL. `wp db export` no sirve
-# aquí: usa mariadb-dump (cliente MariaDB que trae el contenedor `cli`) y el
-# servidor es MySQL 8.4, que autentica con caching_sha2_password → error 1045
-# "Plugin caching_sha2_password could not be loaded". Las comillas simples
-# alrededor del sh -c son obligatorias en PowerShell.
-docker compose -f C:\docker\clinicalskin-woo\docker-compose.yml exec -T db sh -c 'mysqldump --single-transaction --hex-blob --routines --events --triggers -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" > /tmp/cs-base.sql'
-
-# El volcado se saca con `docker compose cp`, no con `>`: en PowerShell la
-# redirección escribiría el archivo en UTF-16 y la importación fallaría.
-docker compose -f C:\docker\clinicalskin-woo\docker-compose.yml cp db:/tmp/cs-base.sql C:\docker\clinicalskin-woo\salida\base.sql
-docker compose -f C:\docker\clinicalskin-woo\docker-compose.yml exec -T db sh -c "rm -f /tmp/cs-base.sql"
-
-# b) Sitio completo → salida\wordpress.zip. El sitio estático ya está montado dentro
-#    del contenedor (/var/www/html/static, /var/www/html/css, …), así que el
-#    contenedor tiene el núcleo, wp-content y el diseño en un solo lugar. Se
-#    empaqueta con tar ahí mismo porque hay nombres con caracteres que Windows no
-#    acepta; el .tar.gz se copia tal cual y se descomprime acá.
-docker exec clinicalskin-woo-wordpress-1 sh -c "cd /var/www/html && tar -czf /tmp/cs-sitio.tgz ."
-docker cp clinicalskin-woo-wordpress-1:/tmp/cs-sitio.tgz C:\docker\clinicalskin-woo\salida\cs-sitio.tgz
-docker exec clinicalskin-woo-wordpress-1 sh -c "rm -f /tmp/cs-sitio.tgz"
-
-# Lo que no se sube: .git del sitio estático, .md internos y el CSV del catálogo
-$st = 'C:\docker\clinicalskin-woo\salida\wordpress'
-Remove-Item -Recurse -Force $st -ErrorAction SilentlyContinue
-New-Item -ItemType Directory -Force $st | Out-Null
-tar -xzf C:\docker\clinicalskin-woo\salida\cs-sitio.tgz -C $st
-Remove-Item -Recurse -Force "$st\static\.git", "$st\static\woocommerce", "$st\static\docs\woocommerce" -ErrorAction SilentlyContinue
-Remove-Item -Force "$st\static\docs\*.md" -ErrorAction SilentlyContinue
-
-Compress-Archive -Path "$st\*" -DestinationPath C:\docker\clinicalskin-woo\salida\wordpress.zip -Force
-Remove-Item -Recurse -Force $st, C:\docker\clinicalskin-woo\salida\cs-sitio.tgz -ErrorAction SilentlyContinue
-
-# c) (opcional, si el hosting da SSH) Lo mismo como tar.gz: en Linux sí trae los
-#    permisos correctos (644 en archivos, 755 en carpetas), que el zip de Windows
-#    no guarda y por eso el panel a veces deja archivos ilegibles.
-docker exec clinicalskin-woo-wordpress-1 sh -c "rm -rf /tmp/cs-site && cp -a /var/www/html /tmp/cs-site && find /tmp/cs-site -type d -exec chmod 755 {} + && find /tmp/cs-site -type f -exec chmod 644 {} + && tar -czf /tmp/site.tar.gz -C /tmp/cs-site . && rm -rf /tmp/cs-site"
-docker cp clinicalskin-woo-wordpress-1:/tmp/site.tar.gz C:\docker\clinicalskin-woo\salida\site.tar.gz
-docker exec clinicalskin-woo-wordpress-1 sh -c "rm -f /tmp/site.tar.gz"
+& 'C:\docker\clinicalskin-woo\scripts\exportar-hosting.ps1' -Dominio 'https://clinicalskin.cl'
 ```
 
-Resultado en `C:\docker\clinicalskin-woo\salida\`: `base.sql` (~1,4 MB), `wordpress.zip`
-(~64 MB con `wp-admin/`, `wp-includes/`, `wp-content/`, `static/`, `css/`, `js/`, `img/`,
-`wp-config.php` y `.htaccess`) y, si hay SSH, `site.tar.gz` (~62 MB, idéntico pero con
-permisos correctos). Sube `base.sql` y el archivo que vayas a extraer.
+El script exporta la base de datos y construye los dos paquetes en `C:\docker\clinicalskin-woo\salida\`:
 
----
+| Archivo | Para qué sirve | Tamaño actual aproximado |
+|---|---|---:|
+| `base.sql` | Catálogo, ajustes, páginas y configuración WooCommerce | 1,6 MB |
+| `site.tar.gz` | Sitio completo; recomendado si usas SSH, conserva permisos Unix | 259,5 MB |
+| `wordpress.zip` | El mismo sitio para el Administrador de Archivos de cPanel | 265 MB |
 
-## 4. Paso 2 — Preparar el hosting
+El paquete incluye el núcleo de WordPress, tema, plugins instalados localmente, medios, diseño y las páginas estáticas. También deja los metadatos estáticos apuntando al dominio final. Se excluyen `.git`, el CSV y las imágenes fuente del inventario (`static/woocommerce`) y la documentación Markdown interna del sitio estático. **Sube `base.sql` y solo uno de los dos paquetes** (`site.tar.gz` o `wordpress.zip`).
 
-1. **Crear la base de datos** desde el panel (phpMyAdmin → *Nueva base de datos*,
-   cotejamiento `utf8mb4_unicode_ci`) y un usuario con todos los privilegios sobre ella.
-2. **Subir** los dos archivos (`wordpress.zip` y `base.sql`) al `public_html/` por el
-   Administrador de Archivos o por FTP.
-3. **Descomprimir** en la raíz (`Extract Here`): `site.tar.gz` si hay SSH (ya trae los
-   permisos correctos) o `wordpress.zip` por el Administrador de Archivos. No hace falta
-   instalar WordPress: el núcleo viaja dentro del archivo. El árbol debe quedar como en la
-   sección 1 — `wp-admin/` e `wp-includes/` junto a `wp-content/`, `static/`, `css/`,
-   `js/`, `img/`, `wp-config.php` y `.htaccess`.
-4. **Permisos**: los archivos deben ser `644` y las carpetas `755`, propiedad del usuario
-   de la cuenta; el zip de Windows no guarda permisos Unix y el panel a veces deja archivos
-   ilegibles (al abrir el sitio salen errores `Permission denied`). Con SSH o con la
-   Terminal de cPanel, desde la carpeta del sitio:
+> Los archivos de Chilexpress y Starken están parcheados en la copia local. Los paquetes copian las versiones instaladas; no reinstales esos plugins desde WordPress.org durante la subida.
+
+## 2. Crear la base e instalar los archivos
+
+1. En cPanel, crea una base de datos MySQL y un usuario con todos los privilegios. Guarda el nombre, usuario y contraseña tal como aparecen en el panel (cPanel suele anteponer un prefijo).
+2. Sube `base.sql` y el archivo del sitio elegido a la raíz del dominio.
+3. Extrae el paquete en la raíz vacía o respaldada. El ZIP y el TAR ya llevan `wp-admin/`, `wp-includes/`, `wp-content/`, `static/`, `css/`, `js/`, `img/`, `.htaccess` y `wp-config.php`; **no instales otro WordPress encima**.
+4. Si usas `site.tar.gz` por SSH/Terminal de cPanel, desde la raíz del sitio:
 
    ```bash
-   cd /home2/usuario/tudominio.cl
+   cd /home2/rtqfwfte/clinicalskin.cl
+   tar -xzf site.tar.gz
    find . -type d -exec chmod 755 {} +
    find . -type f -exec chmod 644 {} +
    ```
 
-   Si los archivos no son del usuario de la cuenta, agregar `chown -R usuario:usuario .`.
-   Con `site.tar.gz` esto ya viene hecho. Sin SSH y con el zip, corregir los permisos desde
-   el Administrador de Archivos o extraer el `site.tar.gz` si el panel lo permite.
-5. **Editar `wp-config.php`**: solo las constantes de base de datos
-   (`DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`); el resto se queda igual. Revisar que
-   `WP_DEBUG` quede en `false` para que los errores no se muestren en pantalla.
-6. **Importar la BD**: phpMyAdmin → la base creada → *Importar* → `base.sql` (UTF-8).
-7. **Permalinks**: entrar a `/wp-admin` → Ajustes → Enlaces → **Guardar** (regenera
-   `.htaccess`; sin esto las páginas del diseño dan 404).
+   Si extraes `wordpress.zip` con File Manager y aparece `Permission denied`, aplica esos mismos comandos desde Terminal de cPanel. Si no puedes corregir permisos o el dueño no es tu usuario, pide al hosting que restablezca la propiedad de la carpeta. `wp-content/uploads` debe ser escribible por WordPress.
 
-### Alternativa con SSH + WP-CLI (más rápido)
+## 3. Conectar WordPress al hosting
 
-```bash
-wp config set DB_NAME  'clinicoskin'      --type=constant   # valores reales del panel
-wp config set DB_USER  'clin_user'        --type=constant
-wp config set DB_PASSWORD '***'           --type=constant
-wp db import base.sql
-wp rewrite flush --hard
-```
+1. Edita el `wp-config.php` de la raíz y cambia solo los datos de la base (`DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`) por los que creó cPanel. Deja el resto del archivo y el prefijo de tablas sin cambios. Pon `WP_DEBUG` en `false`.
+2. Importa `base.sql` desde phpMyAdmin, seleccionando la base que acabas de crear. Si usas WP-CLI, puedes hacer la importación desde la raíz del sitio con `wp db import base.sql`.
+3. Con WP-CLI, cambia las URLs que venían de Docker:
 
----
+   ```bash
+   wp search-replace 'http://localhost:8080' 'https://clinicalskin.cl' --all-tables
+   wp option update home 'https://clinicalskin.cl'
+   wp option update siteurl 'https://clinicalskin.cl'
+   ```
 
-## 5. Paso 3 — Ajustar la URL definitiva
+   Si no tienes WP-CLI, primero cambia `home` y `siteurl` en phpMyAdmin. Sustituye `wp_options` por la tabla con el prefijo indicado en `wp-config.php`:
 
-La BD se exporta con `http://localhost:8080` adentro (home/siteurl, imágenes, enlaces):
+   ```sql
+   UPDATE `wp_options` SET `option_value` = 'https://clinicalskin.cl'
+   WHERE `option_name` IN ('home', 'siteurl');
+   ```
 
-```bash
-wp search-replace 'http://localhost:8080' 'https://tudominio.cl' --all-tables
-wp option update home 'https://tudominio.cl'
-wp option update siteurl 'https://tudominio.cl'
-```
+   Después entra al sitio y usa Better Search Replace para cambiar `http://localhost:8080` en todas las tablas con soporte para datos serializados. Si `wp-config.php` contiene `WP_HOME` o `WP_SITEURL`, actualiza también esas constantes.
+4. En `/wp-admin` → Ajustes → Enlaces permanentes, pulsa **Guardar cambios** para regenerar las reglas de `.htaccess`.
+5. Comprueba que el certificado SSL esté activo y que las URLs carguen en HTTPS. Configura SMTP desde el hosting para que lleguen los correos de pedidos.
 
-(Sin SSH, usar el plugin **Better Search Replace** con la misma búsqueda.)
+## 4. Pagos y envíos
 
-Además, en el panel:
+Subir los archivos **no convierte los servicios de prueba en producción**. La configuración local actual es:
 
-- **Ajustes → Generales**: dirección de WordPress y del sitio = `https://tudominio.cl`.
-- **Ajustes → Medios**: si la carpeta de subidas quedó con nombre de año/mes, comprobar que
-  las 11 fotos carguen.
+- **Webpay Plus:** ambiente TEST. Para producción se requieren el código de comercio y las llaves de producción entregadas por Transbank.
+- **Chilexpress:** credenciales de staging. Para vender en producción, configura sus credenciales productivas.
+- **Starken:** conectado mediante Anyda; confirma con el proveedor que la credencial y el plan sirven en producción y revisa su cuota mensual.
+- **BlueExpress:** tarifa fija de $4.990; no es cotización API.
+- **Pago activo:** Webpay es el único método habilitado. Los demás están desactivados.
 
-En los **archivos** del sitio estático quedan 12 referencias locales que hay que reemplazar
-(`og:url` y `og:image` apuntan a `http://localhost/clinicalskin/…`): buscar `localhost` en
-`static/*.html` y cambiar por el dominio. Igual conviene revisar `grep -r localhost
-wp-content/themes/clinicalskin`.
+No habilites cobros reales hasta tener las credenciales productivas de Webpay. Los parches de Chilexpress y Starken viajan dentro del paquete; no actualices esos plugins en el panel sin reaplicar los parches.
 
----
+## 5. Verificación puntual
 
-## 6. Paso 4 — Poner en producción pagos y envíos
+- [ ] Abren la portada, productos, ficha, test, resultado, carrito y checkout con HTTPS.
+- [ ] Se muestran los **42 productos** con fotos, precios, stock y categorías por marca/tipo.
+- [ ] Los filtros de marca/tipo funcionan y “Ver todos los productos” regresa al catálogo completo.
+- [ ] El test completa sus cinco preguntas, muestra productos del catálogo y pasa la rutina al carrito.
+- [ ] Aparecen las opciones de envío para la comuna elegida (Chilexpress, Starken, BlueExpress y retiro) y Webpay como único medio de pago.
+- [ ] `/wp-admin` inicia sesión y los correos de pedido llegan (tras configurar SMTP).
 
-Los servicios están conectados **en ambiente de prueba**; al subir hay que darles a production.
+Si deseas ejecutar el arnés responsive, abre `https://clinicalskin.cl/static/docs/qa-responsive.html`; el paquete generado ya reemplaza su URL local por el dominio final. No completes un pago real como parte de esta verificación.
 
-| Servicio | Estado hoy | Qué cambiar | Dónde |
-|---|---|---|---|
-| **Webpay Plus** (Transbank) | Ambiente **Integración** (`environment: TEST`), comercio de prueba | Ambiente → **Producción** + *Código de Comercio Producción* + *API Key producción* (los entrega Transbank en su portal una vez firmado el contrato) | WooCommerce → Ajustes → Pagos → **Webpay Plus** |
-| **Chilexpress** | Ambiente **Staging** (`ambiente: test`), llave y TCC de prueba | Ambiente → **Production**, llave de API y TCC de producción | Menú lateral **Chilexpress** → Ajustes → campo *Ambiente* |
-| **Starken** (Anyda) | Conectado: llave de Anyda, origen `1`, fallback $3.990, medidas 6/6/8, peso 0,5 kg | No tiene campo de ambiente: confirmar con Anyda que la llave opere en producción. El plugin marca `plan: free` con reinicio de cupo mensual (`next_reset`), conviene revisar límites | WooCommerce → Ajustes → Envíos → **Starken** |
-| **BlueExpress** | Tarifa fija $4.990 (sin cotización real) | Requiere credenciales del *Plugin BlueX for WooCommerce* (pendiente) | WooCommerce → Ajustes → Envíos |
-| **Retiro en tienda** | Gratis, zona Chile | Sin cambio | WooCommerce → Ajustes → Envíos → Zonas |
-| Khipu, Mercado Pago, transferencia, contra entrega | Desactivados | Dejarlos así (el checkout muestra un solo medio de pago) | WooCommerce → Ajustes → Pagos |
+## Errores habituales
 
-Los secretos (llaves, comercio, TCC) están en `C:\docker\clinicalskin-woo\CREDENCIALES.md`;
-guárdalos en el hosting dentro de `wp-config.php` o en el gestor de contraseñas, nunca en el
-repositorio.
-
----
-
-## 7. Paso 5 — Verificación tras subir
-
-- [ ] `https://tudominio.cl` carga con HTTPS y redirige de `http` (certificado activo).
-- [ ] Portada, catálogo, ficha de producto, diagnóstico y resultado: diseño idéntico al local
-      (tipografías, colores e imágenes cargando desde `/css`, `/js`, `/img`).
-- [ ] 11 productos con precio CLP, fotos y atributos; carrito y **checkout** funcionando.
-- [ ] Envíos: al elegir comuna ( Providencia y Alhué ) aparecen las 4 tarjetas con precio vivo
-      (BlueExpress, Retiro, Starken, Chilexpress) y la comuna se carga sin quedarse pegada.
-- [ ] Pago: en Integración pasa la tarjeta de prueba `4051885600446623` (CVV 123, 12/30) y
-      rechaza la `5186059559590568`; en Producción se usa una tarjeta real.
-- [ ] Se genera un pedido y el **correo de nuevo pedido** llega al correo del administrador.
-- [ ] /wp-admin entra con las credenciales guardadas; `WP_DEBUG` en `false`.
-- [ ] Arnés responsive: abrir `https://tudominio.cl/static/docs/qa-responsive.html`
-      (si lo subiste; recuerda cambiar `const WOO` en la línea 74 por el dominio).
-- [ ] Backup diario programado y plugin de seguridad (Wordfence o similar) instalado.
-
----
-
-## 8. Errores típicos
-
-| Síntoma | Causa y arreglo |
+| Síntoma | Qué revisar |
 |---|---|
-| `Permission denied` al abrir el sitio o `/wp-admin` | La extracción dejó archivos ilegibles (el zip de Windows no trae permisos Unix): corregir con el `find` de permisos del paso 4 (archivos `644`, carpetas `755`) |
-| `Interface ... not found` o `Failed opening required` de un archivo de `wp-includes` | La extracción o la subida quedó incompleta (archivos faltantes o vacíos). Contar archivos y comparar: `find wp-includes/ai-client -type f \| wc -l` da 6 y `find wp-includes/php-ai-client -type f \| wc -l` da 146. Volver a extraer encima (tar y zip sobreescriben); si la subida fue por FTP, que sea en **modo binario**; revisar también la cuota de disco del panel, el sitio ocupa ~218 MB descomprimido |
-| Página en blanco | PHP desactualizado o error de `wp-config.php`: revisar `wp-content/debug.log` y subir la versión de PHP a 8.1+ |
-| Las páginas del diseño dan 404 | Falta la carpeta `static/` o no se guardaron los Enlaces (regenera `.htaccess`) |
-| Sin estilos o imágenes rotas | Faltan `css/`, `js/`, `img/` en la raíz (el tema usa `<base href>` y pide `css/style.css` relativo a la raíz) |
-| El checkout nunca muestra precios de envío | El hosting no tiene `curl`, o no hay HTTPS, o se instalaron los plugins sin los parches |
-| La comuna no carga o queda "Elige una opción…" | Se perdió el parche de Chilexpress/estilo select2: recopiar `wp-content/plugins/chilexpress-oficial` desde local |
-| Webpay no avanza o rechaza todo | Ambiente sigue en Integración, o la API Key no es la de producción, o el certificado/comercio no está habilitado |
-| Correos de pedido no llegan | `sendmail` de PHP bloqueado: configurar SMTP (plugin WP Mail SMTP) |
+| `Permission denied` o error crítico al extraer | Permisos `755` en carpetas y `644` en archivos; si no eres propietario, solicita al hosting que corrija la propiedad. |
+| Páginas con 404 | Guardar Ajustes → Enlaces permanentes y comprobar `.htaccess` en la raíz. |
+| CSS o imágenes apuntan a `localhost` | Repetir `wp search-replace`, revisar `home`/`siteurl` y comprobar `WP_HOME`/`WP_SITEURL`. |
+| Falta un archivo de `wp-includes` | La extracción o subida quedó incompleta; reextrae el archivo completo y revisa la cuota/espacio libre. |
+| No aparecen tarifas de envío | Revisar HTTPS, extensión cURL, credenciales y que se hayan subido los plugins locales parcheados. |
+| Webpay rechaza el pago | Comprobar ambiente y credenciales: el paquete local está en TEST hasta que configures producción. |
 
----
+## Archivos que no se suben
 
-## 9. Mantenimiento posterior
-
-- **Cambios de diseño/CSS/JS**: editar en local (`C:\xampp\htdocs\clinicalskin` y
-  `C:\docker\clinicalskin-woo\theme\clinicalskin`) y volver a subir `static/`, `css/`, `js/`,
-  `img/` y `wp-content/themes/clinicalskin`.
-- **Cambios de contenido** (precios, stock, textos, métodos de envío): se hacen directo en
-  `/wp-admin` del hosting; luego se exporta la BD con `wp db export` y se guarda como respaldo
-  (en local usa el volcado de la sección 3: con MySQL 8.4 `wp db export` da error 1045).
-- **Cambios en plugins parcheados**: nunca actualizar Chilexpress ni Starken desde el panel
-  sin antes reaplicar los parches (los archivos están en el contenedor local).
-- **Actualizaciones de WordPress/WooCommerce**: hacerlas primero en local, probar con el
-  arnés y recién entonces en el hosting.
-
----
-
-*Documento relacionado: [`migracion-woocommerce.md`](migracion-woocommerce.md) (plan original
-de la migración) y [`chilexpress-prueba.md`](chilexpress-prueba.md) /
-[`webpay-prueba.md`](webpay-prueba.md) (pruebas de los servicios).*
+No subas `CREDENCIALES.md`, `.git`, los scripts de mantenimiento ni el CSV/carpeta de imágenes fuente. Conserva aparte `base.sql` y los paquetes como respaldo de la publicación.
