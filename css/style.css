@@ -1425,6 +1425,71 @@ ul { list-style: none; }
   .cs-footer-bottom { flex-direction: column; }
 }
 
+/* Páginas interiores: filosofía y contacto en el mismo lenguaje editorial. */
+.cs-interior-hero { padding: 58px 0 54px; background: linear-gradient(112deg,#f4e8dc,#fbf8f3 68%,#f0e2d4); border-bottom: 1px solid #eee2d5; }
+.cs-interior-hero .container { max-width: 1120px; }
+.cs-interior-hero h1 { max-width: 780px; color: #5d4030; font-size: clamp(2.6rem,5.2vw,4.8rem); line-height: 1.02; letter-spacing: -.035em; }
+.cs-interior-hero p { max-width: 650px; margin-top: 15px; color: #68584b; font-size: 1.04rem; line-height: 1.7; }
+.cs-contact-section { background: #fbf8f3; }
+.cs-contact-layout { display: grid; grid-template-columns: minmax(0,1fr) minmax(300px,.82fr); gap: clamp(35px,7vw,92px); align-items: center; }
+.cs-contact-copy h2, .cs-philosophy-copy h2 { color: #4d3d31; font-size: clamp(1.9rem,3.4vw,3rem); }
+.cs-contact-copy > p { max-width: 570px; margin: 12px 0 22px; line-height: 1.7; }
+.cs-contact-whatsapp { border-radius: 4px; background: #8b5d3c; color: #fff; }
+.cs-contact-whatsapp:hover { background: #70482f; color: #fff; }
+.cs-contact-whatsapp svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.cs-contact-methods { display: grid; gap: 11px; margin-top: 24px; }
+.cs-contact-methods > a, .cs-contact-methods > div { display: flex; align-items: center; gap: 13px; padding: 12px 14px; border: 1px solid #eadfd3; border-radius: 5px; background: #fffdfa; }
+.cs-contact-icon { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 38px; border: 1px solid #d9c2aa; border-radius: 50%; color: #966c48; }
+.cs-contact-methods small, .cs-contact-methods strong { display: block; }
+.cs-contact-methods small { color: #8c7c70; font-size: .72rem; }
+.cs-contact-methods strong { margin-top: 2px; color: #514236; font-size: .9rem; font-weight: 600; }
+.cs-contact-visual { max-width: 450px; justify-self: center; overflow: hidden; border: 1px solid #eadfd3; border-radius: 8px; background: #f2e7dd; box-shadow: 0 18px 45px rgba(79,57,39,.12); }
+.cs-contact-visual img { display: block; width: 100%; height: auto; }
+.cs-contact-test { padding: 30px 0; background: #f1e5d8; border-top: 1px solid #eadfd3; }
+.cs-contact-test-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.cs-contact-test h2 { color: #4e3c30; font-size: clamp(1.4rem,2.4vw,2rem); }
+.cs-contact-test p { margin-top: 4px; color: #756457; font-size: .86rem; }
+.cs-contact-test .btn { border-radius: 4px; }
+
+.cs-philosophy-hero { padding: clamp(58px,8vw,110px) 0; }
+.cs-philosophy-hero h1 { max-width: 850px; }
+.cs-philosophy-story { background: #fffdfa; }
+.cs-philosophy-layout { display: grid; grid-template-columns: minmax(0,1.1fr) minmax(320px,.9fr); gap: clamp(35px,7vw,92px); align-items: center; }
+.cs-philosophy-copy h2 { max-width: 610px; }
+.cs-philosophy-copy p { max-width: 600px; margin-top: 14px; color: #716155; line-height: 1.8; }
+.cs-philosophy-copy .cs-text-link { margin-top: 22px; }
+.cs-philosophy-visual { position: relative; overflow: hidden; border: 1px solid #eadfd3; border-radius: 8px; background: #f5eee7; box-shadow: 0 16px 40px rgba(79,57,39,.1); }
+.cs-philosophy-visual img { display: block; width: 100%; height: auto; }
+.cs-philosophy-visual span { position: absolute; left: 15px; bottom: 15px; padding: 7px 12px; border-radius: 99px; background: rgba(255,253,250,.9); color: #7a5a40; font-size: .7rem; }
+.cs-values-section { padding: 60px 0 78px; background: #f5eee6; }
+.cs-values-heading { max-width: 660px; margin-bottom: 25px; }
+.cs-values-heading h2 { color: #4c3c31; font-size: clamp(1.8rem,3vw,2.7rem); }
+.cs-values-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
+.cs-value-card { position: relative; min-height: 215px; padding: 24px 20px; border: 1px solid #eadfd3; border-radius: 6px; background: #fffdfa; box-shadow: 0 6px 18px rgba(77,58,41,.045); }
+.cs-value-number { position: absolute; top: 17px; right: 18px; color: #b89778; font-size: .68rem; letter-spacing: .12em; }
+.cs-value-icon { display: grid; place-items: center; width: 45px; height: 45px; margin-bottom: 17px; border: 1px solid #d9c2aa; border-radius: 50%; color: #916742; }
+.cs-value-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.cs-value-card h3 { color: #4e3c30; font-size: 1.15rem; }
+.cs-value-card p { margin-top: 7px; color: #78695d; font-size: .82rem; line-height: 1.6; }
+.cs-philosophy-quote { padding: 54px 0; background: linear-gradient(125deg,#704b36,#573a2e); text-align: center; }
+.cs-philosophy-quote .container { max-width: 860px; }
+.cs-philosophy-quote > .container > span { display: block; color: #d9b894; font-family: var(--font-heading); font-size: 4rem; line-height: .7; }
+.cs-philosophy-quote blockquote { margin: 12px 0 21px; color: #fff8ef; font-family: var(--font-heading); font-size: clamp(1.55rem,3vw,2.5rem); line-height: 1.35; }
+.cs-philosophy-quote .btn { border-radius: 4px; background: #f3e6d8; color: #6a4932; }
+
+@media (max-width: 900px) {
+  .cs-contact-layout, .cs-philosophy-layout { grid-template-columns: 1fr; gap: 30px; }
+  .cs-contact-visual { width: min(100%,520px); }
+  .cs-values-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 560px) {
+  .cs-interior-hero { padding: 43px 0 39px; }
+  .cs-contact-test-inner { align-items: flex-start; flex-direction: column; }
+  .cs-contact-test .btn { align-self: stretch; justify-content: center; }
+  .cs-values-grid { grid-template-columns: 1fr; }
+  .cs-value-card { min-height: 0; }
+}
+
 /* =========================================================
    Clinical Skin — Marca, carrito, checkout y confirmación
    ========================================================= */
