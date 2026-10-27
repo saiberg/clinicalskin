@@ -11,7 +11,7 @@
 <meta property="og:description" content="Responde 5 preguntas rápidas y mira cómo se construye tu perfil de piel en tiempo real.">
 <link rel="icon" href="img/logoNotext-clinicalSkin.png" type="image/png">
 <link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/diagnostico.css?v=20261102-options-v2">
+<link rel="stylesheet" href="css/diagnostico.css?v=20261026-quiz-layout">
 </head>
 <body class="dx-body">
 
@@ -24,6 +24,8 @@
     <!-- Panel izquierdo: escáner + perfil en vivo -->
     <aside class="dx-scanner" aria-hidden="true">
       <div class="dx-face-wrap">
+        <img class="dx-face-photo" src="img/editorial/test-face.jpg" alt="Rostro con visualización del análisis de piel" fetchpriority="high">
+        <div class="dx-photo-caption"><strong>Tu piel, en análisis</strong><span>Responde y descubre tu perfil en tiempo real.</span></div>
         <svg class="dx-face" viewBox="0 0 200 260" fill="none">
           <defs>
             <linearGradient id="dxGrad" x1="0" y1="0" x2="1" y2="1">
@@ -48,12 +50,12 @@
       </div>
 
       <div class="dx-metrics">
-        <h2>Tu perfil en vivo</h2>
-        <div class="dx-metric"><span>Hidratación</span><i><b data-m="hidra"></b></i></div>
-        <div class="dx-metric"><span>Control de sebo</span><i><b data-m="sebo"></b></i></div>
-        <div class="dx-metric"><span>Sensibilidad</span><i><b data-m="sens"></b></i></div>
-        <div class="dx-metric"><span>Exposición solar</span><i><b data-m="sol"></b></i></div>
-        <div class="dx-metric"><span>Tolerancia a activos</span><i><b data-m="tol"></b></i></div>
+        <h2>El mapa de tu piel</h2>
+        <div class="dx-metric"><span>Nivel de hidratación</span><i><b data-m="hidra"></b></i></div>
+        <div class="dx-metric"><span>Equilibrio de grasa</span><i><b data-m="sebo"></b></i></div>
+        <div class="dx-metric"><span>Sensibilidad cutánea</span><i><b data-m="sens"></b></i></div>
+        <div class="dx-metric"><span>Hábitos de protección solar</span><i><b data-m="sol"></b></i></div>
+        <div class="dx-metric"><span>Tolerancia a ingredientes</span><i><b data-m="tol"></b></i></div>
       </div>
     </aside>
 
@@ -62,19 +64,16 @@
 
       <div class="dx-intro" data-view="intro">
         <div class="dx-intro-copy">
-          <span class="eyebrow">Test virtual de la piel · 2 minutos</span>
-          <h1>Conoce tu piel.<br>Descubre qué necesita.</h1>
-          <p>Responde cinco preguntas sobre tu tipo de piel, tus preocupaciones y tu rutina. Con esa información prepararemos una sugerencia de cuidado para ti.</p>
-          <ul class="dx-bullets">
-            <li><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Sin registro ni fotos</li>
-            <li><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Orientación según tus respuestas</li>
-            <li><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Tus respuestas quedan en este dispositivo</li>
-          </ul>
-          <button type="button" class="btn btn-primary dx-start" data-dx-start>Comenzar mi test <span aria-hidden="true">→</span></button>
-        </div>
-        <div class="dx-intro-visual">
-          <img src="img/editorial/test-face.jpg" alt="Rostro con una ilustración de análisis visual de la piel" fetchpriority="high">
-          <div class="dx-intro-caption"><span>5 preguntas</span><span>Sin cámara ni fotografías</span></div>
+        <span class="eyebrow">Tu piel, en primer plano · 2 minutos</span>
+        <h1>Tu piel es única.<br><em>Tu rutina también.</em></h1>
+        <p>En solo 2 minutos, descubre las principales necesidades de tu piel y recibe una rutina de mañana y noche con recomendaciones dermocosméticas adaptadas a tus respuestas.</p>
+        <ul class="dx-bullets">
+          <li><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><strong>Fácil y rápido</strong><small>Completa el test en aproximadamente 2 minutos.</small></span></li>
+          <li><svg viewBox="0 0 24 24"><path d="m12 3 2.2 5.2 5.6.5-4.2 3.8 1.2 5.5-4.8-2.9-4.8 2.9 1.2-5.5-4.2-3.8 5.6-.5L12 3Z"/></svg><span><strong>Recomendaciones personalizadas</strong><small>Recibe una rutina con productos seleccionados para tu piel.</small></span></li>
+          <li><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span><strong>Tu privacidad es importante</strong><small>No se requieren fotos ni registro. Tus respuestas se mantienen en este dispositivo.</small></span></li>
+        </ul>
+        <button type="button" class="btn btn-primary dx-start" data-dx-start>Descubrir mi perfil de piel <span aria-hidden="true">→</span></button>
+        <p class="dx-intro-disclaimer">ⓘ &nbsp;Orientación cosmética. No sustituye la evaluación de un dermatólogo.</p>
         </div>
       </div>
 
