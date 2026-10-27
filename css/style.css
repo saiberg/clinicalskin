@@ -1361,10 +1361,10 @@ ul { list-style: none; }
   .cs-brand-logo img { height: 29px; }
 }
 
-/* Tarjetas editoriales en carrusel: fotos más amplias conservan su texto integrado. */
-.cs-concerns-layout { display: grid; grid-template-columns: minmax(205px,.62fr) minmax(0,2.38fr); gap: 18px; align-items: center; }
-.cs-section-intro { margin-bottom: 0; text-align: left; }
-.cs-need-grid { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 12px; }
+/* Tarjetas editoriales en dos filas para ver todas sin desplazamiento horizontal. */
+.cs-concerns-layout { display: block; }
+.cs-section-intro { margin-bottom: 20px; text-align: left; }
+.cs-need-grid { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 14px; }
 .cs-need-card { display: block; grid-column: span 2; min-width: 0; min-height: 0; padding: 0 !important; overflow: hidden; border: 1px solid #eadfd3; border-radius: 5px; background: #fffdfa; box-shadow: 0 4px 14px rgba(77,58,41,.06); }
 .cs-need-card:nth-child(4) { grid-column: 2 / span 2; }
 .cs-need-card:nth-child(5) { grid-column: 4 / span 2; }
@@ -1380,8 +1380,8 @@ ul { list-style: none; }
   .cs-concerns-layout { display: block; }
   .cs-need-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
   .cs-need-card { grid-column: span 2; }
-  .cs-need-card:nth-child(4) { grid-column: 1 / span 2; }
-  .cs-need-card:nth-child(5) { grid-column: 3 / span 2; }
+  .cs-need-card:nth-child(4) { grid-column: 3 / span 2; }
+  .cs-need-card:nth-child(5) { grid-column: 2 / span 2; }
 }
 @media (max-width: 460px) {
   .cs-need-grid { grid-template-columns: minmax(0,1fr); gap: 12px; }
