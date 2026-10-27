@@ -76,7 +76,7 @@
     brillo_poros: 'spark', hidratar_calmar: 'drop', iluminar: 'sun', prevenir: 'shield'
   };
 
-  const ZONAS = ['frente', 'mejillaI', 'mejillaD', 'nariz', 'mentón'];
+  const ZONAS = ['frente', 'mejillaI', 'mejillaD', 'mentón'];
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const vistas = {};

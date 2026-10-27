@@ -11,7 +11,7 @@
 <meta property="og:description" content="Responde 5 preguntas rápidas y mira cómo se construye tu perfil de piel en tiempo real.">
 <link rel="icon" href="img/logoNotext-clinicalSkin.png" type="image/png">
 <link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/diagnostico.css?v=20261026-face-match3">
+<link rel="stylesheet" href="css/diagnostico.css?v=20261026-face-match4">
 </head>
 <body class="dx-body">
 
@@ -25,26 +25,12 @@
     <aside class="dx-scanner" aria-hidden="true">
       <div class="dx-face-wrap">
         <img class="dx-face-photo" src="img/editorial/face-scan.jpg" alt="Rostro con mapa visual de análisis de la piel" fetchpriority="high">
-        <svg class="dx-face" viewBox="0 0 200 260" fill="none">
-          <defs>
-            <linearGradient id="dxGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#E3BFAF"/>
-              <stop offset="1" stop-color="#A94A61"/>
-            </linearGradient>
-            <clipPath id="dxClip"><path d="M100 14c-42 0-68 32-68 78 0 52 26 100 68 148 42-48 68-96 68-148 0-46-26-78-68-78Z"/></clipPath>
-          </defs>
-          <path class="dx-face-fill" d="M100 14c-42 0-68 32-68 78 0 52 26 100 68 148 42-48 68-96 68-148 0-46-26-78-68-78Z"/>
-          <path class="dx-face-line" d="M100 14c-42 0-68 32-68 78 0 52 26 100 68 148 42-48 68-96 68-148 0-46-26-78-68-78Z"/>
-          <g clip-path="url(#dxClip)" class="dx-mesh">
-            <path d="M32 70h136M32 100h136M32 130h136M32 160h136M32 190h136M62 14v226M100 14v226M138 14v226"/>
-          </g>
-          <g class="dx-zone" data-zone="frente"><circle cx="100" cy="52" r="5"/></g>
-          <g class="dx-zone" data-zone="mejillaI"><circle cx="68" cy="118" r="5"/></g>
-          <g class="dx-zone" data-zone="mejillaD"><circle cx="132" cy="118" r="5"/></g>
-          <g class="dx-zone" data-zone="nariz"><circle cx="100" cy="124" r="5"/></g>
-          <g class="dx-zone" data-zone="mentón"><circle cx="100" cy="188" r="5"/></g>
-          <g clip-path="url(#dxClip)"><rect class="dx-beam" x="20" y="0" width="160" height="3" fill="url(#dxGrad)"/></g>
-        </svg>
+        <div class="dx-photo-zones" aria-hidden="true">
+          <span class="dx-photo-zone" data-zone="frente"></span>
+          <span class="dx-photo-zone" data-zone="mejillaI"></span>
+          <span class="dx-photo-zone" data-zone="mejillaD"></span>
+          <span class="dx-photo-zone" data-zone="mentón"></span>
+        </div>
         <div class="dx-ring-label"><span data-dx-pct>0%</span><small>perfil completado</small></div>
       </div>
 
