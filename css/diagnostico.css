@@ -148,11 +148,8 @@
 .dx-face-photo { display: none; }
 .dx-photo-caption { display: none; }
 .dx-grid:has(.dx-intro:not([hidden])) .dx-face-wrap { position: relative; width: 100%; max-width: none; margin: 0 auto 25px; overflow: hidden; border-radius: 8px; background: #f1e4d7; }
-.dx-grid:has(.dx-intro:not([hidden])) .dx-face-photo { display: block; width: 100%; aspect-ratio: 1.38; object-fit: cover; object-position: center; }
+.dx-grid:has(.dx-intro:not([hidden])) .dx-face-photo { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; object-position: center; }
 .dx-grid:has(.dx-intro:not([hidden])) .dx-face { display: none; }
-.dx-grid:has(.dx-intro:not([hidden])) .dx-photo-caption { position: absolute; display: flex; flex-direction: column; gap: 3px; left: 15px; top: 15px; max-width: 55%; padding: 10px 13px; border: 1px solid rgba(255,255,255,.75); border-radius: 6px; background: rgba(255,250,245,.88); color: #5b3d2a; }
-.dx-photo-caption strong { font-family: var(--font-heading); font-size: 1rem; font-weight: 500; }
-.dx-photo-caption span { color: #66574a; font-size: .7rem; line-height: 1.35; }
 .dx-grid:has(.dx-intro:not([hidden])) .dx-ring-label { bottom: -13px; z-index: 2; }
 .dx-grid:has(.dx-intro:not([hidden])) .dx-metrics { margin-top: 31px; }
 .dx-grid:has(.dx-intro:not([hidden])) .dx-metrics h2 { display: block; margin-bottom: 15px; color: #4e392b; font-family: var(--font-heading); font-size: 1.35rem; font-weight: 500; }
@@ -210,20 +207,17 @@
   .dx-grid:has(.dx-intro:not([hidden])) { grid-template-columns: 1fr; max-width: 760px; }
   .dx-grid:has(.dx-intro:not([hidden])) .dx-scanner { position: static; padding: 20px; }
   .dx-grid:has(.dx-intro:not([hidden])) .dx-face-wrap { max-width: 600px; }
-  .dx-grid:has(.dx-intro:not([hidden])) .dx-face-photo { aspect-ratio: 1.5; }
+  .dx-grid:has(.dx-intro:not([hidden])) .dx-face-photo { aspect-ratio: 1; object-fit: contain; }
   .dx-grid:has(.dx-intro:not([hidden])) .dx-metrics { margin-top: 23px; }
 }
 @media (max-width: 560px) {
   .dx-grid:has(.dx-intro:not([hidden])) { gap: 14px; }
   .dx-grid:has(.dx-intro:not([hidden])) .dx-scanner { padding: 15px; }
-  .dx-grid:has(.dx-intro:not([hidden])) .dx-face-photo { aspect-ratio: 1.3; }
+  .dx-grid:has(.dx-intro:not([hidden])) .dx-face-photo { aspect-ratio: 1; object-fit: contain; }
   .dx-intro-copy h1 { font-size: clamp(2.05rem,9vw,2.8rem); }
   .dx-intro-copy > p { font-size: .92rem; }
   .dx-intro-copy .dx-bullets small { font-size: .76rem; }
   .dx-intro-copy .dx-start { width: 100%; min-width: 0; }
-  .dx-photo-caption { left: 10px; top: 10px; padding: 8px 10px; }
-  .dx-photo-caption strong { font-size: .9rem; }
-  .dx-photo-caption span { font-size: .65rem; }
   .dx-grid:has(.dx-intro:not([hidden])) .dx-metrics { margin-top: 20px; }
   .dx-panel:has(.dx-quiz:not([hidden])) { padding: 23px 17px; }
   .dx-opt { min-height: 105px; padding: 13px; gap: 10px; }
