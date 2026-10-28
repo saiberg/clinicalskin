@@ -16,17 +16,15 @@ Guía breve, actualizada al 26/10/2026, para publicar el sitio local de WordPres
 
 Abre PowerShell y ejecuta:
 
-```powershell
 & 'C:\docker\clinicalskin-woo\scripts\exportar-hosting.ps1' -Dominio 'https://www.clinicalskin.cl'
-```
 
 El script exporta la base de datos y construye los dos paquetes en `C:\docker\clinicalskin-woo\salida\`:
 
 | Archivo | Para qué sirve | Tamaño actual aproximado |
 |---|---|---:|
 | `base.sql` | Catálogo, ajustes, páginas y configuración WooCommerce | 1,6 MB |
-| `site.tar.gz` | Sitio completo con permisos Unix; recomendado si cPanel permite extraer TAR.GZ | 79,8 MB |
-| `wordpress.zip` | Alternativa para extraer desde File Manager | 85,2 MB |
+| `site.tar.gz` | Sitio completo con permisos Unix; recomendado si cPanel permite extraer TAR.GZ | 83,0 MB |
+| `wordpress.zip` | Alternativa para extraer desde File Manager | 88,4 MB |
 
 El paquete incluye el núcleo de WordPress, tema, plugins instalados localmente, medios, diseño y las páginas estáticas. También deja los metadatos estáticos apuntando al dominio final. Se excluyen `.git`, el CSV y las imágenes fuente del inventario (`static/woocommerce`) y la documentación Markdown interna del sitio estático. **Sube `base.sql` y solo uno de los dos paquetes** (`site.tar.gz` o `wordpress.zip`).
 

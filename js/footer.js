@@ -7,9 +7,9 @@
 
   const LOGO = 'img/logoNotext-clinicalSkin.png';
   const COPYRIGHT = '© 2026 Clinical Skin — Dermocosmética. Todos los derechos reservados.';
-  const WHATSAPP = 'https://wa.me/56987654321';
-  const EMAIL = 'hola@clinicalskin.cl';
-  const TELEFONO = '+56 9 8765 4321';
+  const WHATSAPP = 'https://wa.me/56992412354';
+  const EMAIL = 'contacto@clinicalskin.cl';
+  const TELEFONO = '+56 9 9241 2354';
 
   const COLUMNAS = [
     {
