@@ -135,3 +135,65 @@
   .rp-card.off { display: none; }
   .rp section { margin-bottom: 18px; }
 }
+
+/* ---------- Fase 3: producto agotado ---------- */
+.badge-agotado { background: #f3e6d8; color: #a05a2c; border: 1px solid #e6cdb8; }
+.rp-card.agotado { opacity: .72; }
+.rp-card.agotado img { filter: grayscale(.35); }
+.rp-agotado-label { font-size: .78rem; color: #a05a2c; font-weight: 600; padding: 4px 0; }
+.rp-card.agotado .rp-price { text-decoration: line-through; opacity: .7; }
+
+/* ---------- Fase 4: alternancia básica/avanzada ---------- */
+.rp-routine-controls { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+.rp-level { display: inline-flex; background: var(--color-bg-alt, #f5efe8); border: 1px solid var(--color-border, #e6dcd0); border-radius: 99px; padding: 3px; }
+.rp-level-btn { border: 0; background: transparent; font: inherit; font-size: .82rem; font-weight: 600; color: #7a6a5c; padding: 7px 16px; border-radius: 99px; cursor: pointer; transition: background .2s, color .2s; }
+.rp-level-btn.active { background: var(--color-primary, #845a3b); color: #fff; }
+.rp-level-note { font-size: .85rem; color: #7a6a5c; margin: 0 0 18px; }
+
+/* ---------- Fase 4: indicadores ---------- */
+.rp-indicators { margin-top: 48px; }
+.rp-indicators-head { max-width: 60ch; margin-bottom: 22px; }
+.rp-indicators-head h2 { margin: 6px 0 8px; }
+.rp-indicators-head p { color: #7a6a5c; font-size: .9rem; }
+.rp-indicators-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
+.rp-ind { border: 1px solid #eee2d6; border-radius: 8px; padding: 18px; background: linear-gradient(120deg, #fffdfa, #f7eee5); }
+.rp-ind-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+.rp-ind-top strong { font-size: .92rem; color: #503c2e; }
+.rp-ind-val { font-family: var(--font-heading, serif); font-size: 1.3rem; color: #845a3b; }
+.rp-ind-na { font-size: .78rem; color: #a08b78; }
+.rp-ind-bar { height: 7px; background: #ece0d4; border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
+.rp-ind-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #c9a17a, #845a3b); transition: width .8s cubic-bezier(.2,.8,.2,1); }
+.rp-ind p { font-size: .8rem; color: #8a7868; margin: 0; line-height: 1.4; }
+
+/* ---------- Fase 4: WhatsApp ---------- */
+.rp-whatsapp { display: inline-flex; align-items: center; gap: 7px; }
+.rp-whatsapp svg { flex: none; }
+
+@media (max-width: 640px) {
+  .rp-routine-controls { align-items: stretch; }
+  .rp-level { align-self: flex-start; }
+}
+
+/* ---------- Fase 5: tarjeta de producto con datos reales ---------- */
+.rp-card { align-items: start; }
+.rp-media { display: block; }
+.rp-media img { display: block; }
+.rp-body { min-width: 0; }
+.rp-body h3 { margin: 0 0 6px; line-height: 1.25; }
+.rp-body h3 a { color: inherit; text-decoration: none; }
+.rp-body h3 a:hover { color: var(--color-primary-dark); }
+.rp-desc { font-size: .86rem; color: var(--color-text); margin: 0 0 8px; font-weight: 500; }
+.rp-ficha { font-size: .82rem; color: var(--color-text-light); margin: 0 0 10px; line-height: 1.5; }
+.rp-body .rp-why { margin: 0 0 8px; }
+.rp-body .rp-why strong { color: var(--color-primary-dark); }
+.rp-modo { font-size: .8rem; color: var(--color-text-light); margin: 8px 0 0; line-height: 1.5; }
+.rp-modo strong { color: var(--color-text); }
+.rp-side .rp-buy { margin-top: 2px; }
+.rp-side .btn-sm { white-space: nowrap; }
+
+@media (max-width: 720px) {
+  .rp-card { grid-template-columns: 90px 1fr; }
+  .rp-media img { width: 90px; height: 90px; }
+  .rp-body { grid-column: 1 / -1; }
+  .rp-side { grid-column: 1 / -1; }
+}

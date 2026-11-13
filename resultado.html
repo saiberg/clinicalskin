@@ -38,6 +38,10 @@
           <div class="rp-hero-actions">
             <a href="#rutina" class="btn btn-primary">Ver mi rutina</a>
             <a href="diagnostico.html" class="btn btn-ghost">Repetir escaneo</a>
+            <a href="#" class="btn btn-ghost rp-whatsapp" data-rp-whatsapp target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 21l2.2-5.3A8.4 8.4 0 1 1 21 11.5Z"/><path d="M8.5 9.5c0 3 2.5 5.5 5.5 5.5"/></svg>
+              Consultar por WhatsApp
+            </a>
           </div>
         </div>
 
@@ -72,14 +76,32 @@
             <span class="eyebrow">Tu rutina · <span data-rp-count></span> productos</span>
             <h2>Paso a paso, mañana y noche</h2>
           </div>
-          <div class="rp-tabs" role="tablist">
-            <button type="button" role="tab" class="rp-tab active" data-tab="am" aria-selected="true">☀️ Mañana</button>
-            <button type="button" role="tab" class="rp-tab" data-tab="pm" aria-selected="false">🌙 Noche</button>
+          <div class="rp-routine-controls">
+            <div class="rp-level" role="tablist" aria-label="Tipo de rutina">
+              <button type="button" role="tab" class="rp-level-btn active" data-level="avanzada" aria-selected="true">Rutina avanzada</button>
+              <button type="button" role="tab" class="rp-level-btn" data-level="basica" aria-selected="false">Rutina básica</button>
+            </div>
+            <div class="rp-tabs" role="tablist">
+              <button type="button" role="tab" class="rp-tab active" data-tab="am" aria-selected="true">☀️ Mañana</button>
+              <button type="button" role="tab" class="rp-tab" data-tab="pm" aria-selected="false">🌙 Noche</button>
+            </div>
           </div>
         </div>
 
+        <p class="rp-level-note" data-rp-level-note></p>
+
         <div class="rp-panel" data-panel="am" role="tabpanel"><ol class="rp-steps" data-steps="am"></ol></div>
         <div class="rp-panel" data-panel="pm" role="tabpanel" hidden><ol class="rp-steps" data-steps="pm"></ol></div>
+      </section>
+
+      <!-- Indicadores de tu piel -->
+      <section class="rp-indicators">
+        <div class="rp-indicators-head">
+          <span class="eyebrow">Tus indicadores</span>
+          <h2>Lo que dicen tus respuestas</h2>
+          <p>Puntuaciones orientativas (0–100) calculadas con reglas explícitas. No son mediciones clínicas.</p>
+        </div>
+        <div class="rp-indicators-grid" data-rp-indicators></div>
       </section>
 
       <!-- Calendario + consejo -->

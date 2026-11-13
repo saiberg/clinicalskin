@@ -1,5 +1,7 @@
-/* Resultado — resultado-pro.html. Lee el perfil guardado por el escáner (CS_DIAG.cargar). */
-(() => {
+/* Resultado — resultado-pro.html. Lee el perfil guardado por el escáner (CS_DIAG.cargar).
+   Fase 3: sincroniza el catálogo real, usa las 11 preocupaciones, indicadores
+   documentados y marca los productos agotados (sin compra). */
+(async () => {
   'use strict';
   const D = window.CS_DIAG;
   const C = window.CS_COMPRA;
@@ -12,11 +14,20 @@
   if (!data) { $('[data-rp-empty]').hidden = false; return; }
   $('[data-rp-content]').hidden = false;
 
+  /* Catálogo real antes de calcular la rutina (si el endpoint está disponible). */
+  if (D.sincronizarSiDisponible) {
+    try { await D.sincronizarSiDisponible(); } catch (e) { /* se usa el estático */ }
+  }
+
   const P = data.perfil;
   const E = D.CONFIG.etiquetas;
-  const p1 = E.preoc[P.preoc1] || {};
-  const rutina = D.armarRutina(P);
+  const PREF = D.CONFIG.preocupaciones;
+  const p1 = PREF[P.preoc1] || {};
+  let nivel = 'avanzada';
+  let rutina = D.armarRutinaAvanzada(P);
   const excluidos = new Set();
+
+  const calcularRutina = () => (nivel === 'basica' ? D.armarRutinaBasica(P) : D.armarRutinaAvanzada(P));
 
   const productosUnicos = () => {
     const ids = new Set();
@@ -24,9 +35,14 @@
     return [...ids].map((id) => D.CATALOGO.find((p) => p.id === id));
   };
 
+  /* Ids que están agotados (no se pueden comprar). */
+  const agotadosIds = () => new Set(
+    rutina.manana.concat(rutina.noche).filter((e) => e.agotado).map((e) => e.prod.id)
+  );
+
   /* ---------- Hero ---------- */
-  $('[data-rp-title]').textContent = `Tu piel es ${E.tipos[P.tipo].toLowerCase()}, con tendencia a ${p1.corto}`;
-  const extraPreoc = (P.preoc2 && P.preoc2 !== P.preoc1 && E.preoc[P.preoc2]) ? `, y también quieres ${E.preoc[P.preoc2].largo}` : '';
+  $('[data-rp-title]').textContent = `Tu piel es ${(E.tipos[P.tipo] || '').toLowerCase()}, con tendencia a ${p1.corto || ''}`;
+  const extraPreoc = (P.preoc2 && P.preoc2 !== P.preoc1 && PREF[P.preoc2]) ? `, y también quieres ${PREF[P.preoc2].largo}` : '';
   const extraSol = P.spfPrioridad ? ' Con tu exposición solar, la protección diaria es prioritaria.' : '';
   $('[data-rp-lead]').textContent = `Detectamos ${p1.largo}${extraPreoc}.${extraSol} Esta es la rutina pensada específicamente para ti.`;
 
@@ -34,22 +50,19 @@
   [cap(E.tiposLargo[P.tipo]), cap(p1.largo), `Sensibilidad ${E.sensibilidad[P.sensibilidad].toLowerCase()}`, `Exposición solar ${E.sol[P.sol]}`]
     .forEach((t) => { const s = document.createElement('span'); s.className = 'badge badge-accent'; s.textContent = t; tags.appendChild(s); });
 
-  /* Barras de perfil (visualización aproximada, igual que en el escáner) */
-  const r = data.respuestas;
+  /* Barras de perfil: indicadores documentados (calcularIndicadores). */
+  const ind = D.calcularIndicadores(P);
   const m = {
-    hidra: { seca: 25, sensible: 40, mixta: 60, grasa: 75 }[r.q1],
-    sebo: { grasa: 30, mixta: 55, sensible: 75, seca: 90 }[r.q1],
-    sens: { sensible: 85, seca: 45, mixta: 30, grasa: 25 }[r.q1],
-    tol: { mixta: 80, grasa: 85, seca: 55, sensible: 25 }[r.q1],
-    sol: { bajo: 20, moderado: 55, alto: 90, reactivo_clima: 50 }[r.q4]
+    hidra: ind.hidratacion,
+    sebo: ind.sebo,
+    sens: ind.sensibilidad,
+    tol: ind.tolerancia,
+    sol: ind.exposicion_solar
   };
-  if (r.q2 === 'deshidratacion') m.hidra -= 15;
-  if (r.q2 === 'acne') m.sebo -= 15;
-  if (r.q4 === 'reactivo_clima') { m.sens += 15; m.tol -= 15; }
   requestAnimationFrame(() => setTimeout(() => {
     Object.keys(m).forEach((k) => {
       const b = $(`[data-m="${k}"]`);
-      if (b && m[k] !== undefined) b.style.width = Math.max(0, Math.min(100, m[k])) + '%';
+      if (b && m[k] !== undefined && m[k] !== null) b.style.width = Math.max(0, Math.min(100, m[k])) + '%';
     });
   }, 150));
 
@@ -67,6 +80,11 @@
   /* ---------- Rutina ---------- */
   const primerIngrediente = (txt) => (txt || '').split(/,| y /)[0].replace(/\(.*?\)/g, '').trim();
 
+  /* Escapa texto para insertarlo en HTML (viene de WooCommerce). */
+  const esc = (s) => String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
   const pintarPasos = (slot, entradas) => {
     const ol = $(`[data-steps="${slot}"]`);
     ol.innerHTML = '';
@@ -76,23 +94,52 @@
     }
     entradas.forEach((e, i) => {
       const p = e.prod;
+      const agotado = !!e.agotado;
       const li = document.createElement('li');
       li.className = 'rp-step';
       li.style.animationDelay = i * 90 + 'ms';
+
+      /* Datos reales del catálogo (con fallback al texto estático). */
+      const nombre = esc(p.nombre);
+      const desc = esc(p.desc || '');
+      const porque = esc(e.porque || p.porque || '');
+      const fichaRaw = p.ficha || '';
+      /* Evita repetir la misma frase: la ficha solo si aporta información nueva. */
+      const ficha = (fichaRaw && fichaRaw.trim() !== (p.desc || '').trim()) ? esc(fichaRaw) : '';
+      const modoUso = esc(p.modoUso || p.modo_uso || '');
+      const activo = esc(primerIngrediente(p.ingredientes));
+      const paso = esc(E.paso[p.paso] || '');
+      const freq = esc(e.freq || p.frecuencia || '');
+      const url = p.url || ('producto.html?id=' + encodeURIComponent(p.id));
+
       li.innerHTML = `
         <span class="rp-num">${i + 1}</span>
-        <div class="rp-card${excluidos.has(p.id) ? ' off' : ''}">
-          <img src="${p.img}" alt="${p.nombre}" loading="lazy">
-          <div>
-            <div class="rp-badges"><span class="badge badge-accent">${E.paso[p.paso] || ''}</span><span class="badge">${e.freq}</span></div>
-            <h3>${p.nombre}</h3>
-            <p class="rp-why">${e.porque}</p>
-            <p class="rp-key">Activo clave: <b>${primerIngrediente(p.ingredientes)}</b></p>
+        <div class="rp-card${excluidos.has(p.id) ? ' off' : ''}${agotado ? ' agotado' : ''}" data-sku="${esc(p.id)}" data-product-id="${esc(p.product_id || '')}">
+          <a class="rp-media" href="${esc(url)}" aria-label="Ver ${nombre}">
+            <img src="${esc(p.img)}" alt="${nombre}" loading="lazy">
+          </a>
+          <div class="rp-body">
+            <div class="rp-badges">
+              <span class="badge badge-accent">${paso}</span>
+              <span class="badge">${freq}</span>
+              ${agotado ? '<span class="badge badge-agotado">Agotado</span>' : ''}
+            </div>
+            <h3><a href="${esc(url)}">${nombre}</a></h3>
+            ${desc ? `<p class="rp-desc">${desc}</p>` : ''}
+            ${ficha ? `<p class="rp-ficha">${ficha}</p>` : ''}
+            ${porque ? `<p class="rp-why"><strong>Por qué te lo recomendamos:</strong> ${porque}</p>` : ''}
+            ${activo ? `<p class="rp-key">Activo clave: <b>${activo}</b></p>` : ''}
+            ${modoUso ? `<p class="rp-modo"><strong>Cómo usarlo:</strong> ${modoUso}</p>` : ''}
           </div>
           <div class="rp-side">
             <span class="rp-price">${fmt(p.precio)}</span>
-            <label class="rp-inc"><input type="checkbox" data-inc="${p.id}" ${excluidos.has(p.id) ? '' : 'checked'}> Incluir</label>
-            <a href="producto.html?id=${p.id}" class="btn btn-ghost btn-sm">Ver</a>
+            ${agotado
+              ? '<span class="rp-agotado-label">Sin stock</span>'
+              : `<label class="rp-inc"><input type="checkbox" data-inc="${p.id}" ${excluidos.has(p.id) ? '' : 'checked'}> Incluir</label>`}
+            <a href="${esc(url)}" class="btn btn-ghost btn-sm">Ver ficha</a>
+            ${agotado
+              ? ''
+              : `<a href="${esc(url)}" class="btn btn-primary btn-sm rp-buy">Comprar</a>`}
           </div>
         </div>`;
       ol.appendChild(li);
@@ -101,6 +148,7 @@
   const pintarRutina = () => {
     pintarPasos('am', rutina.manana);
     pintarPasos('pm', rutina.noche);
+    $('[data-rp-count]').textContent = rutina.ids.length;
   };
   $('[data-panel="am"]').dataset.label = 'Rutina de mañana';
   $('[data-panel="pm"]').dataset.label = 'Rutina de noche';
@@ -111,6 +159,61 @@
     pintarRutina();
   }));
 
+  /* ---------- Alternancia básica / avanzada ---------- */
+  const NOTAS_NIVEL = {
+    basica: 'Rutina básica: lo esencial para tu piel — limpieza, hidratación y protección solar.',
+    avanzada: 'Rutina avanzada: añade tratamientos específicos para tus preocupaciones.'
+  };
+  const aplicarNivel = (nuevo) => {
+    nivel = nuevo;
+    rutina = calcularRutina();
+    excluidos.clear();
+    $$('.rp-level-btn').forEach((b) => {
+      const on = b.dataset.level === nivel;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-selected', on);
+    });
+    const nota = $('[data-rp-level-note]');
+    if (nota) nota.textContent = NOTAS_NIVEL[nivel] || '';
+    pintarRutina();
+    actualizarTotal();
+  };
+  $$('.rp-level-btn').forEach((b) => b.addEventListener('click', () => aplicarNivel(b.dataset.level)));
+
+  /* ---------- Indicadores (Etapa 5) ---------- */
+  const INDICADORES = [
+    { clave: 'hidratacion', nombre: 'Hidratación', desc: 'Cómo de bien retiene agua tu piel.' },
+    { clave: 'sebo', nombre: 'Control de sebo', desc: 'Nivel de producción de grasa.' },
+    { clave: 'sensibilidad', nombre: 'Sensibilidad', desc: 'Tendencia a reaccionar o irritarse.' },
+    { clave: 'exposicion_solar', nombre: 'Exposición solar', desc: 'Cuánto sol recibe tu piel.' },
+    { clave: 'tolerancia', nombre: 'Tolerancia a activos', desc: 'Capacidad de tolerar ingredientes potentes.' }
+  ];
+  const pintarIndicadores = () => {
+    const cont = $('[data-rp-indicators]');
+    if (!cont) return;
+    const valores = D.calcularIndicadores(P);
+    cont.innerHTML = INDICADORES.map((ind) => {
+      const v = valores[ind.clave];
+      if (v === null || v === undefined) {
+        return `<div class="rp-ind"><div class="rp-ind-top"><strong>${ind.nombre}</strong><span class="rp-ind-na">Sin datos</span></div><p>${ind.desc}</p></div>`;
+      }
+      return `<div class="rp-ind">
+        <div class="rp-ind-top"><strong>${ind.nombre}</strong><span class="rp-ind-val">${v}</span></div>
+        <div class="rp-ind-bar"><i style="width:${v}%"></i></div>
+        <p>${ind.desc}</p>
+      </div>`;
+    }).join('');
+  };
+
+  /* ---------- WhatsApp con mensaje prefijado ---------- */
+  const configurarWhatsApp = () => {
+    const a = $('[data-rp-whatsapp]');
+    if (!a) return;
+    const numero = '56992412354';
+    const texto = `Hola Clinical Skin, hice el test de piel y mi perfil es ${(E.tipos[P.tipo] || '').toLowerCase()} con tendencia a ${p1.corto || ''}. Me gustaría orientación sobre mi rutina.`;
+    a.href = `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
+  };
+
   document.addEventListener('change', (ev) => {
     const id = ev.target && ev.target.dataset && ev.target.dataset.inc;
     if (!id) return;
@@ -120,13 +223,15 @@
   });
 
   /* ---------- Total y compra ---------- */
-  const seleccion = () => productosUnicos().filter((p) => !excluidos.has(p.id));
+  /* Los agotados nunca entran en la compra. */
+  const seleccion = () => { const ag = agotadosIds(); return productosUnicos().filter((p) => !excluidos.has(p.id) && !ag.has(p.id)); };
+  const comprables = () => { const ag = agotadosIds(); return productosUnicos().filter((p) => !ag.has(p.id)); };
   const actualizarTotal = () => {
     const sel = seleccion();
     const subtotal = sel.reduce((s, p) => s + p.precio, 0);
     const desc = sel.length >= 2 ? subtotal * 0.1 : 0;
     $('[data-rp-total]').textContent = fmt(subtotal - desc);
-    $('[data-rp-buysub]').textContent = sel.length === productosUnicos().length ? `Rutina completa · ${sel.length} productos` : `${sel.length} productos seleccionados`;
+    $('[data-rp-buysub]').textContent = sel.length === comprables().length ? `Rutina completa · ${sel.length} productos` : `${sel.length} productos seleccionados`;
     $('[data-rp-save]').textContent = desc ? `Ahorras ${fmt(desc)} (10%)` : '';
     $('[data-rp-add]').disabled = sel.length === 0;
   };
@@ -220,6 +325,7 @@
     p.append(b, texto);
   }
 
-  pintarRutina();
-  actualizarTotal();
+  pintarIndicadores();
+  configurarWhatsApp();
+  aplicarNivel('avanzada');
 })();

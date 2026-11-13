@@ -147,3 +147,118 @@ cs_profile = {
 - Pesos y copys → constantes al inicio de `js/logica.js`
 - Nuevas preocupaciones → sumar valor al enum + mapeo en PASO 2
 - Nuevas preguntas (ej. rango etario) → nueva dimensión + flag, sin tocar el pipeline
+
+---
+
+## 11. Fase 3 — Modelo ampliado (implementado)
+
+### 11.1 Nuevas dimensiones
+
+| Pregunta | Dimensión | Valores |
+|---|---|---|
+| Q1 | `tipo` | `normal` · `mixta` · `seca` · `grasa` · `sensible` |
+| Q2 | `q2` (múltiple) | 11 preocupaciones (ver abajo) |
+| Q3 | `rutina` | `basica` · `multi` · `cambiante` · `ninguna` |
+| Q4 | `sol` | `bajo` · `moderado` · `alto` · `reactivo_clima` |
+| Q5 | `q5` (objetivo) | `brillo_poros` · `hidratar_calmar` · `iluminar` · `prevenir` |
+| Q6 | `q6` (hábitos) | `{ protector, sin_fragancia, preferencia }` |
+
+### 11.2 Las 11 preocupaciones
+
+`hidratacion` · `luminosidad` · `textura` · `poros` · `sebo` · `imperfecciones` ·
+`manchas` · `lineas` · `firmeza` · `sensibilidad` · `contorno`
+
+Alias de compatibilidad (modelo antiguo → nuevo):
+`acne → imperfecciones` · `deshidratacion → hidratacion` · `edad → lineas`.
+
+### 11.3 Indicadores documentados (`calcularIndicadores`)
+
+Cada indicador es 0..100 o `null` (sin información). Reglas:
+
+| Indicador | Base por tipo | Ajustes |
+|---|---|---|
+| hidratación | normal 70 · seca 30 · grasa 55 · mixta 55 · sensible 45 | −15 si preoc `hidratacion` |
+| sebo | normal 50 · seca 25 · grasa 85 · mixta 65 · sensible 40 | +10 si `sebo`/`imperfecciones`/`poros` |
+| sensibilidad | normal 20 · seca 45 · grasa 25 · mixta 35 · sensible 80 | +10 si `sensibilidad`; +10 si sol `reactivo_clima` |
+| exposición solar | fijo por `sol`: bajo 25 · moderado 60 · alto 90 · reactivo 55 | — |
+| tolerancia | alta 85 · media 60 · baja 35 | — |
+
+### 11.4 Rutina básica y avanzada
+
+- **Básica** (`armarRutinaBasica`): presupuesto 4 pasos → limpieza, tratamiento,
+  hidratación, protección solar.
+- **Avanzada** (`armarRutinaAvanzada`): presupuesto según Q3 (4/5/6) + extras
+  (exfoliante BHA, refuerzo de la 2ª preocupación, reparación).
+- `armarRutina` es alias de la avanzada (compatibilidad con el render actual).
+
+**Orden de pasos esenciales**: limpieza → tratamiento → hidratación → protección
+solar → contorno (si se pidió) → extras. Los esenciales entran primero para que
+el presupuesto no los deje fuera.
+
+### 11.5 Stock y agotados
+
+- El catálogo se sincroniza desde el endpoint `cs_catalogo` (Fase 2) al cargar.
+- Cada producto lleva `stock: { cantidad, en_stock }`.
+- `ponerPaso` usa el primer candidato **disponible y facial**.
+- Filtro facial: excluye `Champú`, `Cuidado corporal`, `Labios`.
+- Si un paso esencial no tiene nada disponible, se incluye el candidato
+  preferido **marcado `agotado: true`** (el frontend lo muestra sin compra).
+- Los agotados nunca entran en el total ni en "añadir al carrito".
+
+### 11.6 Sincronización con WooCommerce
+
+`logica.js` expone `sincronizarCatalogo(lista)` y `sincronizarSiDisponible()`.
+`footer.php` imprime `catalogo.js` **antes** de `logica.js`/`resultado-pro.js`
+para que la sincronización esté lista al calcular la rutina.
+
+---
+
+## 12. Fase 7 — Contrato de extensión: análisis visual (IA futura)
+
+El test está preparado para incorporar análisis fotográfico **sin reconstruirlo**.
+Hoy **no se usa IA**: `CONFIG.analisisVisual.habilitado = false` y no hay
+analizador registrado. El cuestionario funciona solo.
+
+### 12.1 API expuesta (`CS_DIAG.analisisVisual`)
+
+| Método | Descripción |
+|---|---|
+| `disponible()` | `true` si hay un analizador registrado. |
+| `registrar(fn)` | Registra un analizador `async (file, ctx) => resultadoVisual`. |
+| `limpiar()` | Quita el analizador y el último resultado. |
+| `analizar(file, perfil)` | Ejecuta el analizador. Nunca lanza; devuelve `{ok, motivo}`. |
+| `fusionarIndicadores(ind, visual, peso)` | Mezcla indicadores visuales con los del cuestionario. |
+| `fusionarPreocupaciones(perfil, visual)` | Añade preocupaciones detectadas al perfil. |
+| `analizarYFusionar(file, perfil, ind)` | Flujo completo: analiza + fusiona. |
+
+### 12.2 Formato del analizador
+
+```js
+CS_DIAG.analisisVisual.registrar(async (file, ctx) => ({
+  ok: true,
+  fuente: 'proveedor-ia',
+  version: '1',
+  indicadores: { hidratacion: 42, sebo: 68, sensibilidad: 30, poros: 55, manchas: 40, arrugas: 20, rojeces: 35, textura: 60 },
+  preocupaciones: ['sebo', 'poros'],  // claves del enum del test
+  confianza: 0.72,
+  notas: 'opcional'
+}));
+```
+
+### 12.3 Reglas de fusión
+
+- El visual **solo rellena** indicadores vacíos o **refuerza** con peso
+  (`CONFIG.analisisVisual.peso`, por defecto 0.5). Nunca inventa.
+- Mapa visual → enum del test: `poros → sebo`, `arrugas → lineas`,
+  `rojeces → sensibilidad`, `textura → textura`.
+- Las preocupaciones visuales se añaden sin duplicar y respetan el enum.
+- Si el analizador falla o no existe, se usa solo el cuestionario.
+- La foto es **siempre opcional** (`fotoOpcional: true`).
+
+### 12.4 Qué falta para activarlo (futuro)
+
+1. Elegir proveedor de IA (con costo) y obtener API key.
+2. Implementar un endpoint propio (PHP) que reciba la imagen y llame a la IA.
+3. Registrar el analizador en el frontend con `CS_DIAG.analisisVisual.registrar`.
+4. Añadir la UI opcional de carga de foto (no bloqueante).
+5. Definir consentimiento explícito para el tratamiento de la imagen.

@@ -234,3 +234,24 @@
   .dx-opt h3 { font-size: .99rem; }
   .dx-opt p { font-size: .82rem; }
 }
+
+/* ---------- Fase 3: hábitos y selección múltiple ---------- */
+.dx-options[role="group"] { grid-template-columns: 1fr 1fr; }
+.dx-opt[role="checkbox"].selected .dx-emoji { background: var(--color-accent-soft); border-color: var(--color-accent); }
+.dx-continue { margin-top: 22px; align-self: flex-start; padding: 13px 30px; }
+
+.dx-habitos { display: grid; gap: 14px; }
+.dx-habito { display: flex; align-items: flex-start; gap: 12px; padding: 16px 18px; border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md); background: var(--color-bg); cursor: pointer; transition: border-color .2s, background .2s; }
+.dx-habito:hover { border-color: var(--color-primary-light); background: var(--color-white); }
+.dx-habito input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--color-accent); flex: none; }
+.dx-habito strong { display: block; font-weight: 600; font-size: .95rem; }
+.dx-habito small { color: var(--color-text-light); font-size: .82rem; }
+.dx-preferencia { border: 1.5px solid var(--color-border); border-radius: var(--radius-md); padding: 16px 18px; margin: 0; }
+.dx-preferencia legend { font-weight: 600; font-size: .95rem; padding: 0 6px; }
+.dx-preferencia label { display: flex; align-items: center; gap: 8px; font-size: .9rem; color: var(--color-text); margin-top: 8px; cursor: pointer; }
+.dx-preferencia input { accent-color: var(--color-accent); width: 17px; height: 17px; }
+
+@media (max-width: 560px) {
+  .dx-options[role="group"] { grid-template-columns: 1fr; }
+}

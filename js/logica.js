@@ -15,18 +15,21 @@ const CS_DIAG = (() => {
   const CONFIG = {
     almacen: { clave: 'cs_diagnostico', caducaDias: 30 },
 
-    /* Cuántos productos únicos soporta cada perfil */
+    /* Cuántos productos únicos soporta cada perfil (rutina avanzada) */
     pasosPorRutina: { ninguna: 4, basica: 4, cambiante: 5, multi: 6 },
 
+    /* Presupuesto de pasos de la rutina básica (siempre 3-4: esencial) */
+    pasosRutinaBasica: 4,
+
     /* Tolerancia a activos: puntos por tipo + ajustes por sensibilidad */
-    toleranciaPorTipo: { mixta: 2, grasa: 2, seca: 1, sensible: 0 },
+    toleranciaPorTipo: { normal: 2, mixta: 2, grasa: 2, seca: 1, sensible: 0 },
     ajustesTolerancia: { sensibilidadAlta: -2, sensibilidadMedia: -1 },
     umbralesTolerancia: { alta: 2, media: 1 }, // >= alta | >= media | resto baja
 
     /* Exfoliación (BHA) */
     exfoliacion: {
-      activadaPor: ['acne'],
-      tiposPermitidos: ['mixta', 'grasa'],
+      activadaPor: ['acne', 'imperfecciones', 'poros', 'sebo'],
+      tiposPermitidos: ['normal', 'mixta', 'grasa'],
       bloqueadaSiSensibilidad: 'alta',
       frecuenciaPorTolerancia: {
         alta: '3-4 veces por semana',
@@ -42,28 +45,55 @@ const CS_DIAG = (() => {
     /* Protección solar */
     spf: { solConPrioridad: ['moderado', 'alto'] },
 
+    /* Análisis visual (IA fotográfica futura). Deshabilitado por defecto:
+       el test funciona solo con el cuestionario. Cuando se conecte un
+       proveedor, se registra con CS_DIAG.analisisVisual.registrar(fn). */
+    analisisVisual: {
+      habilitado: false,   // se activa al registrar un analizador
+      peso: 0.5,           // cuánto pesa el visual frente al cuestionario (0..1)
+      fotoOpcional: true,  // la foto nunca es obligatoria
+      maxMB: 8             // tamaño máximo de foto aceptado
+    },
+
     /* Compatibilidad por producto: base + coincidencias, con tope */
     match: { base: 85, tipo: 8, preocupacion: 10, tope: 99 },
 
     /* Q5 (objetivo) reutiliza el enum de preocupaciones (Q2) */
     mapObjetivo: { brillo_poros: 'acne', hidratar_calmar: 'deshidratacion', iluminar: 'manchas', prevenir: 'edad' },
 
+    /* Las 11 preocupaciones del prompt maestro (Etapa 3) → clave interna.
+       'acne' se mantiene como alias de 'imperfecciones' por compatibilidad. */
+    preocupaciones: {
+      hidratacion: { titulo: 'Hidratación', largo: 'deshidratación', corto: 'sequedad', senal: 'Tirantez' },
+      luminosidad: { titulo: 'Luminosidad', largo: 'falta de luminosidad', corto: 'opacidad', senal: 'Opacidad' },
+      textura: { titulo: 'Textura irregular', largo: 'textura irregular', corto: 'textura', senal: 'Aspereza' },
+      poros: { titulo: 'Poros visibles', largo: 'poros visibles', corto: 'poros', senal: 'Poros' },
+      sebo: { titulo: 'Exceso de sebo y brillo', largo: 'exceso de sebo', corto: 'brillo', senal: 'Brillo' },
+      imperfecciones: { titulo: 'Imperfecciones', largo: 'imperfecciones', corto: 'imperfecciones', senal: 'Brotes' },
+      manchas: { titulo: 'Manchas y tono desigual', largo: 'manchas y tono desigual', corto: 'manchas', senal: 'Manchas' },
+      lineas: { titulo: 'Líneas de expresión', largo: 'líneas de expresión', corto: 'líneas', senal: 'Líneas' },
+      firmeza: { titulo: 'Firmeza y elasticidad', largo: 'pérdida de firmeza', corto: 'firmeza', senal: 'Firmeza' },
+      sensibilidad: { titulo: 'Sensibilidad y rojeces', largo: 'sensibilidad y rojeces', corto: 'rojeces', senal: 'Rojeces' },
+      contorno: { titulo: 'Contorno de ojos', largo: 'contorno de ojos', corto: 'contorno', senal: 'Contorno' }
+    },
+
+    /* Alias de compatibilidad: las claves antiguas del enum de 4 apuntan a las nuevas. */
+    aliasPreoc: {
+      acne: 'imperfecciones',
+      deshidratacion: 'hidratacion',
+      edad: 'lineas'
+    },
+
     /* Etiquetas legibles de cada valor */
     etiquetas: {
-      tipos: { mixta: 'Mixta', seca: 'Seca', grasa: 'Grasa', sensible: 'Sensible' },
-      tiposLargo: { mixta: 'piel mixta', seca: 'piel seca', grasa: 'piel grasa', sensible: 'piel sensible' },
-      preoc: {
-        acne: { titulo: 'Acné', largo: 'acné e imperfecciones', corto: 'imperfecciones', senal: 'Brotes' },
-        deshidratacion: { titulo: 'Deshidratación', largo: 'deshidratación', corto: 'sequedad', senal: 'Tirantez' },
-        manchas: { titulo: 'Manchas', largo: 'manchas y tono desigual', corto: 'manchas', senal: 'Manchas' },
-        edad: { titulo: 'Signos de la edad', largo: 'signos de la edad', corto: 'signos de la edad', senal: 'Líneas' }
-      },
+      tipos: { normal: 'Normal', mixta: 'Mixta', seca: 'Seca', grasa: 'Grasa', sensible: 'Sensible' },
+      tiposLargo: { normal: 'piel normal', mixta: 'piel mixta', seca: 'piel seca', grasa: 'piel grasa', sensible: 'piel sensible' },
       sensibilidad: { alta: 'Alta', media: 'Media', baja: 'Baja' },
       actitud: { alta: 'Muy sensible', media: 'Reactiva', baja: 'Resistente' },
       detalleActitud: { alta: 'Cuidado extra', media: 'Sin irritar', baja: 'Bien tolerada' },
       sol: { bajo: 'Baja', moderado: 'Media', alto: 'Alta', reactivo_clima: 'Reactiva al clima' },
       rutina: { basica: 'Básica', multi: 'Varios pasos', cambiante: 'Variable', ninguna: 'Sin rutina fija' },
-      hidratacion: { seca: 'Insuficiente', mixta: 'Desbalanceada', grasa: 'Equilibrada', sensible: 'Comprometida' },
+      hidratacion: { normal: 'Equilibrada', seca: 'Insuficiente', mixta: 'Desbalanceada', grasa: 'Equilibrada', sensible: 'Comprometida' },
       objetivos: {
         brillo_poros: 'Controlar brillo y poros',
         hidratar_calmar: 'Hidratar y calmar',
@@ -79,25 +109,46 @@ const CS_DIAG = (() => {
       }
     },
 
-    /* Copys del resultado */
+    /* Copys del resultado (claves = preocupaciones nuevas; alias resueltos en calcularPerfil) */
     resumen: {
       titulos: {
-        acne: 'Equilibrio, no sobretratamiento',
-        deshidratacion: 'Hidratar desde la base',
+        imperfecciones: 'Equilibrio, no sobretratamiento',
+        hidratacion: 'Hidratar desde la base',
         manchas: 'Luz y constancia',
-        edad: 'Prevenir y mantener'
+        lineas: 'Prevenir y mantener',
+        luminosidad: 'Recuperar la luz',
+        textura: 'Suavizar la superficie',
+        poros: 'Afinar y purificar',
+        sebo: 'Regular el brillo',
+        firmeza: 'Recuperar densidad',
+        sensibilidad: 'Calmar primero',
+        contorno: 'Cuidar la mirada'
       },
       textos: {
-        acne: 'Tu piel presenta brillo, poros y brotes esporádicos. El objetivo no es eliminar el sebo, sino regularlo para que la piel no reaccione ni se vuelva más sensible.',
-        deshidratacion: 'Tu piel pierde agua más rápido de la que la repone: por eso se siente tirante u opaca. El plan es reparar la barrera y fijar hidratación, sin sobrecargar.',
+        imperfecciones: 'Tu piel presenta brillo, poros y brotes esporádicos. El objetivo no es eliminar el sebo, sino regularlo para que la piel no reaccione ni se vuelva más sensible.',
+        hidratacion: 'Tu piel pierde agua más rápido de la que la repone: por eso se siente tirante u opaca. El plan es reparar la barrera y fijar hidratación, sin sobrecargar.',
         manchas: 'Tu tono se está desparejando por sol, marcas o tiempo. Trabajamos con activos que unifican el tono y — fundamental — protección diaria para que no vuelvan.',
-        edad: 'Tu piel pide firmeza y luminosidad. Combinamos antioxidantes, hidratación profunda y protección solar: la base de toda prevención real.'
+        lineas: 'Tu piel pide firmeza y luminosidad. Combinamos antioxidantes, hidratación profunda y protección solar: la base de toda prevención real.',
+        luminosidad: 'Tu piel se ve apagada y sin luz. Trabajamos con activos que renuevan la superficie y devuelven el brillo natural, siempre con protección diaria.',
+        textura: 'Tu piel tiene una superficie irregular. Combinamos renovación suave e hidratación para afinar la textura sin agredir la barrera.',
+        poros: 'Tus poros se ven marcados. Trabajamos con activos purificantes que los limpian y afinan, sin resecar la piel.',
+        sebo: 'Tu piel produce más sebo del necesario. El objetivo es regularlo, no eliminarlo, para evitar el efecto rebote y la sensación de tirantez.',
+        firmeza: 'Tu piel pide densidad y elasticidad. Combinamos activos reafirmantes con hidratación y protección solar para mantenerla firme.',
+        sensibilidad: 'Tu piel reacciona con facilidad. Priorizamos fórmulas calmantes y respetuosas con la barrera, evitando activos agresivos.',
+        contorno: 'El contorno de tus ojos necesita un cuidado específico. Trabajamos la zona con activos que suavizan y descongestionan.'
       },
       finQuiz: {
-        acne: 'Basado en tus respuestas, tu piel necesita equilibrio: controlar el brillo y las imperfecciones sin resecar ni sobretratar.',
-        deshidratacion: 'Basado en tus respuestas, tu piel necesita hidratación de verdad: reparar la barrera y reducir la tirantez.',
+        imperfecciones: 'Basado en tus respuestas, tu piel necesita equilibrio: controlar el brillo y las imperfecciones sin resecar ni sobretratar.',
+        hidratacion: 'Basado en tus respuestas, tu piel necesita hidratación de verdad: reparar la barrera y reducir la tirantez.',
         manchas: 'Basado en tus respuestas, tu piel necesita unificar el tono y protegerse a diario.',
-        edad: 'Basado en tus respuestas, tu piel necesita prevenir: firmeza, luminosidad y protección constante.'
+        lineas: 'Basado en tus respuestas, tu piel necesita prevenir: firmeza, luminosidad y protección constante.',
+        luminosidad: 'Basado en tus respuestas, tu piel necesita recuperar luminosidad y renovarse.',
+        textura: 'Basado en tus respuestas, tu piel necesita suavizar su superficie y afinar la textura.',
+        poros: 'Basado en tus respuestas, tu piel necesita purificar y afinar los poros.',
+        sebo: 'Basado en tus respuestas, tu piel necesita regular el sebo sin resecarse.',
+        firmeza: 'Basado en tus respuestas, tu piel necesita recuperar firmeza y elasticidad.',
+        sensibilidad: 'Basado en tus respuestas, tu piel necesita calmarse y reforzar su barrera.',
+        contorno: 'Basado en tus respuestas, el contorno de tus ojos necesita un cuidado específico.'
       }
     },
 
@@ -265,52 +316,371 @@ const CS_DIAG = (() => {
     }
   ];
 
+  /* ==================== SINCRONIZACIÓN CON WOOCOMMERCE ==================== */
+  /*
+   * El CATALOGO de arriba es el respaldo estático (11 productos). Cuando el
+   * módulo cliente js/catalogo.js está disponible (endpoint cs_catalogo),
+   * se fusionan los 42 productos reales con sus atributos cosméticos y stock.
+   * Los productos del endpoint reemplazan a los estáticos por id (SKU) y se
+   * agregan los que falten. Los productos agotados quedan marcados con
+   * stock.en_stock = false para que el motor no los recomiende.
+   */
+  const sincronizarCatalogo = (listaEndpoint) => {
+    if (!Array.isArray(listaEndpoint) || !listaEndpoint.length) return 0;
+    let fusionados = 0;
+    listaEndpoint.forEach((p) => {
+      if (!p || !p.id) return;
+      const normalizado = {
+        id: p.id,
+        product_id: p.product_id || 0,
+        nombre: p.nombre,
+        paso: p.paso || '',
+        tipos: Array.isArray(p.tipos) ? p.tipos : [],
+        preocupaciones: Array.isArray(p.preocupaciones) ? p.preocupaciones : [],
+        agresividad: p.intensidad || 'baja',
+        frecuencia: p.frecuencia || '',
+        precio: Number(p.precio) || 0,
+        img: p.img || '',
+        desc: p.desc || '',
+        porque: p.porque || '',
+        ficha: p.ficha || '',
+        modoUso: p.modo_uso || '',
+        ingredientes: p.ingredientes || '',
+        categorias: Array.isArray(p.categorias) ? p.categorias : [],
+        stock: p.stock || null,
+        url: p.url || ''
+      };
+      const idx = CATALOGO.findIndex((x) => x.id === normalizado.id);
+      if (idx === -1) CATALOGO.push(normalizado);
+      else CATALOGO[idx] = Object.assign({}, CATALOGO[idx], normalizado);
+      fusionados++;
+    });
+    return fusionados;
+  };
+
+  /* Si el catálogo en tiempo real ya está cargado, se sincroniza al instante.
+     Si aún no lo está (catalogo.js se imprime después en el footer), espera
+     hasta 3 s a que aparezca window.CS_CATALOGO. */
+  const sincronizarSiDisponible = () => {
+    const intentar = () => {
+      if (window.CS_CATALOGO && typeof window.CS_CATALOGO.productos === 'function') {
+        return window.CS_CATALOGO.productos().then((lista) => sincronizarCatalogo(lista)).catch(() => 0);
+      }
+      return null;
+    };
+    const ya = intentar();
+    if (ya) return ya;
+    return new Promise((resolve) => {
+      let intentos = 0;
+      const timer = setInterval(() => {
+        const r = intentar();
+        if (r) { clearInterval(timer); r.then(resolve); return; }
+        if (++intentos > 30) { clearInterval(timer); resolve(0); }
+      }, 100);
+    });
+  };
+
   /* Qué responde cada opción del quiz (por paso e índice de opción).
-     Si en el HTML se agrega data-value a una opción, ese valor manda. */
+     Si en el HTML se agrega data-value a una opción, ese valor manda.
+     El quiz ampliado (Fase 3) puede enviar q2 como array (selección múltiple)
+     y q6 con los hábitos; el motor acepta ambos formatos. */
   const VALORES = {
-    1: ['mixta', 'seca', 'grasa', 'sensible'],
-    2: ['acne', 'deshidratacion', 'manchas', 'edad'],
+    1: ['normal', 'mixta', 'seca', 'grasa', 'sensible'],
+    2: ['hidratacion', 'luminosidad', 'textura', 'poros', 'sebo', 'imperfecciones', 'manchas', 'lineas', 'firmeza', 'sensibilidad', 'contorno'],
     3: ['basica', 'multi', 'cambiante', 'ninguna'],
     4: ['bajo', 'moderado', 'alto', 'reactivo_clima'],
     5: ['brillo_poros', 'hidratar_calmar', 'iluminar', 'prevenir']
   };
 
   /* ==================== PERFIL ==================== */
+
+  /** Resuelve una clave de preocupación antigua (acne/deshidratacion/edad) a la nueva. */
+  const normalizarPreoc = (clave) => CONFIG.aliasPreoc[clave] || clave;
+
+  /** Lista de preocupaciones (array) desde q2, que puede ser string o array. */
+  const listaPreocupaciones = (r) => {
+    let bruto = r.q2;
+    if (bruto === undefined || bruto === null || bruto === '') bruto = [];
+    if (!Array.isArray(bruto)) bruto = [bruto];
+    const limpias = bruto
+      .map((x) => String(x || '').trim())
+      .filter(Boolean)
+      .map(normalizarPreoc)
+      .filter((x) => CONFIG.preocupaciones[x]);
+    /* Sin duplicados, preservando orden. */
+    return limpias.filter((x, i) => limpias.indexOf(x) === i);
+  };
+
+  /**
+   * Perfil derivado. Acepta el modelo antiguo (q1..q5) y el ampliado
+   * (q1, q2 múltiple, q3, q4, q5, q6 hábitos). Todo lo que no venga
+   * tiene un valor por defecto coherente.
+   */
   const calcularPerfil = (r) => {
-    const puntosSens = (r.q1 === 'sensible' ? 1 : 0) + (r.q4 === 'reactivo_clima' ? 1 : 0);
+    r = r || {};
+    const tipo = CONFIG.etiquetas.tipos[r.q1] ? r.q1 : 'normal';
+
+    const puntosSens = (tipo === 'sensible' ? 1 : 0) + (r.q4 === 'reactivo_clima' ? 1 : 0);
     const sensibilidad = puntosSens >= 2 ? 'alta' : puntosSens === 1 ? 'media' : 'baja';
 
-    let tol = CONFIG.toleranciaPorTipo[r.q1] ?? 1;
+    let tol = CONFIG.toleranciaPorTipo[tipo] ?? 1;
     if (sensibilidad === 'alta') tol += CONFIG.ajustesTolerancia.sensibilidadAlta;
     if (sensibilidad === 'media') tol += CONFIG.ajustesTolerancia.sensibilidadMedia;
     const u = CONFIG.umbralesTolerancia;
     const tolerancia = tol >= u.alta ? 'alta' : tol >= u.media ? 'media' : 'baja';
 
-    const preoc1 = CONFIG.mapObjetivo[r.q2] ? r.q2 : r.q2; // q2 ya viene en el enum
-    const preoc2 = CONFIG.mapObjetivo[r.q5] || r.q2;
-    const preocupaciones = preoc2 === preoc1 ? [preoc1] : [preoc1, preoc2];
+    /* Preocupaciones: q2 (múltiple) + q5 (objetivo, opcional). */
+    const preocupaciones = listaPreocupaciones(r);
+    const objetivoPreoc = CONFIG.mapObjetivo[r.q5] ? normalizarPreoc(CONFIG.mapObjetivo[r.q5]) : null;
+    if (objetivoPreoc && CONFIG.preocupaciones[objetivoPreoc] && preocupaciones.indexOf(objetivoPreoc) === -1) {
+      preocupaciones.push(objetivoPreoc);
+    }
+
+    /* preoc1 = la principal (primera elegida); preoc2 = la siguiente distinta. */
+    const preoc1 = preocupaciones[0] || 'hidratacion';
+    const preoc2 = preocupaciones[1] || null;
+
+    /* Hábitos (Etapa 4). q6 puede ser objeto o string. */
+    const habitos = typeof r.q6 === 'object' && r.q6 ? r.q6 : {};
+    const sinFragancia = habitos.sin_fragancia === true || habitos.sin_fragancia === 'si';
+    const rutinaCompleta = habitos.preferencia === 'completa' || r.q3 === 'multi';
 
     return {
-      tipo: r.q1,
+      tipo,
       preoc1,
       preoc2,
       preocupaciones,
-      rutina: r.q3,
-      sol: r.q4,
+      rutina: r.q3 || 'ninguna',
+      sol: r.q4 || 'bajo',
       sensibilidad,
       tolerancia,
       pasos: CONFIG.pasosPorRutina[r.q3] ?? 4,
-      hidratacion: CONFIG.etiquetas.hidratacion[r.q1] || '—',
-      spfPrioridad: CONFIG.spf.solConPrioridad.includes(r.q4)
+      hidratacion: CONFIG.etiquetas.hidratacion[tipo] || '—',
+      spfPrioridad: CONFIG.spf.solConPrioridad.includes(r.q4),
+      sinFragancia,
+      rutinaCompleta,
+      habitos
     };
+  };
+
+  /* ==================== INDICADORES (puntuaciones documentadas) ==================== */
+  /*
+   * Cada indicador es 0..100 y se calcula con reglas explícitas sobre las
+   * respuestas. Si no hay información suficiente, el indicador es null
+   * (no se inventa un valor). Documentado en docs/logica-diagnostico.md.
+   *
+   * Base por tipo de piel (hidratación / sebo / sensibilidad):
+   *   normal:  hidra 70, sebo 50, sens 20
+   *   seca:    hidra 30, sebo 25, sens 45
+   *   grasa:   hidra 55, sebo 85, sens 25
+   *   mixta:   hidra 55, sebo 65, sens 35
+   *   sensible:hidra 45, sebo 40, sens 80
+   * Ajustes:
+   *   - preoc 'hidratacion'  → hidra −15
+   *   - preoc 'sebo'/'imperfecciones' → sebo +10
+   *   - preoc 'sensibilidad' → sens +10
+   *   - sol 'alto' → sol 90; 'moderado' → 60; 'bajo' → 25; 'reactivo_clima' → 55
+   *   - reactivo_clima → sens +10
+   *   - tolerancia alta/media/baja → tol 85/60/35 (no depende de tipo)
+   */
+  const calcularIndicadores = (P) => {
+    const base = {
+      normal: { hidra: 70, sebo: 50, sens: 20 },
+      seca: { hidra: 30, sebo: 25, sens: 45 },
+      grasa: { hidra: 55, sebo: 85, sens: 25 },
+      mixta: { hidra: 55, sebo: 65, sens: 35 },
+      sensible: { hidra: 45, sebo: 40, sens: 80 }
+    }[P.tipo] || { hidra: 60, sebo: 50, sens: 40 };
+
+    const clamp = (n) => Math.max(0, Math.min(100, Math.round(n)));
+    const tiene = (k) => (P.preocupaciones || []).indexOf(k) !== -1;
+
+    let hidra = base.hidra;
+    let sebo = base.sebo;
+    let sens = base.sens;
+
+    if (tiene('hidratacion')) hidra -= 15;
+    if (tiene('sebo') || tiene('imperfecciones') || tiene('poros')) sebo += 10;
+    if (tiene('sensibilidad')) sens += 10;
+    if (P.sol === 'reactivo_clima') sens += 10;
+
+    const sol = { bajo: 25, moderado: 60, alto: 90, reactivo_clima: 55 }[P.sol];
+    const tol = { alta: 85, media: 60, baja: 35 }[P.tolerancia];
+
+    return {
+      hidratacion: clamp(hidra),
+      sebo: clamp(sebo),
+      sensibilidad: clamp(sens),
+      exposicion_solar: sol === undefined ? null : sol,
+      tolerancia: tol === undefined ? null : tol
+    };
+  };
+
+  /* ==================== EXTENSIÓN: ANÁLISIS VISUAL (IA fotográfica futura) ==================== */
+  /*
+   * CONTRATO DE EXTENSIÓN — no implementa IA. Define cómo se conectará un
+   * análisis fotográfico futuro sin reconstruir el test.
+   *
+   * Un analizador externo es una función async que recibe un File/Blob y
+   * devuelve un objeto con esta forma:
+   *
+   *   {
+   *     ok: true,
+   *     fuente: 'ia-externa',            // identificador del proveedor
+   *     version: '1',
+   *     indicadores: {                    // 0..100 o null si no hay dato
+   *       hidratacion: 42,
+   *       sebo: 68,
+   *       sensibilidad: 30,
+   *       poros: 55,
+   *       manchas: 40,
+   *       arrugas: 20,
+   *       rojeces: 35,
+   *       textura: 60
+   *     },
+   *     preocupaciones: ['sebo', 'poros'], // claves del enum del test
+   *     confianza: 0.72,                  // 0..1
+   *     notas: 'texto opcional'
+   *   }
+   *
+   * La foto es SIEMPRE opcional: si no hay analizador registrado o falla,
+   * el test sigue funcionando solo con el cuestionario.
+   */
+  const analisisVisual = {
+    /* Analizador registrado (null = no hay IA todavía). */
+    analizador: null,
+    /* Resultado del último análisis (para resultados/guardado). */
+    ultimo: null,
+
+    /** Indica si hay un analizador visual disponible. */
+    disponible() {
+      return typeof this.analizador === 'function';
+    },
+
+    /**
+     * Registra un analizador. La firma debe ser:
+     *   async (file, ctx) => resultadoVisual
+     * donde ctx = { perfil, config }.
+     */
+    registrar(fn) {
+      this.analizador = typeof fn === 'function' ? fn : null;
+      return this;
+    },
+
+    /** Quita el analizador registrado. */
+    limpiar() {
+      this.analizador = null;
+      this.ultimo = null;
+      return this;
+    },
+
+    /**
+     * Analiza una foto (si hay analizador). Nunca lanza: devuelve
+     * { ok:false, motivo } si no está disponible o falla.
+     */
+    async analizar(file, perfil) {
+      if (!this.disponible()) {
+        return { ok: false, motivo: 'sin_analizador' };
+      }
+      if (!file) {
+        return { ok: false, motivo: 'sin_foto' };
+      }
+      try {
+        const resultado = await this.analizador(file, { perfil: perfil || null, config: CONFIG });
+        if (!resultado || resultado.ok === false) {
+          return { ok: false, motivo: 'analisis_fallido', detalle: resultado };
+        }
+        this.ultimo = resultado;
+        return resultado;
+      } catch (e) {
+        return { ok: false, motivo: 'error', detalle: String(e) };
+      }
+    },
+
+    /**
+     * Fusiona los indicadores visuales con los del cuestionario.
+     * Regla: el visual solo rellena lo que el cuestionario no cubre o
+     * refuerza con peso w (0..1). Nunca inventa: si no hay dato, se deja
+     * el del cuestionario.
+     */
+    fusionarIndicadores(indicadoresCuestionario, resultadoVisual, w) {
+      const peso = typeof w === 'number' ? Math.max(0, Math.min(1, w)) : 0.5;
+      const base = Object.assign({}, indicadoresCuestionario || {});
+      const vis = (resultadoVisual && resultadoVisual.indicadores) || {};
+      const mapa = {
+        hidratacion: 'hidratacion',
+        sebo: 'sebo',
+        sensibilidad: 'sensibilidad',
+        poros: 'sebo',
+        manchas: 'manchas',
+        arrugas: 'lineas',
+        rojeces: 'sensibilidad',
+        textura: 'textura'
+      };
+      Object.keys(vis).forEach((k) => {
+        const v = vis[k];
+        if (typeof v !== 'number' || isNaN(v)) return;
+        const destino = mapa[k] || k;
+        if (base[destino] === undefined || base[destino] === null) {
+          base[destino] = Math.round(v);
+        } else {
+          base[destino] = Math.round(base[destino] * (1 - peso) + v * peso);
+        }
+      });
+      return base;
+    },
+
+    /**
+     * Añade al perfil las preocupaciones detectadas visualmente que aún no
+     * estén presentes (sin duplicar, respetando el enum del test).
+     */
+    fusionarPreocupaciones(perfil, resultadoVisual) {
+      if (!perfil || !resultadoVisual || !Array.isArray(resultadoVisual.preocupaciones)) {
+        return perfil;
+      }
+      const lista = Array.isArray(perfil.preocupaciones) ? perfil.preocupaciones.slice() : [];
+      resultadoVisual.preocupaciones.forEach((p) => {
+        const clave = normalizarPreoc(p);
+        if (CONFIG.preocupaciones[clave] && lista.indexOf(clave) === -1) {
+          lista.push(clave);
+        }
+      });
+      perfil.preocupaciones = lista;
+      if (!perfil.preoc2 && lista[1]) perfil.preoc2 = lista[1];
+      perfil.analisisVisual = {
+        fuente: resultadoVisual.fuente || 'desconocida',
+        confianza: typeof resultadoVisual.confianza === 'number' ? resultadoVisual.confianza : null,
+        notas: resultadoVisual.notas || ''
+      };
+      return perfil;
+    },
+
+    /**
+     * Flujo completo (para uso futuro): analiza la foto y devuelve
+     * indicadores + perfil fusionados. Si no hay analizador, devuelve
+     * los del cuestionario sin cambios.
+     */
+    async analizarYFusionar(file, perfil, indicadoresCuestionario) {
+      const res = await this.analizar(file, perfil);
+      if (!res.ok) {
+        return { ok: false, motivo: res.motivo, perfil, indicadores: indicadoresCuestionario };
+      }
+      const peso = (CONFIG.analisisVisual && CONFIG.analisisVisual.peso) || 0.5;
+      const indicadores = this.fusionarIndicadores(indicadoresCuestionario, res, peso);
+      const perfilFusionado = this.fusionarPreocupaciones(
+        Object.assign({}, perfil),
+        res
+      );
+      return { ok: true, perfil: perfilFusionado, indicadores, visual: res };
+    }
   };
 
   /* ==================== RUTINA ==================== */
   const rellenar = (texto, P) => {
     if (!texto) return '';
     const E = CONFIG.etiquetas;
-    const p1 = E.preoc[P.preoc1] || {};
-    const p2 = (P.preoc2 && E.preoc[P.preoc2]) || p1;
+    const p1 = CONFIG.preocupaciones[P.preoc1] || {};
+    const p2 = (P.preoc2 && CONFIG.preocupaciones[P.preoc2]) || p1;
     const map = {
       '{tipo}': P.tipo || '',
       '{tipoLargo}': E.tiposLargo[P.tipo] || P.tipo || '',
@@ -326,109 +696,274 @@ const CS_DIAG = (() => {
     return out;
   };
 
+  /** ¿El producto está disponible? (sin dato de stock → se asume disponible). */
+  const disponible = (prod) => {
+    if (!prod) return false;
+    if (prod.stock === undefined || prod.stock === null) return true;
+    if (typeof prod.stock === 'object') return prod.stock.en_stock !== false;
+    return prod.stock !== false;
+  };
+
   const matchProducto = (P, prod) => {
     const c = CONFIG.match;
     let pct = c.base;
-    if (prod.tipos.includes('todo') || prod.tipos.includes(P.tipo)) pct += c.tipo;
-    if (prod.preocupaciones.some((x) => P.preocupaciones.includes(x))) pct += c.preocupacion;
+    const tipos = prod.tipos || [];
+    const preocs = prod.preocupaciones || [];
+    if (tipos.indexOf('todo') !== -1 || tipos.indexOf(P.tipo) !== -1) pct += c.tipo;
+    if (preocs.some((x) => (P.preocupaciones || []).indexOf(x) !== -1)) pct += c.preocupacion;
     return Math.min(pct, c.tope);
   };
 
-  const armarRutina = (P) => {
-    const presupuesto = CONFIG.pasosPorRutina[P.rutina] ?? 4;
+  /*
+   * SKU reales del catálogo. producto.html?id=<sku> resuelve la ficha y el
+   * puente del diagnóstico mapea nombre → id con estos mismos productos.
+   * Se eligen productos que existen en WooCommerce (Fase 1).
+   */
+  const SKU = {
+    limpiezaGrasa: 'eucerin-gel-limpiador-dermopure-ultra-150ml',
+    limpiezaSuave: 'avene-eau-agua-termal-avene-calmante-desensibilizante-y-suavizante-300',
+    limpiezaNormal: 'lrp-effaclar-gel-m-limpiador-purificante-400ml',
+    imperfecciones: 'eucerin-crema-facial-dermopure-accion-intensiva-noche-40ml',
+    hidratacion: 'vichy-mineral-89-serum-facial-hidratante-50ml',
+    manchas: 'vichy-liftactiv-serum-collagen-specialist-16',
+    lineas: 'eucerin-serum-facial-hyaluron-filler-elasticity-3d-30ml',
+    firmeza: 'eucerin-serum-facial-epigenetic-anti-edad-30ml',
+    luminosidad: 'eucerin-mist-spray-hyaluron-filler-3x-effect-hidratante-150ml',
+    contorno: 'eucerin-contorno-de-ojos-eucerin-antiarrugas-hyaluron-filler-15ml',
+    cremaSeca: 'eucerin-crema-de-noche-hyaluron-filler-elasticity-facial-50ml',
+    cremaGrasa: 'eucerin-repuesto-crema-facial-eucerin-hyaluron-filler-refill-dia-50ml',
+    cremaNormal: 'eucerin-crema-de-dia-hyaluron-filler-elasticity-facial-50ml',
+    protector: 'eucerin-protector-solar-hydro-fluid-facial-ultra-light-fps50-50ml',
+    protectorMatte: 'uriage-protector-solar-matificante-rostro-bariesun-fluido-spf50-50ml-u',
+    exfoliante: 'lrp-effaclar-gel-m-limpiador-purificante-400ml',
+    reparacion: 'eucerin-unguento-reparador-aquaphor-55ml'
+  };
+
+  /** Producto del catálogo por SKU (o null si no está / está agotado). */
+  const buscar = (id, respetarStock = true) => {
+    const prod = CATALOGO.find((p) => p.id === id);
+    if (!prod) return null;
+    if (respetarStock && !disponible(prod)) return null;
+    return prod;
+  };
+
+  /** Primer producto disponible de una lista de SKU candidatos. */
+  const primerDisponible = (ids) => {
+    for (const id of ids) {
+      const p = buscar(id);
+      if (p) return p;
+    }
+    return null;
+  };
+
+  /* Categorías que no son de rutina facial (champús, corporales). */
+  const CATEGORIAS_NO_FACIALES = ['Champú', 'Cuidado corporal', 'Labios'];
+
+  /** ¿Es un producto apto para la rutina facial? */
+  const esFacial = (prod) => {
+    const cats = prod.categorias || [];
+    if (!cats.length) return true; /* sin dato → se asume facial */
+    return !cats.some((c) => CATEGORIAS_NO_FACIALES.indexOf(c) !== -1);
+  };
+
+  /** Primer producto disponible y facial de una lista de SKU candidatos. */
+  const primerFacialDisponible = (ids) => {
+    for (const id of ids) {
+      const p = buscar(id);
+      if (p && esFacial(p)) return p;
+    }
+    return null;
+  };
+
+  /** Productos disponibles de un paso concreto, ordenados por match. */
+  const disponiblesPorPaso = (P, paso) =>
+    CATALOGO
+      .filter((p) => p.paso === paso && disponible(p) && esFacial(p))
+      .sort((a, b) => matchProducto(P, b) - matchProducto(P, a));
+
+  /** Elección de limpieza: preferidos por tipo, luego cualquier limpieza disponible. */
+  const candidatosLimpieza = (tipo) => {
+    /* Solo productos con paso 'limpieza' (el exfoliante NO es limpieza diaria). */
+    const base = {
+      seca: [SKU.limpiezaSuave, SKU.limpiezaGrasa],
+      sensible: [SKU.limpiezaSuave, SKU.limpiezaGrasa],
+      grasa: [SKU.limpiezaGrasa, SKU.limpiezaSuave],
+      mixta: [SKU.limpiezaGrasa, SKU.limpiezaSuave],
+      normal: [SKU.limpiezaSuave, SKU.limpiezaGrasa]
+    }[tipo] || [SKU.limpiezaSuave, SKU.limpiezaGrasa];
+    return base;
+  };
+
+  /** Elección de crema hidratante: preferidas por tipo, luego cualquier hidratación. */
+  const candidatosCrema = (tipo) => {
+    return {
+      seca: [SKU.cremaSeca, SKU.cremaNormal, SKU.cremaGrasa],
+      sensible: [SKU.cremaSeca, SKU.cremaNormal, SKU.cremaGrasa],
+      grasa: [SKU.cremaGrasa, SKU.cremaNormal, SKU.cremaSeca],
+      mixta: [SKU.cremaGrasa, SKU.cremaNormal, SKU.cremaSeca],
+      normal: [SKU.cremaNormal, SKU.cremaGrasa, SKU.cremaSeca]
+    }[tipo] || [SKU.cremaNormal, SKU.cremaGrasa, SKU.cremaSeca];
+  };
+
+  /** Elección de protector solar: matificante para grasa/mixta, luego el resto. */
+  const candidatosProtector = (tipo) => {
+    return (tipo === 'grasa' || tipo === 'mixta')
+      ? [SKU.protectorMatte, SKU.protector]
+      : [SKU.protector, SKU.protectorMatte];
+  };
+
+  /** Tratamiento principal según preocupación (con alternativas). */
+  const candidatosTratamiento = (preoc) => {
+    const mapa = {
+      imperfecciones: [SKU.imperfecciones],
+      hidratacion: [SKU.hidratacion],
+      manchas: [SKU.manchas],
+      lineas: [SKU.lineas],
+      firmeza: [SKU.firmeza],
+      luminosidad: [SKU.luminosidad],
+      textura: [SKU.exfoliante],
+      poros: [SKU.exfoliante],
+      sebo: [SKU.imperfecciones],
+      sensibilidad: [SKU.hidratacion],
+      contorno: [SKU.contorno]
+    };
+    return mapa[preoc] || [SKU.hidratacion];
+  };
+
+  /**
+   * Construye una rutina con un presupuesto de pasos.
+   * modo: 'basica' | 'avanzada'.
+   *
+   * Cada paso intenta una lista de SKU candidatos y usa el primero
+   * DISPONIBLE (no agotado). Si ninguno de los preferidos está en stock,
+   * cae al mejor producto disponible de ese paso.
+   */
+  const construirRutina = (P, modo) => {
+    const presupuesto = modo === 'basica'
+      ? CONFIG.pasosRutinaBasica
+      : (CONFIG.pasosPorRutina[P.rutina] ?? 4);
+
     const elegidos = new Set();
     const manana = [];
     const noche = [];
     let exfolia = false;
+    const agotados = [];
 
-    const poner = (id, slot) => {
-      const prod = CATALOGO.find((p) => p.id === id);
-      if (!prod || elegidos.has(id) || elegidos.size >= presupuesto) return null;
-      elegidos.add(id);
-      const entrada = { prod, freq: prod.frecuencia, porque: rellenar(prod.porque, P) };
+    const meter = (prod, slot, agotado) => {
+      if (!prod || elegidos.has(prod.id) || elegidos.size >= presupuesto) return null;
+      elegidos.add(prod.id);
+      const entrada = {
+        prod,
+        freq: prod.frecuencia,
+        porque: rellenar(prod.porque, P),
+        agotado: !!agotado
+      };
       if (slot === 'am' || slot === 'ambos') manana.push(entrada);
       if (slot === 'pm' || slot === 'ambos') noche.push(entrada);
       return entrada;
     };
 
-    const esSeca = P.tipo === 'seca';
-    const esMixture = ['mixta', 'grasa'].includes(P.tipo);
-    const esSensiblePerfil = P.tipo === 'sensible' || P.sensibilidad !== 'baja';
+    /* Intenta candidatos por SKU; si todos fallan, cae al mejor del paso.
+       Si el paso es esencial (esencial=true) y no hay nada disponible,
+       se incluye el candidato preferido marcado como agotado (sin compra). */
+    const ponerPaso = (candidatos, slot, pasoFallback, esencial) => {
+      const prod = primerFacialDisponible(candidatos);
+      if (prod) return meter(prod, slot, false);
 
-    /* SKU reales del catálogo: producto.html?id=<sku> resuelve la ficha y el
-       puente del diagnóstico mapea nombre → id con estos mismos productos. */
-    const K = {
-      limpiezaGrasa: 'eucerin-gel-limpiador-dermopure-ultra-150ml',
-      limpiezaSuave: 'avene-eau-agua-termal-avene-calmante-desensibilizante-y-suavizante-300',
-      acne: 'eucerin-crema-facial-dermopure-accion-intensiva-noche-40ml',
-      hidratacionSerum: 'vichy-mineral-89-serum-facial-hidratante-50ml',
-      manchas: 'vichy-liftactiv-serum-collagen-specialist-16',
-      edad: 'eucerin-serum-facial-hyaluron-filler-elasticity-3d-30ml',
-      cremaSeca: 'eucerin-crema-de-noche-hyaluron-filler-elasticity-facial-50ml',
-      cremaGrasa: 'eucerin-repuesto-crema-facial-eucerin-hyaluron-filler-refill-dia-50ml',
-      protector: 'eucerin-protector-solar-hydro-fluid-facial-ultra-light-fps50-50ml',
-      exfoliante: 'lrp-effaclar-gel-m-limpiador-purificante-400ml',
-      reparacion: 'eucerin-unguento-reparador-aquaphor-55ml'
-    };
-
-    /* --- Core (siempre entra) --- */
-    poner(esSeca || P.tipo === 'sensible' ? K.limpiezaSuave : K.limpiezaGrasa, 'ambos');
-
-    const tratMap = { acne: K.acne, deshidratacion: K.hidratacionSerum, manchas: K.manchas, edad: K.edad };
-    const slotTrat = P.preoc1 === 'acne' ? 'pm' : 'ambos';
-    poner(tratMap[P.preoc1], slotTrat);
-
-    poner(esSeca || P.tipo === 'sensible' ? K.cremaSeca : K.cremaGrasa, 'ambos');
-    poner(K.protector, 'am');
-
-    /* --- Extras por prioridad (respetando el presupuesto) --- */
-    const EXTRAS = {
-      exfoliante: () => {
-        const activa = CONFIG.exfoliacion.activadaPor.some((c) => P.preocupaciones.includes(c));
-        const okTipo = CONFIG.exfoliacion.tiposPermitidos.includes(P.tipo);
-        const okSens = P.sensibilidad !== CONFIG.exfoliacion.bloqueadaSiSensibilidad;
-        if (!(activa && okTipo && okSens)) return null;
-        const e = poner(K.exfoliante, 'pm');
-        if (e) {
-          e.freq = CONFIG.exfoliacion.frecuenciaPorTolerancia[P.tolerancia] || e.freq;
-          exfolia = true;
+      /* Registrar agotados de los candidatos para informar. */
+      candidatos.forEach((id) => {
+        const existe = CATALOGO.find((p) => p.id === id);
+        if (existe && !disponible(existe) && agotados.indexOf(existe.nombre) === -1) {
+          agotados.push(existe.nombre);
         }
-        return e;
-      },
+      });
 
-      refuerzo: () => {
-        if (!P.preoc2 || P.preoc2 === P.preoc1 || P.preocupaciones.length < 2) return null;
-        const mapa = {
-          acne: [K.acne, 'pm'],
-          deshidratacion: [K.hidratacionSerum, 'ambos'],
-          manchas: [K.manchas, 'ambos'],
-          edad: [K.edad, 'ambos']
-        }[P.preoc2];
-        if (!mapa) return null;
-        if (poner(mapa[0], mapa[1])) return mapa[0];
-        const alt = {
-          deshidratacion: [K.cremaSeca, 'ambos'],
-          manchas: [K.hidratacionSerum, 'ambos'],
-          edad: [K.manchas, 'ambos'],
-          acne: [K.limpiezaGrasa, 'pm']
-        }[P.preoc2];
-        return alt ? poner(alt[0], alt[1]) : null;
-      },
+      /* Fallback: mejor producto disponible del paso. */
+      if (pasoFallback) {
+        const alt = disponiblesPorPaso(P, pasoFallback).find((p) => !elegidos.has(p.id));
+        if (alt) return meter(alt, slot, false);
+      }
 
-      reparacion: () =>
-        (esSensiblePerfil || exfolia || esSeca)
-          ? poner(K.reparacion, 'pm')
-          : null
+      /* Último recurso para pasos esenciales: incluir agotado marcado. */
+      if (esencial) {
+        for (const id of candidatos) {
+          const existe = CATALOGO.find((p) => p.id === id);
+          if (existe && esFacial(existe) && !elegidos.has(existe.id)) {
+            return meter(existe, slot, true);
+          }
+        }
+      }
+      return null;
     };
 
-    for (const clave of CONFIG.prioridadesExtra) {
-      if (elegidos.size >= presupuesto) break;
-      try { if (EXTRAS[clave]) EXTRAS[clave](); } catch (e) { /* regla no aplicable */ }
+    const esSeca = P.tipo === 'seca';
+    const esSensiblePerfil = P.tipo === 'sensible' || P.sensibilidad !== 'baja';
+    const quiereTratamiento = P.preocupaciones && P.preocupaciones.length > 0;
+
+    /* --- 1. Limpieza (siempre) --- */
+    ponerPaso(candidatosLimpieza(P.tipo), 'ambos', 'limpieza', true);
+
+    /* --- 2. Tratamiento de la preocupación principal --- */
+    if (quiereTratamiento) {
+      const preoc = P.preoc1;
+      const slot = (preoc === 'imperfecciones' || preoc === 'sebo') ? 'pm' : 'ambos';
+      ponerPaso(candidatosTratamiento(preoc), slot, 'tratamiento', false);
+    }
+
+    /* --- 3. Hidratación (siempre) --- */
+    ponerPaso(candidatosCrema(P.tipo), 'ambos', 'hidratacion', true);
+
+    /* --- 4. Protección solar (siempre, AM) --- */
+    ponerPaso(candidatosProtector(P.tipo), 'am', 'proteccion', true);
+
+    /* --- 5. Contorno de ojos (si lo pidió y aún hay presupuesto) --- */
+    if ((P.preocupaciones || []).indexOf('contorno') !== -1) {
+      ponerPaso([SKU.contorno], 'ambos', null, false);
+    }
+
+    /* --- 6. Extras (solo en rutina avanzada, si hay presupuesto) --- */
+    if (modo === 'avanzada') {
+      const EXTRAS = {
+        exfoliante: () => {
+          const activa = CONFIG.exfoliacion.activadaPor.some((c) => (P.preocupaciones || []).indexOf(c) !== -1);
+          const okTipo = CONFIG.exfoliacion.tiposPermitidos.indexOf(P.tipo) !== -1;
+          const okSens = P.sensibilidad !== CONFIG.exfoliacion.bloqueadaSiSensibilidad;
+          if (!(activa && okTipo && okSens)) return null;
+          const e = ponerPaso([SKU.exfoliante], 'pm', 'exfoliacion', false);
+          if (e) {
+            e.freq = CONFIG.exfoliacion.frecuenciaPorTolerancia[P.tolerancia] || e.freq;
+            exfolia = true;
+          }
+          return e;
+        },
+
+        refuerzo: () => {
+          if (!P.preoc2 || P.preoc2 === P.preoc1) return null;
+          return ponerPaso(candidatosTratamiento(P.preoc2), 'ambos', null, false);
+        },
+
+        reparacion: () =>
+          (esSensiblePerfil || exfolia || esSeca) ? ponerPaso([SKU.reparacion], 'pm', null, false) : null
+      };
+
+      for (const clave of CONFIG.prioridadesExtra) {
+        if (elegidos.size >= presupuesto) break;
+        try { if (EXTRAS[clave]) EXTRAS[clave](); } catch (e) { /* regla no aplicable */ }
+      }
     }
 
     const total = CATALOGO.filter((p) => elegidos.has(p.id)).reduce((s, p) => s + p.precio, 0);
-    return { manana, noche, total, ids: [...elegidos], exfolia };
+    return { manana, noche, total, ids: [...elegidos], exfolia, agotados };
   };
+
+  /** Rutina avanzada (compatibilidad: armarRutina sigue existiendo). */
+  const armarRutinaAvanzada = (P) => construirRutina(P, 'avanzada');
+
+  /** Rutina básica: limpieza + tratamiento esencial + hidratación + SPF. */
+  const armarRutinaBasica = (P) => construirRutina(P, 'basica');
+
+  /** Alias histórico: el render actual usa la rutina avanzada. */
+  const armarRutina = armarRutinaAvanzada;
 
   /* ==================== PERSISTENCIA ==================== */
   const guardar = (respuestas) => {
@@ -474,7 +1009,7 @@ const CS_DIAG = (() => {
   const renderResumenQuiz = (data) => {
     const P = data.perfil;
     const E = CONFIG.etiquetas;
-    const p1 = E.preoc[P.preoc1] || {};
+    const p1 = CONFIG.preocupaciones[P.preoc1] || {};
     const h2 = document.querySelector('.quiz-summary h2');
     const para = document.querySelector('.quiz-summary p');
     const strongs = document.querySelectorAll('.quiz-summary .summary-card strong');
@@ -505,7 +1040,7 @@ const CS_DIAG = (() => {
   const renderResultado = (data) => {
     const P = data.perfil;
     const E = CONFIG.etiquetas;
-    const p1 = E.preoc[P.preoc1] || {};
+    const p1 = CONFIG.preocupaciones[P.preoc1] || {};
     const rutina = armarRutina(P);
 
     /* Hero */
@@ -513,8 +1048,8 @@ const CS_DIAG = (() => {
     if (h1) h1.textContent = `Tu piel es ${E.tipos[P.tipo].toLowerCase()}, con tendencia a ${p1.corto}`;
     const parrafo = document.querySelector('.result-hero h1 + p');
     if (parrafo) {
-      const extraPreoc = (P.preoc2 && P.preoc2 !== P.preoc1 && E.preoc[P.preoc2])
-        ? `, y también quieres ${E.preoc[P.preoc2].largo}` : '';
+      const extraPreoc = (P.preoc2 && P.preoc2 !== P.preoc1 && CONFIG.preocupaciones[P.preoc2])
+        ? `, y también quieres ${CONFIG.preocupaciones[P.preoc2].largo}` : '';
       const extraSol = P.spfPrioridad ? ' Con tu exposición solar, la protección diaria es prioritaria.' : '';
       parrafo.textContent = `Detectamos ${p1.largo}${extraPreoc}.${extraSol} Aquí está la rutina pensada específicamente para ti.`;
     }
@@ -637,7 +1172,7 @@ const CS_DIAG = (() => {
     const sub = document.querySelector('[data-match-sub]');
     if (sub) {
       const E = CONFIG.etiquetas;
-      const preoc = E.preoc[P.preoc1];
+      const preoc = CONFIG.preocupaciones[P.preoc1];
       sub.textContent = `Según tu diagnóstico: ${E.tiposLargo[P.tipo]} con tendencia a ${preoc ? preoc.corto : ''}.`;
     }
   };
@@ -658,8 +1193,17 @@ const CS_DIAG = (() => {
     if (document.querySelector('.result-hero')) {
       const data = cargar();
       if (data) {
-        try { renderResultado(data); }
-        catch (e) { console.warn('Clinical Skin: no se pudo renderizar el resultado', e); }
+        /* Sincronizar con el catálogo real antes de renderizar (si está disponible).
+           Si falla o tarda, se renderiza igual con el catálogo estático. */
+        const render = () => {
+          try { renderResultado(data); }
+          catch (e) { console.warn('Clinical Skin: no se pudo renderizar el resultado', e); }
+        };
+        if (window.CS_CATALOGO) {
+          sincronizarSiDisponible().then(render).catch(render);
+        } else {
+          render();
+        }
       }
     }
     /* producto.html: % de compatibilidad (compra.js lo vuelve a llamar tras cambiar ?id) */
@@ -671,7 +1215,24 @@ const CS_DIAG = (() => {
     }
   } catch (e) { console.warn('Clinical Skin: error de lógica', e); }
 
-  return { CONFIG, CATALOGO, VALORES, calcularPerfil, armarRutina, matchProducto, renderMatch, guardar, cargar, limpiar };
+  return {
+    CONFIG,
+    CATALOGO,
+    VALORES,
+    calcularPerfil,
+    calcularIndicadores,
+    armarRutina,
+    armarRutinaBasica,
+    armarRutinaAvanzada,
+    matchProducto,
+    renderMatch,
+    guardar,
+    cargar,
+    limpiar,
+    sincronizarCatalogo,
+    sincronizarSiDisponible,
+    analisisVisual
+  };
 })();
 
 /* Exponer en window para que js/compra.js pueda usar el catálogo */
