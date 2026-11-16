@@ -54,7 +54,7 @@
   ).join('\n      ');
 
   const html = `
-  <div class="cs-topbar"><div class="container cs-topbar-inner"><span>Dermocosmética para tu rutina</span><span>Test virtual de la piel</span><span>Despacho a todo Chile</span><span>Pago seguro con Webpay</span></div></div>
+  <div class="cs-topbar"><div class="container cs-topbar-inner"><span>Dermocosmética para tu rutina</span><span>Test virtual de la piel</span><span>Despacho a todo Chile, según factibilidad</span><span>Pago seguro con Webpay</span></div></div>
   <div class="container nav">
     <a href="index.html" class="logo">
       <span class="logo-mark"><img src="${LOGO}" alt=""></span>

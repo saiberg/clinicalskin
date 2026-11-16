@@ -7,9 +7,6 @@
 <meta name="description" content="Tu diagnóstico de piel y tu rutina personalizada de mañana y noche, con los productos Clinical Skin elegidos para ti.">
 <meta name="robots" content="noindex">
 <link rel="icon" href="img/logoNotext-clinicalSkin.png" type="image/png">
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/diagnostico.css?v=20261026-face-match4">
-<link rel="stylesheet" href="css/resultado.css?v=20261026-quiz-layout">
 </head>
 <body class="rp-body">
 
@@ -24,6 +21,13 @@
       <h1>Aún no tenemos tu diagnóstico</h1>
       <p>Responde el escáner de piel (2 minutos) y verás aquí tu rutina personalizada.</p>
       <a href="diagnostico.html" class="btn btn-primary">Hacer mi diagnóstico</a>
+    </section>
+
+    <!-- Cargando la rutina -->
+    <section class="rp-loading" data-rp-loading>
+      <div class="rp-loading-spinner" aria-hidden="true"></div>
+      <h2>Preparando tu rutina…</h2>
+      <p>Estamos seleccionando los productos según tu perfil de piel.</p>
     </section>
 
     <div data-rp-content hidden>
@@ -46,7 +50,7 @@
         </div>
 
         <div class="rp-hero-card">
-          <div class="rp-hero-face"><img src="img/editorial/face-scan.jpg" alt="Rostro con mapa visual de análisis de la piel" loading="lazy"></div>
+          <div class="rp-hero-face"><img src="img/diagnostico/rostro-zonas.jpg?v=3" alt="Rostro con mapa visual de análisis de la piel" loading="lazy"></div>
           <div class="rp-metrics">
             <div class="dx-metric"><span>Hidratación</span><i><b data-m="hidra"></b></i></div>
             <div class="dx-metric"><span>Control de sebo</span><i><b data-m="sebo"></b></i></div>
@@ -82,8 +86,8 @@
               <button type="button" role="tab" class="rp-level-btn" data-level="basica" aria-selected="false">Rutina básica</button>
             </div>
             <div class="rp-tabs" role="tablist">
-              <button type="button" role="tab" class="rp-tab active" data-tab="am" aria-selected="true">☀️ Mañana</button>
-              <button type="button" role="tab" class="rp-tab" data-tab="pm" aria-selected="false">🌙 Noche</button>
+              <button type="button" role="tab" class="rp-tab active" data-tab="am" aria-selected="true"><img class="rp-tab-icon" src="img/diagnostico/clinical_skin_iconos_rutina/rutina-manana.svg" alt="" width="20" height="20"> Mañana</button>
+              <button type="button" role="tab" class="rp-tab" data-tab="pm" aria-selected="false"><img class="rp-tab-icon" src="img/diagnostico/clinical_skin_iconos_rutina/rutina-noche.svg" alt="" width="20" height="20"> Noche</button>
             </div>
           </div>
         </div>

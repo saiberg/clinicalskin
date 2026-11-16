@@ -255,3 +255,183 @@
 @media (max-width: 560px) {
   .dx-options[role="group"] { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   Mockup visual — escáner con rostro SVG animado
+   ============================================================ */
+.dx-face-svg { width: 100%; display: block; }
+.dx-face-wrap { position: relative; width: 210px; margin: 0 auto 26px; }
+
+/* Línea de escaneo que recorre el rostro */
+.dx-scan-line {
+  position: absolute; left: 8%; right: 8%; top: 12%; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-accent, #B88B4A), transparent);
+  box-shadow: 0 0 12px 2px rgba(184,139,74,.45);
+  opacity: 0; pointer-events: none; border-radius: 2px;
+}
+.dx-face-wrap.scanning .dx-scan-line { opacity: 1; animation: dxScanLine 2.2s ease-in-out infinite; }
+@keyframes dxScanLine {
+  0%   { top: 12%; opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { top: 78%; opacity: 0; }
+}
+
+/* Zonas del rostro: se iluminan al avanzar (CSS targeting de los id del SVG) */
+.dx-face-svg .scan-zone .zone-fill {
+  fill: #D8C4A7; fill-opacity: .12; stroke: #B99A72; stroke-dasharray: 4 5;
+  transition: fill-opacity .5s ease, stroke .5s ease;
+}
+.dx-face-svg .scan-zone.on .zone-fill {
+  fill: #B88B4A; fill-opacity: .38; stroke: #8B6B45; stroke-dasharray: none;
+  animation: dxZonePulse 1.8s ease-out infinite;
+}
+@keyframes dxZonePulse {
+  0%   { fill-opacity: .38; }
+  50%  { fill-opacity: .55; }
+  100% { fill-opacity: .38; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dx-scan-line, .dx-face-svg .scan-zone.on .zone-fill { animation: none !important; }
+}
+
+/* ============================================================
+   Mockup visual — iconos propios y micro-interacciones
+   ============================================================ */
+.dx-emoji img { width: 40px; height: 40px; display: block; }
+.dx-opt.selected .dx-emoji { background: var(--color-accent-soft, #f3e6d8); border-color: var(--color-accent, #B88B4A); }
+.dx-opt.selected .dx-emoji img { filter: none; }
+
+/* Check animado al seleccionar */
+.dx-opt.selected::after {
+  content: '✓'; position: absolute; top: 10px; right: 12px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--color-accent, #B88B4A); color: #fff;
+  display: grid; place-items: center; font-size: .72rem; font-weight: 700;
+  animation: dxCheckIn .3s cubic-bezier(.2,.8,.2,1);
+}
+.dx-opt.selected .dx-key { display: none; }
+@keyframes dxCheckIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* Contador de seleccionadas (Q2) */
+.dx-selected-count {
+  display: inline-flex; align-items: center; gap: 6px; margin: 0 0 14px;
+  font-size: .82rem; color: var(--color-primary-dark, #503c2e);
+  background: var(--color-accent-soft, #f3e6d8); padding: 5px 12px; border-radius: 99px;
+}
+.dx-selected-count b { font-weight: 700; }
+
+/* Entrada suave de las preguntas */
+.dx-question { animation: dxIn .45s cubic-bezier(.2,.8,.2,1); }
+
+/* Rostro inline */
+.dx-face-svg-inline { width: 100%; }
+.dx-face-svg-inline svg { width: 100%; height: auto; display: block; }
+
+/* ============================================================
+   Fix: tamaño del rostro SVG y etiqueta del perfil
+   ============================================================ */
+.dx-face-wrap { width: 190px; max-width: 190px; margin: 0 auto 30px; }
+.dx-face-svg-inline { width: 190px; max-width: 190px; margin: 0 auto; }
+.dx-face-svg-inline svg {
+  width: 190px !important; height: auto !important; max-width: 100%;
+  display: block; overflow: visible;
+}
+/* La etiqueta debe verse completa, sin cortes */
+.dx-ring-label {
+  left: 50%; bottom: -16px; transform: translateX(-50%);
+  white-space: nowrap; width: auto; min-width: max-content;
+  padding: 7px 18px; z-index: 2;
+}
+.dx-ring-label span { font-size: 1rem; }
+.dx-ring-label small { font-size: .72rem; }
+
+/* ============================================================
+   Fix definitivo: rostro SVG y etiqueta del perfil (mockup)
+   ============================================================ */
+/* En la portada el wrap tenía overflow:hidden y recortaba la etiqueta. */
+.dx-grid:has(.dx-intro:not([hidden])) .dx-face-wrap { overflow: visible; background: transparent; }
+
+/* El SVG inline respeta el ancho del contenedor en todos los casos. */
+.dx-face-svg-inline { width: 100%; max-width: 100%; margin: 0 auto; display: block; }
+.dx-face-svg-inline svg { display: block; width: 100% !important; height: auto !important; max-width: 100%; }
+
+/* Portada: el rostro no debe crecer más que el panel. */
+.dx-grid:has(.dx-intro:not([hidden])) .dx-face-svg-inline { max-width: 300px; }
+.dx-grid:has(.dx-intro:not([hidden])) .dx-face-svg-inline svg { max-width: 300px; }
+
+/* Etiqueta del perfil: siempre completa y visible. */
+.dx-ring-label {
+  position: absolute; left: 50%; bottom: -16px; transform: translateX(-50%);
+  display: inline-flex; align-items: baseline; gap: 6px;
+  white-space: nowrap; width: auto; max-width: none; min-width: 0;
+  padding: 7px 18px; z-index: 3; overflow: visible;
+}
+.dx-ring-label span { margin-right: 0; }
+.dx-grid:has(.dx-intro:not([hidden])) .dx-ring-label { bottom: -16px; }
+
+/* ============================================================
+   Fix: foto del rostro y etiqueta del perfil (sin recortes)
+   ============================================================ */
+/* El wrap recortaba la etiqueta que va en bottom negativo. */
+.dx-face-wrap { overflow: visible !important; }
+.dx-grid:has(.dx-intro:not([hidden])) .dx-face-wrap { overflow: visible !important; }
+
+/* Etiqueta siempre completa y visible. */
+.dx-ring-label {
+  display: inline-flex !important; align-items: baseline; gap: 6px;
+  white-space: nowrap; width: auto !important; min-width: max-content;
+  padding: 7px 18px; bottom: -16px !important; z-index: 3; overflow: visible;
+}
+.dx-grid:has(.dx-intro:not([hidden])) .dx-ring-label { bottom: -16px !important; }
+
+/* ============================================================
+   Zonas ajustadas a rostro-zonas.jpg
+   ============================================================ */
+.dx-photo-zone[data-zone="frente"]   { left: 50%;   top: 22%; }
+.dx-photo-zone[data-zone="mejillaI"] { left: 36%;   top: 55%; }
+.dx-photo-zone[data-zone="mejillaD"] { left: 64%;   top: 55%; }
+.dx-photo-zone[data-zone="mentón"]   { left: 50%;   top: 79%; }
+
+/* ============================================================
+   Móvil muy estrecho (<=380px): test y resultado sin desborde
+   ============================================================ */
+@media (max-width: 480px) {
+  /* Escáner: la foto y el panel se salían a 392px. */
+  .dx-scanner { padding: 14px !important; }
+  .dx-face-wrap,
+  .dx-face-svg-inline { max-width: 100% !important; width: 100% !important; }
+  .dx-face-photo,
+  .dx-face-svg-inline svg { max-width: 100% !important; width: 100% !important; height: auto !important; }
+  .dx-grid:has(.dx-intro:not([hidden])) .dx-face-wrap { max-width: 100% !important; }
+  .dx-grid:has(.dx-intro:not([hidden])) .dx-face-photo { aspect-ratio: auto; object-fit: contain; }
+  .dx-panel { padding: 20px 14px !important; }
+  .dx-opt { padding: 12px !important; gap: 10px !important; }
+  .dx-emoji { flex: 0 0 38px !important; width: 38px !important; height: 38px !important; }
+  .dx-emoji img { width: 32px !important; height: 32px !important; }
+  .dx-opt h3 { font-size: .92rem !important; }
+  .dx-opt p { font-size: .78rem !important; }
+  .dx-metric { grid-template-columns: 1fr 70px !important; font-size: .75rem !important; }
+  /* Resultado: tarjetas y hero a una columna. */
+  .rp-hero, .rp-insight, .rp-card { grid-template-columns: 1fr !important; }
+  .rp-card { padding: 12px !important; gap: 12px !important; }
+  .rp-card img, .rp-media img { width: 100% !important; height: auto !important; max-width: 140px !important; }
+  .rp-side { justify-items: start !important; text-align: left !important; }
+  .rp-routine, .rp-indicators { padding: 18px 12px !important; }
+  .rp-indicators-grid { grid-template-columns: 1fr !important; }
+  .rp-buybar-in { flex-direction: column; align-items: stretch; gap: 10px; }
+  .rp-buyactions { flex-direction: column; }
+  .rp-buyactions .btn { width: 100%; justify-content: center; }
+}
+
+/* <=380px: el grid del escáner móvil (96px + 1fr) desbordaba.
+   Se apila en una sola columna. */
+@media (max-width: 480px) {
+  .dx-grid,
+  .dx-grid:has(.dx-intro:not([hidden])) { grid-template-columns: minmax(0, 1fr) !important; }
+  .dx-scanner { display: block !important; grid-template-columns: none !important; }
+  .dx-scanner .dx-face-wrap { margin: 0 auto 24px !important; }
+  .dx-metrics { margin-top: 18px !important; }
+  .dx-metrics h2 { display: block !important; }
+  .dx-metric { grid-template-columns: 1fr 80px !important; }
+}

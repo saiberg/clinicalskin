@@ -1,4 +1,4 @@
-﻿/* Escáner de piel — usa CS_DIAG (js/logica.js) para calcular y guardar el perfil,
+/* Escáner de piel — usa CS_DIAG (js/logica.js) para calcular y guardar el perfil,
    por lo que resultado.html funciona sin cambios.
    Fase 3: 5 tipos de piel (incluye normal), 11 preocupaciones con selección
    múltiple, y hábitos/preferencias (Q6). */
@@ -95,6 +95,25 @@
     eye: '<svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
     texture: '<svg viewBox="0 0 24 24"><path d="M3 8c2-2 4 2 6 0s4 2 6 0 4 2 6 0M3 14c2-2 4 2 6 0s4 2 6 0 4 2 6 0"/></svg>'
   };
+  /* Iconos propios (SVG) para tipos de piel y preocupaciones. */
+  const ICONO_ARCHIVO = {
+    normal: 'icono-piel-normal', mixta: 'icono-piel-mixta', seca: 'icono-piel-seca',
+    grasa: 'icono-piel-grasa', sensible: 'icono-piel-sensible',
+    hidratacion: 'icono-hidratacion', luminosidad: 'icono-luminosidad', textura: 'icono-textura',
+    poros: 'icono-poros', sebo: 'icono-sebo', imperfecciones: 'icono-imperfecciones',
+    manchas: 'icono-manchas', lineas: 'icono-lineas', firmeza: 'icono-firmeza',
+    sensibilidad: 'icono-sensibilidad', contorno: 'icono-contorno'
+  };
+  const RUTA_ICONOS = 'img/diagnostico/';
+  const rutaIcono = (v) => {
+    if (ICONO_ARCHIVO[v]) {
+      const carpeta = ['normal', 'mixta', 'seca', 'grasa', 'sensible'].indexOf(v) !== -1
+        ? 'clinical_skin_iconos_tipos_piel/'
+        : 'clinical_skin_iconos_preocupaciones/';
+      return RUTA_ICONOS + carpeta + ICONO_ARCHIVO[v] + '.svg';
+    }
+    return null;
+  };
   const ICONO_OPCION = {
     normal: 'balance', mixta: 'balance', seca: 'drop', grasa: 'spark', sensible: 'leaf',
     hidratacion: 'drop', luminosidad: 'sun', textura: 'texture', poros: 'spark', sebo: 'drop',
@@ -105,6 +124,7 @@
     brillo_poros: 'spark', hidratar_calmar: 'drop', iluminar: 'sun', prevenir: 'shield'
   };
 
+  /* Zonas de la foto del rostro (data-zone). */
   const ZONAS = ['frente', 'mejillaI', 'mejillaD', 'mentón'];
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -145,6 +165,7 @@
     return m;
   };
 
+  /* Ilumina las zonas de la foto según el avance. */
   const pintarPerfil = () => {
     const m = metricas();
     ['hidra', 'sebo', 'sens', 'sol', 'tol'].forEach((k) => {
@@ -154,9 +175,10 @@
     const hechas = Object.keys(respuestas).length;
     const pct = Math.round((hechas / PREGUNTAS.length) * 100);
     $('[data-dx-pct]').textContent = pct + '%';
+    const activas = Math.round((hechas / PREGUNTAS.length) * ZONAS.length);
     ZONAS.forEach((z, i) => {
       const el = $(`[data-zone="${z}"]`);
-      if (el) el.classList.toggle('on', i < Math.round((hechas / PREGUNTAS.length) * ZONAS.length));
+      if (el) el.classList.toggle('on', i < activas);
     });
   };
 
@@ -169,6 +191,7 @@
     cont.innerHTML = `
       <span class="eyebrow">Pregunta ${q.n} de ${PREGUNTAS.length}</span>
       <h2></h2><p></p>
+      ${esMulti ? '<span class="dx-selected-count" data-dx-selcount hidden></span>' : ''}
       <div class="dx-options" role="${esMulti ? 'group' : 'radiogroup'}"></div>
       ${esMulti ? '<button type="button" class="btn btn-primary dx-continue" data-dx-continue>Continuar</button>' : ''}`;
     $('h2', cont).textContent = q.titulo;
@@ -189,7 +212,13 @@
         b.setAttribute('role', esMulti ? 'checkbox' : 'radio');
         b.setAttribute('aria-checked', activo ? 'true' : 'false');
         b.innerHTML = `<span class="dx-emoji" aria-hidden="true"></span><span><h3></h3><p></p></span><span class="dx-key" aria-hidden="true">${i + 1}</span>`;
-        $('.dx-emoji', b).innerHTML = ICONOS[ICONO_OPCION[o.v]] || ICONOS.spark;
+        const archivo = rutaIcono(o.v);
+        const emojiEl = $('.dx-emoji', b);
+        if (archivo) {
+          emojiEl.innerHTML = `<img src="${archivo}" alt="" width="44" height="44" loading="lazy">`;
+        } else {
+          emojiEl.innerHTML = ICONOS[ICONO_OPCION[o.v]] || ICONOS.spark;
+        }
         $('h3', b).textContent = o.t;
         $('p', b).textContent = o.d;
         b.addEventListener('click', () => (esMulti ? alternarMulti(i) : elegir(i)));
@@ -206,7 +235,15 @@
     bar.setAttribute('aria-valuenow', paso);
     $('[data-dx-count]').textContent = `${q.n}/${PREGUNTAS.length}`;
     $('[data-dx-back]').disabled = paso === 0;
+    actualizarContador();
     pintarPerfil();
+    /* Al cambiar de pregunta, volver arriba para que no quede fuera de foco
+       (la pregunta 2 es mucho más larga que las demás). */
+    const panel = $('.dx-panel');
+    if (panel) {
+      const y = panel.getBoundingClientRect().top + window.pageYOffset - 90;
+      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+    }
   };
 
   const pintarHabitos = (grid) => {
@@ -252,6 +289,19 @@
     }, 380));
   };
 
+  const actualizarContador = () => {
+    const el = $('[data-dx-selcount]');
+    if (!el) return;
+    const q = PREGUNTAS[paso];
+    const lista = Array.isArray(respuestas[q.campo]) ? respuestas[q.campo] : [];
+    if (lista.length) {
+      el.hidden = false;
+      el.innerHTML = `<b>${lista.length}</b> ${lista.length === 1 ? 'preocupación seleccionada' : 'preocupaciones seleccionadas'}`;
+    } else {
+      el.hidden = true;
+    }
+  };
+
   const alternarMulti = (i) => {
     const q = PREGUNTAS[paso];
     const o = q.opciones[i];
@@ -266,6 +316,7 @@
       b.classList.toggle('selected', on);
       b.setAttribute('aria-checked', on ? 'true' : 'false');
     });
+    actualizarContador();
     pintarPerfil();
   };
 
@@ -296,6 +347,10 @@
 
   const analizar = () => {
     mostrar('analyzing');
+    /* Animación de escaneo sobre el rostro. */
+    const wrap = $('.dx-face-wrap');
+    if (wrap) wrap.classList.add('scanning');
+    ZONAS.forEach((z) => { const el = $(`[data-zone="${z}"]`); if (el) el.classList.add('on'); });
     const E = window.CS_DIAG.CONFIG.etiquetas;
     const data = window.CS_DIAG.guardar({ ...respuestas });
     const P = data.perfil;
@@ -378,7 +433,9 @@
       if (cur >= pct) clearInterval(tick);
     }, 20);
     $('[data-dx-pct]').textContent = '100%';
-    ZONAS.forEach((z) => $(`[data-zone="${z}"]`).classList.add('on'));
+    ZONAS.forEach((z) => { const el = $(`[data-zone="${z}"]`); if (el) el.classList.add('on'); });
+    const wrapScan = $('.dx-face-wrap');
+    if (wrapScan) wrapScan.classList.remove('scanning');
   };
 
   const reiniciar = () => {
@@ -387,6 +444,9 @@
     paso = 0; bloqueado = false;
     const ring = $('[data-dx-score-ring]');
     ring.style.strokeDashoffset = 327;
+    ZONAS.forEach((z) => { const el = $(`[data-zone="${z}"]`); if (el) el.classList.remove('on'); });
+    const wrapScan = $('.dx-face-wrap');
+    if (wrapScan) wrapScan.classList.remove('scanning');
     mostrar('quiz');
     pintarPregunta(false);
   };

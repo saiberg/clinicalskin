@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500" fill="none">
+  <title>Rostro frontal para escáner de piel Clinical Skin</title>
+  <desc>Ilustración lineal de un rostro femenino de frente con cuatro zonas independientes para iluminación mediante CSS: frente, mejilla izquierda, mejilla derecha y mentón.</desc>
+
+  <defs>
+    <linearGradient id="skinLine" x1="100" y1="90" x2="300" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A98A67"/>
+      <stop offset="1" stop-color="#8B6B45"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Contorno general del rostro y cuello -->
+  <g id="face-outline" class="face-outline" stroke="url(#skinLine)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M200 67
+      C139 67 101 112 101 190
+      C101 239 111 290 132 331
+      C149 366 174 391 200 402
+      C226 391 251 366 268 331
+      C289 290 299 239 299 190
+      C299 112 261 67 200 67Z"/>
+    <path d="M132 330 C127 352 120 376 111 398
+      M268 330 C273 352 280 376 289 398"/>
+    <path d="M111 398 C137 420 165 431 200 431
+      C235 431 263 420 289 398"/>
+  </g>
+
+  <!-- Cabello: marco exterior ligero -->
+  <g id="hair" class="hair" stroke="#A98A67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M101 195 C91 151 97 101 126 69 C145 48 171 38 200 38
+      C229 38 255 48 274 69 C303 101 309 151 299 195"/>
+    <path d="M101 173 C85 202 82 246 91 285"/>
+    <path d="M299 173 C315 202 318 246 309 285"/>
+    <path d="M126 69 C146 87 169 95 200 95 C231 95 254 87 274 69"/>
+  </g>
+
+  <!-- Zona 1: frente. Elemento independiente para CSS -->
+  <g id="zone-forehead" class="scan-zone scan-zone-forehead">
+    <path class="zone-fill" d="M132 119 C150 101 174 94 200 94
+      C226 94 250 101 268 119
+      L261 174 C244 166 224 161 200 161
+      C176 161 156 166 139 174Z"
+      fill="#D8C4A7" fill-opacity=".12"
+      stroke="#B99A72" stroke-width="1.4" stroke-dasharray="4 5"/>
+  </g>
+
+  <!-- Zona 2: mejilla izquierda de la ilustración -->
+  <g id="zone-left-cheek" class="scan-zone scan-zone-left-cheek">
+    <path class="zone-fill" d="M119 218
+      C133 199 153 190 174 195
+      C184 205 188 225 184 245
+      C180 266 165 282 144 281
+      C126 278 116 250 119 218Z"
+      fill="#D8C4A7" fill-opacity=".12"
+      stroke="#B99A72" stroke-width="1.4" stroke-dasharray="4 5"/>
+  </g>
+
+  <!-- Zona 3: mejilla derecha de la ilustración -->
+  <g id="zone-right-cheek" class="scan-zone scan-zone-right-cheek">
+    <path class="zone-fill" d="M281 218
+      C267 199 247 190 226 195
+      C216 205 212 225 216 245
+      C220 266 235 282 256 281
+      C274 278 284 250 281 218Z"
+      fill="#D8C4A7" fill-opacity=".12"
+      stroke="#B99A72" stroke-width="1.4" stroke-dasharray="4 5"/>
+  </g>
+
+  <!-- Zona 4: mentón -->
+  <g id="zone-chin" class="scan-zone scan-zone-chin">
+    <path class="zone-fill" d="M161 326
+      C174 337 187 342 200 342
+      C213 342 226 337 239 326
+      C233 354 218 376 200 383
+      C182 376 167 354 161 326Z"
+      fill="#D8C4A7" fill-opacity=".12"
+      stroke="#B99A72" stroke-width="1.4" stroke-dasharray="4 5"/>
+  </g>
+
+  <!-- Rasgos faciales -->
+  <g id="facial-features" class="facial-features" stroke="#8B6B45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M139 207 C151 198 165 198 177 207"/>
+    <path d="M223 207 C235 198 249 198 261 207"/>
+    <path d="M143 222 C153 231 165 231 175 222"/>
+    <path d="M225 222 C235 231 247 231 257 222"/>
+    <path d="M200 218 C196 243 191 262 187 273 C192 279 198 281 204 278"/>
+    <path d="M178 303 C191 313 209 313 222 303"/>
+    <path d="M184 309 C194 316 206 316 216 309"/>
+  </g>
+
+  <!-- Orejas -->
+  <g id="ears" class="ears" stroke="#A98A67" stroke-width="1.8" stroke-linecap="round">
+    <path d="M101 211 C85 196 78 212 83 237 C87 257 96 266 108 260"/>
+    <path d="M299 211 C315 196 322 212 317 237 C313 257 304 266 292 260"/>
+    <path d="M96 224 C91 218 89 231 98 244"/>
+    <path d="M304 224 C309 218 311 231 302 244"/>
+  </g>
+</svg>

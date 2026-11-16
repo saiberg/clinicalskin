@@ -7,9 +7,9 @@
 
   const LOGO = 'img/logoNotext-clinicalSkin.png';
   const COPYRIGHT = '© 2026 Clinical Skin — Dermocosmética. Todos los derechos reservados.';
-  const WHATSAPP = 'https://wa.me/56992412354';
+  const WHATSAPP = 'https://wa.me/56995786158';
   const EMAIL = 'contacto@clinicalskin.cl';
-  const TELEFONO = '+56 9 9241 2354';
+  const TELEFONO = '+56 9 9578 6158';
 
   const COLUMNAS = [
     {
@@ -24,11 +24,10 @@
     {
       titulo: 'Información',
       links: [
-        { href: 'terminos.html#envios', etiqueta: 'Envíos' },
-        { href: 'terminos.html#cambios', etiqueta: 'Cambios y devoluciones' },
+        { href: 'terminos.html#despachos', etiqueta: 'Envíos' },
+        { href: 'terminos.html#retracto', etiqueta: 'Cambios y devoluciones' },
         { href: 'terminos.html', etiqueta: 'Términos y condiciones' },
-        { href: 'politica-privacidad.html', etiqueta: 'Política de privacidad' },
-        { href: 'img/marcas/creditos.html', etiqueta: 'Créditos de marcas' }
+        { href: 'politica-privacidad.html', etiqueta: 'Política de privacidad' }
       ]
     }
   ];
@@ -65,7 +64,7 @@
           <div class="cs-footer-contact">
             <h3>¿Necesitas ayuda?</h3>
             <a href="mailto:${EMAIL}"><span aria-hidden="true">✉</span><span>${EMAIL}</span></a>
-            <a href="tel:+56987654321"><span aria-hidden="true">⌕</span><span>${TELEFONO}</span></a>
+            <a href="tel:+56995786158"><span aria-hidden="true">⌕</span><span>${TELEFONO}</span></a>
             <a href="${WHATSAPP}" target="_blank" rel="noopener"><span aria-hidden="true">◉</span><span>Asesoría por WhatsApp</span></a>
           </div>
         </div>

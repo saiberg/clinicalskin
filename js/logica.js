@@ -864,9 +864,9 @@ const CS_DIAG = (() => {
     };
 
     /* Intenta candidatos por SKU; si todos fallan, cae al mejor del paso.
-       Si el paso es esencial (esencial=true) y no hay nada disponible,
-       se incluye el candidato preferido marcado como agotado (sin compra). */
-    const ponerPaso = (candidatos, slot, pasoFallback, esencial) => {
+       Nunca incluye productos agotados: si no hay nada disponible, el paso
+       se omite para no generar errores al añadir la rutina al carrito. */
+    const ponerPaso = (candidatos, slot, pasoFallback) => {
       const prod = primerFacialDisponible(candidatos);
       if (prod) return meter(prod, slot, false);
 
@@ -883,16 +883,6 @@ const CS_DIAG = (() => {
         const alt = disponiblesPorPaso(P, pasoFallback).find((p) => !elegidos.has(p.id));
         if (alt) return meter(alt, slot, false);
       }
-
-      /* Último recurso para pasos esenciales: incluir agotado marcado. */
-      if (esencial) {
-        for (const id of candidatos) {
-          const existe = CATALOGO.find((p) => p.id === id);
-          if (existe && esFacial(existe) && !elegidos.has(existe.id)) {
-            return meter(existe, slot, true);
-          }
-        }
-      }
       return null;
     };
 
@@ -901,24 +891,24 @@ const CS_DIAG = (() => {
     const quiereTratamiento = P.preocupaciones && P.preocupaciones.length > 0;
 
     /* --- 1. Limpieza (siempre) --- */
-    ponerPaso(candidatosLimpieza(P.tipo), 'ambos', 'limpieza', true);
+    ponerPaso(candidatosLimpieza(P.tipo), 'ambos', 'limpieza');
 
     /* --- 2. Tratamiento de la preocupación principal --- */
     if (quiereTratamiento) {
       const preoc = P.preoc1;
       const slot = (preoc === 'imperfecciones' || preoc === 'sebo') ? 'pm' : 'ambos';
-      ponerPaso(candidatosTratamiento(preoc), slot, 'tratamiento', false);
+      ponerPaso(candidatosTratamiento(preoc), slot, 'tratamiento');
     }
 
     /* --- 3. Hidratación (siempre) --- */
-    ponerPaso(candidatosCrema(P.tipo), 'ambos', 'hidratacion', true);
+    ponerPaso(candidatosCrema(P.tipo), 'ambos', 'hidratacion');
 
     /* --- 4. Protección solar (siempre, AM) --- */
-    ponerPaso(candidatosProtector(P.tipo), 'am', 'proteccion', true);
+    ponerPaso(candidatosProtector(P.tipo), 'am', 'proteccion');
 
     /* --- 5. Contorno de ojos (si lo pidió y aún hay presupuesto) --- */
     if ((P.preocupaciones || []).indexOf('contorno') !== -1) {
-      ponerPaso([SKU.contorno], 'ambos', null, false);
+      ponerPaso([SKU.contorno], 'ambos', null);
     }
 
     /* --- 6. Extras (solo en rutina avanzada, si hay presupuesto) --- */
@@ -929,7 +919,7 @@ const CS_DIAG = (() => {
           const okTipo = CONFIG.exfoliacion.tiposPermitidos.indexOf(P.tipo) !== -1;
           const okSens = P.sensibilidad !== CONFIG.exfoliacion.bloqueadaSiSensibilidad;
           if (!(activa && okTipo && okSens)) return null;
-          const e = ponerPaso([SKU.exfoliante], 'pm', 'exfoliacion', false);
+          const e = ponerPaso([SKU.exfoliante], 'pm', 'exfoliacion');
           if (e) {
             e.freq = CONFIG.exfoliacion.frecuenciaPorTolerancia[P.tolerancia] || e.freq;
             exfolia = true;
@@ -939,11 +929,11 @@ const CS_DIAG = (() => {
 
         refuerzo: () => {
           if (!P.preoc2 || P.preoc2 === P.preoc1) return null;
-          return ponerPaso(candidatosTratamiento(P.preoc2), 'ambos', null, false);
+          return ponerPaso(candidatosTratamiento(P.preoc2), 'ambos', null);
         },
 
         reparacion: () =>
-          (esSensiblePerfil || exfolia || esSeca) ? ponerPaso([SKU.reparacion], 'pm', null, false) : null
+          (esSensiblePerfil || exfolia || esSeca) ? ponerPaso([SKU.reparacion], 'pm', null) : null
       };
 
       for (const clave of CONFIG.prioridadesExtra) {

@@ -197,3 +197,126 @@
   .rp-body { grid-column: 1 / -1; }
   .rp-side { grid-column: 1 / -1; }
 }
+
+/* ============================================================
+   Mockup visual — resultados: iconos, confeti, mármol
+   ============================================================ */
+.rp-tab-icon { width: 18px; height: 18px; vertical-align: -3px; margin-right: 4px; }
+
+/* Iconos de indicadores */
+.rp-ind { position: relative; padding-top: 20px; }
+.rp-ind-icon { position: absolute; top: 14px; right: 16px; width: 26px; height: 26px; opacity: .85; }
+.rp-ind-top { padding-right: 34px; }
+
+/* Fondo mármol sutil en rutina e indicadores */
+.rp-routine, .rp-indicators {
+  position: relative;
+  background-image: linear-gradient(rgba(255,253,250,.92), rgba(255,253,250,.92)), url('img/diagnostico/marmol.jpg');
+  background-size: cover;
+  background-position: center;
+  border-radius: 14px;
+  padding: 28px 24px;
+  margin-top: 40px;
+}
+.rp-indicators { margin-top: 32px; }
+
+/* Confeti */
+.rp-confetti { position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
+.rp-confetti i {
+  position: absolute; top: -12px; width: 8px; height: 8px; border-radius: 2px;
+  opacity: 0; animation-name: rpConfettiFall; animation-timing-function: ease-in; animation-fill-mode: forwards;
+}
+@keyframes rpConfettiFall {
+  0%   { transform: translateY(0) rotate(0); opacity: 1; }
+  100% { transform: translateY(105vh) rotate(540deg); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .rp-confetti { display: none; } }
+
+@media (max-width: 640px) {
+  .rp-routine, .rp-indicators { padding: 20px 14px; border-radius: 10px; }
+}
+
+/* ============================================================
+   Indicador de carga del resultado
+   ============================================================ */
+.rp-loading {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 60vh; text-align: center; padding: 40px 20px;
+}
+.rp-loading[hidden] { display: none; }
+.rp-loading-spinner {
+  width: 64px; height: 64px; margin-bottom: 26px; border-radius: 50%;
+  border: 3px solid rgba(184,139,74,.18);
+  border-top-color: #B88B4A; border-right-color: #8B6B45;
+  animation: rpSpin 1s linear infinite;
+}
+@keyframes rpSpin { to { transform: rotate(360deg); } }
+.rp-loading h2 {
+  font-family: var(--font-heading); font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  color: #503c2e; margin: 0 0 10px;
+}
+.rp-loading p { color: #7a6a5c; font-size: .92rem; margin: 0; }
+@media (prefers-reduced-motion: reduce) { .rp-loading-spinner { animation-duration: 3s; } }
+
+/* <=380px: resultado sin desborde */
+@media (max-width: 480px) {
+  .rp-hero { grid-template-columns: 1fr !important; }
+  .rp-hero-card { margin-top: 18px; }
+  .rp-hero-face img { width: 100%; height: auto; }
+  .rp-insights { grid-template-columns: 1fr !important; }
+  .rp-routine-head { flex-direction: column; align-items: stretch; gap: 12px; }
+  .rp-routine-controls { align-items: stretch !important; }
+  .rp-level, .rp-tabs { justify-content: center; }
+  .rp-steps { gap: 12px; }
+  .rp-step { grid-template-columns: 1fr !important; }
+  .rp-num { display: none; }
+  .rp-steps::before { display: none; }
+  .rp-extra { grid-template-columns: 1fr !important; }
+  .rp-mail-row { flex-direction: column; }
+  .rp-mail-row .btn { width: 100%; }
+}
+
+/* <=380px: la tarjeta de producto (110px + 1fr + auto) desbordaba. */
+@media (max-width: 480px) {
+  .rp-card { grid-template-columns: minmax(0, 1fr) !important; gap: 12px !important; }
+  .rp-card img, .rp-media img { width: 100% !important; max-width: 100% !important; height: auto !important; }
+  .rp-media { width: 100%; }
+  .rp-body, .rp-side { min-width: 0; }
+  .rp-side { justify-items: stretch !important; }
+  .rp-side .btn, .rp-side .rp-buy { width: 100%; justify-content: center; }
+  .rp-badges { flex-wrap: wrap; }
+  .rp-routine-head h2 { font-size: 1.25rem; }
+  .rp-indicators-head h2 { font-size: 1.25rem; }
+  .rp-ind { padding: 14px; }
+  .rp-week-grid { font-size: .72rem; }
+  .rp-mail-form { padding: 18px 14px; }
+}
+
+/* <=380px: botones del resultado a ancho completo, sin nowrap */
+@media (max-width: 480px) {
+  .rp-side .btn,
+  .rp-side .rp-buy,
+  .rp-side .btn-sm {
+    white-space: normal !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 10px 12px !important;
+    font-size: .8rem !important;
+    box-sizing: border-box;
+  }
+  .rp-side { width: 100%; }
+}
+
+/* <=380px: .rp-side es un grid multi-columna que no cabe. Una sola columna. */
+@media (max-width: 480px) {
+  .rp-side {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-auto-flow: row !important;
+    justify-items: stretch !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+  .rp-side .rp-price { text-align: left; }
+  .rp-inc { justify-self: start; }
+}

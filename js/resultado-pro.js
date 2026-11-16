@@ -11,13 +11,23 @@
   const fmt = (n) => '$' + Math.round(n).toLocaleString('es-CL');
 
   const data = D && D.cargar();
-  if (!data) { $('[data-rp-empty]').hidden = false; return; }
-  $('[data-rp-content]').hidden = false;
+  if (!data) {
+    const loader = $('[data-rp-loading]');
+    if (loader) loader.hidden = true;
+    $('[data-rp-empty]').hidden = false;
+    return;
+  }
 
-  /* Catálogo real antes de calcular la rutina (si el endpoint está disponible). */
+  /* Catálogo real antes de calcular la rutina (si el endpoint está disponible).
+     Mientras tanto se muestra el indicador de carga. */
   if (D.sincronizarSiDisponible) {
     try { await D.sincronizarSiDisponible(); } catch (e) { /* se usa el estático */ }
   }
+
+  /* Oculta el loader y muestra el contenido ya calculado. */
+  const loader = $('[data-rp-loading]');
+  if (loader) loader.hidden = true;
+  $('[data-rp-content]').hidden = false;
 
   const P = data.perfil;
   const E = D.CONFIG.etiquetas;
@@ -182,11 +192,11 @@
 
   /* ---------- Indicadores (Etapa 5) ---------- */
   const INDICADORES = [
-    { clave: 'hidratacion', nombre: 'Hidratación', desc: 'Cómo de bien retiene agua tu piel.' },
-    { clave: 'sebo', nombre: 'Control de sebo', desc: 'Nivel de producción de grasa.' },
-    { clave: 'sensibilidad', nombre: 'Sensibilidad', desc: 'Tendencia a reaccionar o irritarse.' },
-    { clave: 'exposicion_solar', nombre: 'Exposición solar', desc: 'Cuánto sol recibe tu piel.' },
-    { clave: 'tolerancia', nombre: 'Tolerancia a activos', desc: 'Capacidad de tolerar ingredientes potentes.' }
+    { clave: 'hidratacion', nombre: 'Hidratación', desc: 'Cómo de bien retiene agua tu piel.', icono: 'indicador-hidratacion' },
+    { clave: 'sebo', nombre: 'Control de sebo', desc: 'Nivel de producción de grasa.', icono: 'indicador-sebo' },
+    { clave: 'sensibilidad', nombre: 'Sensibilidad', desc: 'Tendencia a reaccionar o irritarse.', icono: 'indicador-sensibilidad' },
+    { clave: 'exposicion_solar', nombre: 'Exposición solar', desc: 'Cuánto sol recibe tu piel.', icono: 'indicador-sol' },
+    { clave: 'tolerancia', nombre: 'Tolerancia a activos', desc: 'Capacidad de tolerar ingredientes potentes.', icono: 'indicador-tolerancia' }
   ];
   const pintarIndicadores = () => {
     const cont = $('[data-rp-indicators]');
@@ -194,10 +204,12 @@
     const valores = D.calcularIndicadores(P);
     cont.innerHTML = INDICADORES.map((ind) => {
       const v = valores[ind.clave];
+      const icono = `<img class="rp-ind-icon" src="img/diagnostico/clinical_skin_iconos_indicadores/${ind.icono}.svg" alt="" width="28" height="28" loading="lazy">`;
       if (v === null || v === undefined) {
-        return `<div class="rp-ind"><div class="rp-ind-top"><strong>${ind.nombre}</strong><span class="rp-ind-na">Sin datos</span></div><p>${ind.desc}</p></div>`;
+        return `<div class="rp-ind">${icono}<div class="rp-ind-top"><strong>${ind.nombre}</strong><span class="rp-ind-na">Sin datos</span></div><p>${ind.desc}</p></div>`;
       }
       return `<div class="rp-ind">
+        ${icono}
         <div class="rp-ind-top"><strong>${ind.nombre}</strong><span class="rp-ind-val">${v}</span></div>
         <div class="rp-ind-bar"><i style="width:${v}%"></i></div>
         <p>${ind.desc}</p>
@@ -205,11 +217,31 @@
     }).join('');
   };
 
+  /* ---------- Confeti sutil al cargar el resultado ---------- */
+  const lanzarConfeti = () => {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const colores = ['#B88B4A', '#8B6B45', '#D8C4A7', '#C98D83', '#9A9B6A'];
+    const cont = document.createElement('div');
+    cont.className = 'rp-confetti';
+    cont.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(cont);
+    for (let i = 0; i < 36; i++) {
+      const p = document.createElement('i');
+      p.style.left = Math.random() * 100 + '%';
+      p.style.background = colores[i % colores.length];
+      p.style.animationDelay = (Math.random() * 0.6) + 's';
+      p.style.animationDuration = (1.6 + Math.random() * 1.2) + 's';
+      p.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+      cont.appendChild(p);
+    }
+    setTimeout(() => cont.remove(), 3200);
+  };
+
   /* ---------- WhatsApp con mensaje prefijado ---------- */
   const configurarWhatsApp = () => {
     const a = $('[data-rp-whatsapp]');
     if (!a) return;
-    const numero = '56992412354';
+    const numero = '56995786158';
     const texto = `Hola Clinical Skin, hice el test de piel y mi perfil es ${(E.tipos[P.tipo] || '').toLowerCase()} con tendencia a ${p1.corto || ''}. Me gustaría orientación sobre mi rutina.`;
     a.href = `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
   };
@@ -328,4 +360,5 @@
   pintarIndicadores();
   configurarWhatsApp();
   aplicarNivel('avanzada');
+  lanzarConfeti();
 })();
